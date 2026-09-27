@@ -3,9 +3,6 @@
 .env.backup
 .env.local
 
-# Composer
-/vendor/
-
 # Temporary / OS files
 .DS_Store
 Thumbs.db
