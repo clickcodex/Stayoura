@@ -19,16 +19,16 @@ $role         = $recovery['role'] ?? 'users';
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 .fpv-card {
   width: 100%;
   max-width: 440px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 26px;
   padding: 36px 32px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
@@ -38,8 +38,8 @@ $role         = $recovery['role'] ?? 'users';
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,14 +49,14 @@ $role         = $recovery['role'] ?? 'users';
 .fpv-title {
   font-size: 24px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 6px;
   letter-spacing: -0.01em;
 }
 
 .fpv-sub {
   font-size: 13.5px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.5;
   margin: 0 0 24px;
 }
@@ -69,7 +69,7 @@ $role         = $recovery['role'] ?? 'users';
   padding: 4px 12px;
   border-radius: 20px;
   font-weight: 700;
-  color: #24312A;
+  color: #0F172A;
   font-size: 13px;
 }
 
@@ -86,17 +86,17 @@ $role         = $recovery['role'] ?? 'users';
   text-align: center;
   font-size: 24px;
   font-weight: 800;
-  color: #24312A;
-  border: 2px solid #E2DBD0;
+  color: #0F172A;
+  border: 2px solid #E2E8F0;
   border-radius: 12px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .fpv-digit-box:focus {
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
@@ -104,7 +104,7 @@ $role         = $recovery['role'] ?? 'users';
 .fpv-btn {
   width: 100%;
   height: 48px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   border: none;
   border-radius: 14px;
@@ -120,7 +120,7 @@ $role         = $recovery['role'] ?? 'users';
 }
 
 .fpv-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(2, 132, 199, 0.45);
 }
@@ -129,13 +129,13 @@ $role         = $recovery['role'] ?? 'users';
   margin-top: 24px;
   text-align: center;
   font-size: 13px;
-  color: #57685F;
+  color: #64748B;
 }
 
 .fpv-resend-btn {
   background: none;
   border: none;
-  color: #173C2D;
+  color: #1E40AF;
   font-weight: 800;
   cursor: pointer;
   padding: 0;
@@ -232,7 +232,7 @@ $role         = $recovery['role'] ?? 'users';
     </div>
 
     <div style="text-align:center; margin-top:20px;">
-      <a href="<?= $role === 'owners' ? url('owner/forgot-password') : url('forgot-password') ?>" style="font-size:12.5px; color:#57685F; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+      <a href="<?= $role === 'owners' ? url('owner/forgot-password') : url('forgot-password') ?>" style="font-size:12.5px; color:#64748B; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
         <span class="material-symbols-outlined" style="font-size:15px;">arrow_back</span>
         <span>Back to Forgot Password</span>
       </a>

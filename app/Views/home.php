@@ -2,9 +2,9 @@
 use App\Helpers\CryptoHelper;
 
 // ── High-Converting SEO Meta ──
-$pageTitle       = "FarmLelo | Luxury Farmhouses, Private Pool Villas & Weekend Escapes in India";
+$pageTitle       = "Stayora | Luxury Farmhouses, Private Pool Villas & Weekend Escapes in India";
 $pageDescription = "Book verified luxury farmhouses & private pool villas across Indore, Surat, Delhi NCR, Hyderabad & Mumbai. Direct owner prices, verified amenities & instant support.";
-$pageKeywords    = "farmhouse booking, private pool villas, luxury farmhouses indore, weekend villas surat, delhi ncr farmhouses, holiday homes india, farmlelo";
+$pageKeywords    = "farmhouse booking, private pool villas, luxury farmhouses indore, weekend villas surat, delhi ncr farmhouses, holiday homes india, stayora";
 $canonicalUrl    = absolute_url();
 
 include __DIR__ . "/Includes/header.php";
@@ -93,7 +93,7 @@ function renderCard(array $fh, array $wishlistedIds, bool $isLoggedIn): string {
                 src="<?= $coverImg ?>"
                 alt="<?= $title ?>"
                 loading="lazy"
-                onerror="this.src='https://placehold.co/600x420/E8F0EC/1F4D3A?text=Farmlelo+Estate'"
+                onerror="this.src='https://placehold.co/600x420/E8F0EC/1F4D3A?text=Stayora+Estate'"
             />
             <div class="hm-card-badges">
                 <span class="hm-badge-tag">
@@ -267,7 +267,7 @@ function renderCard(array $fh, array $wishlistedIds, bool $isLoggedIn): string {
 
     <!-- Quick Location Chips -->
     <div class="hm-quick-pills">
-        <span style="font-size:12px;color:#E2DBD0;font-weight:700;margin-right:4px;">Popular:</span>
+        <span style="font-size:12px;color:#E2E8F0;font-weight:700;margin-right:4px;">Popular:</span>
         <?php 
           $popularPills = ['Indore', 'Surat', 'Delhi', 'Hyderabad', 'Daman', 'Ahmedabad', 'Mumbai'];
           foreach ($popularPills as $pill):
@@ -297,13 +297,13 @@ function renderCard(array $fh, array $wishlistedIds, bool $isLoggedIn): string {
             </div>
 
             <?php if (empty($farmhouses)): ?>
-                <div style="text-align:center;padding:60px 20px;background:#fff;border-radius:20px;border:1px solid #E2DBD0;">
+                <div style="text-align:center;padding:60px 20px;background:#fff;border-radius:20px;border:1px solid #E2E8F0;">
                     <div style="margin-bottom:12px;">
                         <span class="material-symbols-outlined" style="font-size:48px;color:#94a3b8;">domain_disabled</span>
                     </div>
-                    <h3 style="font-size:18px;font-weight:800;color:#24312A;margin:0 0 6px;">No farmhouses found</h3>
-                    <p style="font-size:13.5px;color:#57685F;margin:0 0 16px;">Try searching for another location or adjusting your date selection.</p>
-                    <a href="<?= url('farmhouses') ?>" style="display:inline-block;background:#1F4D3A;color:#fff;padding:10px 20px;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px;">Browse All Farmhouses</a>
+                    <h3 style="font-size:18px;font-weight:800;color:#0F172A;margin:0 0 6px;">No farmhouses found</h3>
+                    <p style="font-size:13.5px;color:#64748B;margin:0 0 16px;">Try searching for another location or adjusting your date selection.</p>
+                    <a href="<?= url('farmhouses') ?>" style="display:inline-block;background:#1D4ED8;color:#fff;padding:10px 20px;border-radius:12px;font-weight:700;text-decoration:none;font-size:13px;">Browse All Farmhouses</a>
                 </div>
             <?php else: ?>
                 <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;">
@@ -319,7 +319,7 @@ function renderCard(array $fh, array $wishlistedIds, bool $isLoggedIn): string {
             <div class="hm-sec-header">
                 <div class="hm-sec-title-group">
                     <h2>
-                        <span class="material-symbols-outlined" style="font-size:20px;color:#173C2D;vertical-align:middle;">auto_awesome</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;color:#1E40AF;vertical-align:middle;">auto_awesome</span>
                         Featured Farmhouses &amp; Top Picks
                     </h2>
                     <p>Highest-rated private estates chosen for unforgettable weekend getaways</p>
@@ -423,14 +423,14 @@ function renderCard(array $fh, array $wishlistedIds, bool $isLoggedIn): string {
 
     <?php endif; ?>
 
-    <!-- ── LIST YOUR PROPERTY BANNER ── -->
+    <!-- ── GUEST GETAWAY BANNER ── -->
     <div class="hm-host-banner">
         <div class="hm-host-content">
-            <h3>Own a Farmhouse or Luxury Villa?</h3>
-            <p>List your property on FarmLelo and connect with thousands of verified guests looking for weekend getaways, pool parties, and celebrations.</p>
+            <h3>Looking for the Perfect Weekend Getaway?</h3>
+            <p>Explore handpicked private farmhouses, luxury pool villas, and nature sanctuaries across India with verified direct pricing.</p>
         </div>
-        <a href="<?= url('list_your_farm') ?>" class="hm-host-btn">
-            <span>+ List Your Farmhouse Today</span>
+        <a href="<?= url('farmhouses') ?>" class="hm-host-btn">
+            <span>Explore Farmhouses</span>
             <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
         </a>
     </div>

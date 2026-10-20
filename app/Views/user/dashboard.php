@@ -5,20 +5,20 @@ use App\Helpers\CryptoHelper;
 
 <style>
 /* ═══════════════════════════════════════════════════════════
-   FARMLELO USER DASHBOARD — BRAND LOGO CYAN THEME & PORTAL SYSTEM
+   STAYORA USER DASHBOARD — LUXURY BLUE THEME & PORTAL SYSTEM
    ═══════════════════════════════════════════════════════════ */
 
 :root {
   --fl-primary: #00AEEF;
   --fl-primary-glow: #C9A227;
-  --fl-primary-dark: #173C2D;
+  --fl-primary-dark: #1E40AF;
   --fl-navy-dark: #070D1B;
-  --fl-navy-slate: #24312A;
+  --fl-navy-slate: #0F172A;
   --fl-card-bg: #FFFFFF;
   --fl-card-border: rgba(0, 174, 239, 0.18);
   --fl-card-hover-border: rgba(0, 174, 239, 0.55);
-  --fl-text-dark: #24312A;
-  --fl-text-muted: #57685F;
+  --fl-text-dark: #0F172A;
+  --fl-text-muted: #64748B;
   --fl-status-green: #10B981;
   --fl-status-amber: #F59E0B;
   --fl-status-rose: #F43F5E;
@@ -28,21 +28,12 @@ use App\Helpers\CryptoHelper;
 .ud-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
   overflow-x: hidden;
 }
 
-/* ── Top Sub-Nav Hub Bar ── */
-.ud-subnav-bar {
-  background: #ffffff;
-  border-bottom: 1px solid #E2DBD0;
-  position: sticky;
-  top: 72px;
-  z-index: 40;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-}
 
 .ud-subnav-container {
   max-width: 1240px;
@@ -64,7 +55,7 @@ use App\Helpers\CryptoHelper;
   padding: 14px 18px;
   font-size: 13.5px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   border-bottom: 3px solid transparent;
   white-space: nowrap;
@@ -152,7 +143,7 @@ use App\Helpers\CryptoHelper;
   height: 100%;
   border-radius: 21px;
   object-fit: cover;
-  background: #24312A;
+  background: #0F172A;
 }
 
 .ud-user-tag {
@@ -213,7 +204,7 @@ use App\Helpers\CryptoHelper;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #00AEEF 0%, #173C2D 100%);
+  background: linear-gradient(135deg, #00AEEF 0%, #1E40AF 100%);
   color: #ffffff;
   font-size: 13.5px;
   font-weight: 800;
@@ -226,7 +217,7 @@ use App\Helpers\CryptoHelper;
 }
 
 .ud-cta-btn-primary:hover {
-  background: linear-gradient(135deg, #173C2D 0%, #133225 100%);
+  background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
   transform: translateY(-2px);
   box-shadow: 0 10px 26px rgba(0, 174, 239, 0.55);
   color: #ffffff;
@@ -331,7 +322,7 @@ use App\Helpers\CryptoHelper;
   font-family: 'Epilogue', sans-serif;
   font-size: 28px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   line-height: 1;
   margin-bottom: 5px;
 }
@@ -339,7 +330,7 @@ use App\Helpers\CryptoHelper;
 .ud-kpi-label {
   font-size: 11.5px;
   font-weight: 800;
-  color: #57685F;
+  color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.6px;
 }
@@ -402,7 +393,7 @@ use App\Helpers\CryptoHelper;
   font-family: 'Epilogue', sans-serif;
   font-size: 18px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -413,16 +404,22 @@ use App\Helpers\CryptoHelper;
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: rgba(0, 174, 239, 0.06);
-  transition: all 0.2s ease;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 10px;
+  background: rgba(0, 174, 239, 0.08);
+  border: 1px solid rgba(0, 174, 239, 0.18);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .ud-card-action-link:hover {
   background: #00AEEF;
   color: #ffffff;
+  border-color: #00AEEF;
+  box-shadow: 0 4px 12px rgba(0, 174, 239, 0.25);
+  transform: translateY(-1px);
 }
 
 /* ── Booking List Rows ── */
@@ -440,7 +437,7 @@ use App\Helpers\CryptoHelper;
 }
 
 .ud-booking-row:hover {
-  background: #F7F3EA;
+  background: #F8FAFC;
 }
 
 .ud-booking-thumb {
@@ -449,7 +446,7 @@ use App\Helpers\CryptoHelper;
   border-radius: 16px;
   object-fit: cover;
   flex-shrink: 0;
-  background: #24312A;
+  background: #0F172A;
   border: 1px solid rgba(0, 174, 239, 0.2);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
@@ -470,7 +467,7 @@ use App\Helpers\CryptoHelper;
 .ud-booking-farm-title {
   font-size: 16px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -514,7 +511,20 @@ use App\Helpers\CryptoHelper;
   background: #f1f5f9;
   padding: 5px 12px;
   border-radius: 10px;
-  margin-bottom: 6px;
+}
+
+.ud-booking-status-dates-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 6px 0 4px;
+}
+
+.ud-booking-status-dates-row .ud-status-pill,
+.ud-booking-status-dates-row .ud-booking-dates-badge {
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .ud-booking-actions {
@@ -528,7 +538,7 @@ use App\Helpers\CryptoHelper;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: linear-gradient(135deg, #00AEEF 0%, #173C2D 100%);
+  background: linear-gradient(135deg, #00AEEF 0%, #1E40AF 100%);
   color: #ffffff;
   font-size: 12.5px;
   font-weight: 800;
@@ -540,7 +550,7 @@ use App\Helpers\CryptoHelper;
 }
 
 .ud-btn-view-details:hover {
-  background: linear-gradient(135deg, #173C2D 0%, #133225 100%);
+  background: linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%);
   transform: translateY(-1px);
   color: #ffffff;
 }
@@ -574,7 +584,7 @@ use App\Helpers\CryptoHelper;
 .ud-wish-img-wrap {
   height: 145px;
   position: relative;
-  background: #24312A;
+  background: #0F172A;
 }
 
 .ud-wish-img {
@@ -624,7 +634,7 @@ use App\Helpers\CryptoHelper;
 .ud-wish-title {
   font-size: 15px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -633,7 +643,7 @@ use App\Helpers\CryptoHelper;
 
 .ud-wish-loc {
   font-size: 12px;
-  color: #57685F;
+  color: #64748B;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -761,7 +771,7 @@ use App\Helpers\CryptoHelper;
 }
 
 .ud-trust-card {
-  background: #F7F3EA;
+  background: #F8FAFC;
   border: 1px solid var(--fl-card-border);
   border-radius: 22px;
   padding: 22px;
@@ -830,9 +840,7 @@ use App\Helpers\CryptoHelper;
   .ud-page-wrap {
     padding-top: 64px;
   }
-  .ud-subnav-bar {
-    top: 64px;
-  }
+
   .ud-hero-banner {
     padding: 32px 0;
   }
@@ -841,6 +849,21 @@ use App\Helpers\CryptoHelper;
   }
   .ud-hero-name {
     font-size: 24px;
+  }
+  .ud-hero-ctas {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .ud-cta-btn-primary, .ud-cta-btn-secondary {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 12px;
   }
 }
 
@@ -864,14 +887,22 @@ use App\Helpers\CryptoHelper;
   }
   .ud-hero-ctas {
     width: 100%;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .ud-cta-btn-primary, .ud-cta-btn-secondary {
     width: 100%;
     justify-content: center;
-    padding: 13px;
-    font-size: 14px;
+    padding: 11px 8px;
+    font-size: 12.5px;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 12px;
+  }
+  .ud-cta-btn-primary .material-symbols-outlined,
+  .ud-cta-btn-secondary .material-symbols-outlined {
+    font-size: 16px !important;
   }
   .ud-kpi-grid {
     grid-template-columns: 1fr 1fr;
@@ -917,10 +948,35 @@ use App\Helpers\CryptoHelper;
     height: 160px;
     border-radius: 14px;
   }
-  .ud-booking-top-row {
-    flex-direction: column;
-    align-items: flex-start;
+  .ud-card-header {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+  .ud-card-header-left {
+    min-width: 0;
+    flex: 1;
     gap: 8px;
+  }
+  .ud-card-title {
+    font-size: 14.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ud-card-action-link {
+    font-size: 11.5px;
+    padding: 6px 10px;
+    white-space: nowrap !important;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .ud-card-action-link span {
+    white-space: nowrap !important;
+  }
+  .ud-booking-top-row {
+    margin-bottom: 4px;
   }
   .ud-booking-actions {
     width: 100%;
@@ -930,10 +986,6 @@ use App\Helpers\CryptoHelper;
     justify-content: center;
     padding: 11px;
     font-size: 13px;
-  }
-  .ud-subnav-link {
-    padding: 12px 14px;
-    font-size: 12.5px;
   }
 }
 </style>
@@ -946,32 +998,6 @@ use App\Helpers\CryptoHelper;
 
 <div class="ud-page-wrap">
 
-  <!-- ── 1. Sticky User Sub-Nav Hub ── -->
-  <div class="ud-subnav-bar">
-    <div class="ud-subnav-container">
-      <a href="<?= url('dashboard') ?>" class="ud-subnav-link active">
-        <span class="material-symbols-outlined">grid_view</span>
-        <span>Overview</span>
-      </a>
-      <a href="<?= url('user/my-bookings') ?>" class="ud-subnav-link">
-        <span class="material-symbols-outlined">calendar_month</span>
-        <span>My Bookings</span>
-      </a>
-      <a href="<?= url('my-wishlist') ?>" class="ud-subnav-link">
-        <span class="material-symbols-outlined" style="color:#ec4899;">favorite</span>
-        <span>Saved Farms</span>
-      </a>
-      <a href="<?= url('user/profile') ?>" class="ud-subnav-link">
-        <span class="material-symbols-outlined">manage_accounts</span>
-        <span>Profile &amp; Settings</span>
-      </a>
-      <a href="<?= url('contact') ?>" class="ud-subnav-link">
-        <span class="material-symbols-outlined">support_agent</span>
-        <span>Concierge Support</span>
-      </a>
-    </div>
-  </div>
-
   <!-- ── 2. Hero Greeting Showcase ── -->
   <div class="ud-hero-banner">
     <div class="ud-hero-bg-glow"></div>
@@ -983,10 +1009,6 @@ use App\Helpers\CryptoHelper;
                alt="User Avatar" class="ud-hero-avatar">
         </div>
         <div>
-          <div class="ud-user-tag">
-            <span class="dot"></span>
-            <span>Verified Guest Member</span>
-          </div>
           <h1 class="ud-hero-name">
             Welcome back, <span><?= htmlspecialchars(explode(' ', $_SESSION['user_name'] ?? 'Guest')[0]) ?></span>!
           </h1>
@@ -1079,12 +1101,12 @@ use App\Helpers\CryptoHelper;
 
           <div>
             <?php if (empty($requests)): ?>
-              <div style="padding:52px 24px;text-align:center;color:#57685F;">
+              <div style="padding:52px 24px;text-align:center;color:#64748B;">
                 <div style="width:64px;height:64px;border-radius:20px;background:#f0f9ff;color:#00AEEF;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;">
                   <span class="material-symbols-outlined" style="font-size:32px;">event_busy</span>
                 </div>
-                <p style="font-size:15px;font-weight:800;margin:0 0 8px;color:#24312A;">No booking requests yet</p>
-                <p style="font-size:13px;color:#57685F;margin:0 0 16px;">Explore our verified luxury estates and reserve your private weekend getaway.</p>
+                <p style="font-size:15px;font-weight:800;margin:0 0 8px;color:#0F172A;">No booking requests yet</p>
+                <p style="font-size:13px;color:#64748B;margin:0 0 16px;">Explore our verified luxury estates and reserve your private weekend getaway.</p>
                 <a href="<?= url('farmhouses') ?>" class="ud-cta-btn-primary" style="display:inline-flex;padding:10px 20px;font-size:13px;">
                   <span>Browse Available Farmhouses</span>
                   <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
@@ -1108,19 +1130,21 @@ use App\Helpers\CryptoHelper;
                           <?= htmlspecialchars($req['farmhouse_category'] ?? 'Farmhouse') ?>
                         </span>
                       </div>
-                      <span class="ud-status-pill <?= $status ?>">
-                        <span class="material-symbols-outlined" style="font-size:14px;"><?= $status === 'approved' ? 'check_circle' : ($status === 'rejected' ? 'cancel' : 'schedule') ?></span>
-                        <?= htmlspecialchars(ucfirst($status)) ?>
-                      </span>
                     </div>
 
-                    <div class="ud-booking-dates-badge">
-                      <span class="material-symbols-outlined" style="font-size:15px;color:#00AEEF;">date_range</span>
-                      <span><?= $start ?> &rarr; <?= $end ?></span>
+                    <div class="ud-booking-status-dates-row">
+                      <span class="ud-status-pill <?= $status ?>">
+                        <span class="material-symbols-outlined" style="font-size:14px;"><?= $status === 'approved' ? 'check_circle' : ($status === 'rejected' ? 'cancel' : 'schedule') ?></span>
+                        <span><?= htmlspecialchars(ucfirst($status)) ?></span>
+                      </span>
+                      <div class="ud-booking-dates-badge">
+                        <span class="material-symbols-outlined" style="font-size:15px;color:#00AEEF;">date_range</span>
+                        <span><?= $start ?> &rarr; <?= $end ?></span>
+                      </div>
                     </div>
 
                     <?php if (!empty($req['message'])): ?>
-                      <div style="font-size:12.5px;color:#57685F;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">
+                      <div style="font-size:12.5px;color:#64748B;font-style:italic;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">
                         &ldquo;<?= htmlspecialchars($req['message']) ?>&rdquo;
                       </div>
                     <?php endif; ?>
@@ -1155,12 +1179,12 @@ use App\Helpers\CryptoHelper;
 
           <div class="ud-wishlist-grid" id="dash-wishlist-grid">
             <?php if (empty($wishlist)): ?>
-              <div style="grid-column:1/-1;padding:48px 24px;text-align:center;color:#57685F;">
+              <div style="grid-column:1/-1;padding:48px 24px;text-align:center;color:#64748B;">
                 <div style="width:64px;height:64px;border-radius:20px;background:#fdf2f8;color:#ec4899;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;">
                   <span class="material-symbols-outlined" style="font-size:32px;">favorite_border</span>
                 </div>
-                <p style="font-size:15px;font-weight:800;margin:0 0 8px;color:#24312A;">Your wishlist is empty</p>
-                <p style="font-size:13px;color:#57685F;margin:0 0 16px;">Save your favorite farmhouses to track availability and plan upcoming trips.</p>
+                <p style="font-size:15px;font-weight:800;margin:0 0 8px;color:#0F172A;">Your wishlist is empty</p>
+                <p style="font-size:13px;color:#64748B;margin:0 0 16px;">Save your favorite farmhouses to track availability and plan upcoming trips.</p>
                 <a href="<?= url('farmhouses') ?>" class="ud-cta-btn-primary" style="display:inline-flex;padding:10px 20px;font-size:13px;">
                   <span>Explore Farmhouses</span>
                   <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
@@ -1212,7 +1236,7 @@ use App\Helpers\CryptoHelper;
           </div>
           <h3 class="ud-concierge-title">Dedicated Concierge</h3>
           <p class="ud-concierge-sub">Need help with custom event bookings, private pool villas, or special requests? Reach out anytime.</p>
-          <a href="https://wa.me/919876543210?text=Hello%20Farmlelo%20Concierge,%20I%20need%20assistance" target="_blank" class="ud-wa-direct-btn">
+          <a href="https://wa.me/919876543210?text=Hello%20Stayora%20Concierge,%20I%20need%20assistance" target="_blank" class="ud-wa-direct-btn">
             <svg style="width:18px;height:18px;fill:currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.417-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.305 1.652zm6.599-3.835c1.405.836 3.125 1.352 4.953 1.353 5.174 0 9.389-4.215 9.391-9.389.001-2.507-.974-4.864-2.747-6.638s-4.132-2.747-6.638-2.747c-5.176 0-9.391 4.215-9.393 9.39-.001 1.893.562 3.736 1.629 5.308l-.999 3.646 3.737-.981-.132-.084z"/></svg>
             <span>WhatsApp Concierge</span>
           </a>
@@ -1240,9 +1264,9 @@ use App\Helpers\CryptoHelper;
               <span class="material-symbols-outlined">travel_explore</span>
               <span>Browse All Farmhouses</span>
             </a>
-            <a href="<?= url('list_your_farm') ?>" class="ud-quick-link-item">
-              <span class="material-symbols-outlined">add_home</span>
-              <span>List Your Farmhouse</span>
+            <a href="<?= url('contact') ?>" class="ud-quick-link-item">
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Concierge Helpdesk</span>
             </a>
           </div>
         </div>
@@ -1250,7 +1274,7 @@ use App\Helpers\CryptoHelper;
         <!-- Trust Features -->
         <div class="ud-trust-card">
           <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.6px;margin-bottom:14px;">
-            The Farmlelo Standard
+            The Stayora Standard
           </div>
           <div style="display:flex;flex-direction:column;gap:12px;">
             <div class="ud-trust-item">

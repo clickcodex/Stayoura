@@ -11,16 +11,16 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 .fp-card {
   width: 100%;
   max-width: 440px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 26px;
   padding: 36px 32px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
@@ -30,8 +30,8 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -41,14 +41,14 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
 .fp-title {
   font-size: 24px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 6px;
   letter-spacing: -0.01em;
 }
 
 .fp-sub {
   font-size: 13.5px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.5;
   margin: 0 0 24px;
 }
@@ -85,12 +85,12 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
   width: 100%;
   height: 48px;
   padding: 0 14px 0 42px;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 12px;
   font-size: 13.5px;
   font-family: inherit;
-  color: #24312A;
-  background: #F7F3EA;
+  color: #0F172A;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -98,14 +98,14 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
 
 .fp-input:focus {
   background: #ffffff;
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
 
 .fp-btn {
   width: 100%;
   height: 48px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   border: none;
   border-radius: 14px;
@@ -121,7 +121,7 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
 }
 
 .fp-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(2, 132, 199, 0.45);
 }
@@ -132,7 +132,7 @@ $roleName = ($roles === 'owners') ? 'Owner' : 'Guest';
   gap: 6px;
   font-size: 13px;
   font-weight: 700;
-  color: #173C2D;
+  color: #1E40AF;
   text-decoration: none;
   margin-top: 24px;
 }

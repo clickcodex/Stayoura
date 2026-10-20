@@ -17,16 +17,16 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 .otp-card {
   width: 100%;
   max-width: 440px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 26px;
   padding: 36px 32px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
@@ -36,8 +36,8 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
   width: 52px;
   height: 52px;
   border-radius: 16px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,14 +47,14 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
 .otp-title {
   font-size: 24px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 6px;
   letter-spacing: -0.01em;
 }
 
 .otp-sub {
   font-size: 13.5px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.5;
   margin: 0 0 24px;
 }
@@ -67,7 +67,7 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
   padding: 4px 12px;
   border-radius: 20px;
   font-weight: 700;
-  color: #24312A;
+  color: #0F172A;
   font-size: 13px;
 }
 
@@ -84,17 +84,17 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
   text-align: center;
   font-size: 24px;
   font-weight: 800;
-  color: #24312A;
-  border: 2px solid #E2DBD0;
+  color: #0F172A;
+  border: 2px solid #E2E8F0;
   border-radius: 12px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .otp-digit-box:focus {
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   background: #ffffff;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
@@ -102,7 +102,7 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
 .otp-btn {
   width: 100%;
   height: 48px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   border: none;
   border-radius: 14px;
@@ -118,7 +118,7 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
 }
 
 .otp-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(2, 132, 199, 0.45);
 }
@@ -127,13 +127,13 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
   margin-top: 24px;
   text-align: center;
   font-size: 13px;
-  color: #57685F;
+  color: #64748B;
 }
 
 .otp-resend-btn {
   background: none;
   border: none;
-  color: #173C2D;
+  color: #1E40AF;
   font-weight: 800;
   cursor: pointer;
   padding: 0;
@@ -232,7 +232,7 @@ $maskedPhone = '+91 ' . substr($phone, 0, 2) . '******' . substr($phone, -2);
     </div>
 
     <div style="text-align:center; margin-top:20px;">
-      <a href="<?= url('register') ?>" style="font-size:12.5px; color:#57685F; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+      <a href="<?= url('register') ?>" style="font-size:12.5px; color:#64748B; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
         <span class="material-symbols-outlined" style="font-size:15px;">arrow_back</span>
         <span>Change mobile number / Restart</span>
       </a>

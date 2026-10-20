@@ -17,6 +17,14 @@ $uri = trim($uri, '/');
 if (stripos($uri, 'index.php') === 0) {
     $uri = trim(substr($uri, strlen('index.php')), '/');
 }
+
+// ── Global Platform Maintenance Mode Interceptor ──
+if (\App\Helpers\SiteHelper::isMaintenanceActive()) {
+    http_response_code(503);
+    require_once __DIR__ . '/Views/errors/maintenance.php';
+    exit;
+}
+
 switch ($uri) {
     // ── SEO Crawling Directives & Sitemaps ──
     case 'sitemap.xml':
@@ -43,10 +51,6 @@ switch ($uri) {
     case 'why-choose-us':
         require_once __DIR__ . '/Controllers/HomeController.php';
         (new App\Controllers\HomeController())->whychooseus();
-        break;
-    case 'list_your_farm':
-        require_once __DIR__ . '/Controllers/HomeController.php';
-        (new App\Controllers\HomeController())->owner_register();
         break;
 
     case 'about':
@@ -155,7 +159,12 @@ switch ($uri) {
 
     case 'login':
         require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->index();
+        $authCtrl = new App\Controllers\AuthController();
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $authCtrl->login();
+        } else {
+            $authCtrl->index();
+        }
         break;
     case 'login-process':
     case 'login-submit':
@@ -181,30 +190,9 @@ switch ($uri) {
         (new App\Controllers\AuthController)->googleCallback();
         break;
 
-    // Owner Auth Routes
-    case 'owner/login':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->ownerLogin();
-        break;
-    case 'owner/login-submit':
-    case 'owner/login-process':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->login();
-        break;
-    case 'owner/logout':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->logout();
-        break;
-        
-        
      case 'forgot-password':
         require_once __DIR__ . '/Controllers/ForgotPasswordController.php';
         (new App\Controllers\ForgotPasswordController)->showForgotForm();
-        break;
-    
-    case 'owner/forgot-password':
-        require_once __DIR__ . '/Controllers/ForgotPasswordController.php';
-        (new App\Controllers\ForgotPasswordController)->showOwnerForgotForm();
         break;
     
     case 'forgot-password-process':
@@ -300,16 +288,6 @@ switch ($uri) {
         (new App\Controllers\AuthController)->resendRegistrationOtp();
         break;
 
-    case 'owner/register':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->ownerRegisterView();
-        break;
-    
-    case 'owner/register-submit':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->ownerRegister();
-        break;
-
     // User Dashboard
     case 'dashboard':
         AuthMiddleware::userOnly(); // Security Middleware
@@ -332,6 +310,7 @@ switch ($uri) {
         break;
 
     // My Bookings History
+    case 'user/bookings':
     case 'user/my-bookings':
         AuthMiddleware::userOnly(); // Security Middleware
         require_once __DIR__ . '/Controllers/User/MyBookingsController.php';
@@ -360,6 +339,12 @@ switch ($uri) {
         require_once __DIR__ . '/Controllers/User/ProfileController.php';
         (new App\Controllers\User\ProfileController)->update();
         break;
+    case 'profile/change-password':
+    case 'user/profile/change-password':
+        AuthMiddleware::userOnly(); // Security Middleware
+        require_once __DIR__ . '/Controllers/User/ProfileController.php';
+        (new App\Controllers\User\ProfileController)->changePassword();
+        break;
 
     case 'user/profile/verify-phone-otp':
         AuthMiddleware::userOnly();
@@ -385,570 +370,542 @@ switch ($uri) {
         require_once __DIR__ . '/Controllers/User/AuthController.php';
         (new App\Controllers\User\AuthController)->register();
         break;
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-    // ==================admin Dashboard=================================
-
+    // ============================================================
+    // 🛡️ ADMIN PANEL ROUTES (Fresh Clean Architecture)
+    // ============================================================
     case 'admin/login':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->adminLogin();
+        require_once __DIR__ . '/Controllers/Admin/AuthController.php';
+        (new App\Controllers\Admin\AuthController())->loginForm();
         break;
 
     case 'admin/login-submit':
-    case 'admin/login-process':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->login();
+        require_once __DIR__ . '/Controllers/Admin/AuthController.php';
+        (new App\Controllers\Admin\AuthController())->loginSubmit();
         break;
 
     case 'admin/logout':
-        require_once __DIR__ . '/Controllers/AuthController.php';
-        (new App\Controllers\AuthController)->logout();
+        require_once __DIR__ . '/Controllers/Admin/AuthController.php';
+        (new App\Controllers\Admin\AuthController())->logout();
         break;
-
-
 
     case 'admin/dashboard':
-        AuthMiddleware::adminOnly();
         require_once __DIR__ . '/Controllers/Admin/DashboardController.php';
-        (new App\Controllers\Admin\DashboardController)->dashboard();
+        (new App\Controllers\Admin\DashboardController())->dashboard();
         break;
 
+    // ── Manage Properties Routes ──
+    case 'admin/properties':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->index();
+        break;
 
+    case 'admin/properties/create':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->create();
+        break;
+
+    case 'admin/properties/store':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->store();
+        break;
+
+    case 'admin/properties/edit':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->edit();
+        break;
+
+    case 'admin/properties/update':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->update();
+        break;
+
+    case 'admin/properties/delete':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->delete();
+        break;
+
+    case 'admin/properties/view':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->show();
+        break;
+
+    case 'admin/properties/delete-image':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->deleteImage();
+        break;
+
+    case 'admin/properties/set-featured':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->setFeatured();
+        break;
+
+    case 'admin/properties/update-status':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->updateStatus();
+        break;
+
+    case 'admin/properties/save-room':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->saveRoom();
+        break;
+
+    case 'admin/properties/delete-room':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->deleteRoom();
+        break;
+
+    case 'admin/properties/add-amenity':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->addAmenity();
+        break;
+
+    case 'admin/properties/get-amenity':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->getAmenity();
+        break;
+
+    case 'admin/properties/update-amenity':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->updateAmenity();
+        break;
+
+    case 'admin/properties/delete-amenity':
+        require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+        (new App\Controllers\Admin\PropertyController())->deleteAmenity();
+        break;
+
+    // ── Dedicated Amenities & Property Rules Management Hub ──
+    case 'admin/amenities-rules':
+    case 'admin/amenities':
+    case 'admin/rules':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->index();
+        break;
+
+    case 'admin/amenities-rules/amenity/save':
+    case 'admin/amenities/save':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->saveAmenity();
+        break;
+
+    case 'admin/amenities-rules/amenity/get':
+    case 'admin/amenities/get':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->getAmenity();
+        break;
+
+    case 'admin/amenities-rules/amenity/delete':
+    case 'admin/amenities/delete':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->deleteAmenity();
+        break;
+
+    case 'admin/amenities-rules/rule/save':
+    case 'admin/rules/save':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->saveRule();
+        break;
+
+    case 'admin/amenities-rules/rule/get':
+    case 'admin/rules/get':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->getRule();
+        break;
+
+    case 'admin/amenities-rules/rule/delete':
+    case 'admin/rules/delete':
+        require_once __DIR__ . '/Controllers/Admin/AmenityRuleController.php';
+        (new App\Controllers\Admin\AmenityRuleController())->deleteRule();
+        break;
 
     // ============================================================
-    //  ROUTER SNIPPET — replace your 3 old cases with these 3
-    //  All three routes now use the single FarmhouseController.
+    // 👑 ADMIN PROPERTY OWNER MANAGEMENT MODULE ROUTES
     // ============================================================
-
-    case 'admin/addfarm':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/FarmhouseController.php';
-        (new App\Controllers\Admin\FarmhouseController)->add_farm();
-        break;
-
-    case 'admin/editfarm':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/FarmhouseController.php';
-        (new App\Controllers\Admin\FarmhouseController)->edit_farmhouse();
-        break;
-
-    case 'admin/managefarmhouses':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/FarmhouseController.php';
-        (new App\Controllers\Admin\FarmhouseController)->manage_farmhouses();
-        break;
-
-    case 'admin/managefarmhouses/details':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/FarmhouseController.php';
-        (new App\Controllers\Admin\FarmhouseController)->propertyDetails();
-        break;
-
-    case 'admin/managefarmhouses/export':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/FarmhouseController.php';
-        (new App\Controllers\Admin\FarmhouseController)->exportProperties();
-        break;
-
-
-    // =========================================================
-    // PROPERTY TYPES ROUTING (DYNAMIC ARCHITECTURE SYSTEM)
-    // =========================================================
-    case 'admin/property-types':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyTypeController.php';
-        (new App\Controllers\Admin\PropertyTypeController)->index();
-        break;
-
-    case 'admin/property-types/save':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyTypeController.php';
-        (new App\Controllers\Admin\PropertyTypeController)->save();
-        break;
-
-    case 'admin/property-types/toggle':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyTypeController.php';
-        (new App\Controllers\Admin\PropertyTypeController)->toggle();
-        break;
-
-    case 'admin/property-types/delete':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyTypeController.php';
-        (new App\Controllers\Admin\PropertyTypeController)->delete();
-        break;
-
-    // =========================================================
-    // COUPON & DISCOUNT ENGINE ROUTING (M5 PRICING ENGINE)
-    // =========================================================
-    case 'admin/coupons':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/CouponController.php';
-        (new App\Controllers\Admin\CouponController)->index();
-        break;
-
-    case 'admin/coupons/save':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/CouponController.php';
-        (new App\Controllers\Admin\CouponController)->save();
-        break;
-
-    case 'admin/coupons/toggle':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/CouponController.php';
-        (new App\Controllers\Admin\CouponController)->toggle();
-        break;
-
-    case 'admin/coupons/delete':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/CouponController.php';
-        (new App\Controllers\Admin\CouponController)->delete();
-        break;
-
-    // =========================================================
-    // AMENITIES ROUTING
-    // =========================================================
-
-    case 'admin/manageamenities':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/AmenityController.php';
-        (new App\Controllers\Admin\AmenityController)->manage();
-        break;
-
-    case 'admin/addamenity':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/AmenityController.php';
-        (new App\Controllers\Admin\AmenityController)->add();
-        break;
-
-    case 'admin/editamenity':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/AmenityController.php';
-        (new App\Controllers\Admin\AmenityController)->edit();
-        break;
-
-    // =========================================================
-    // PROPERTY RULES (RULE PRESETS) ROUTING
-    // =========================================================
-
-    case 'admin/managerules':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyRuleController.php';
-        (new App\Controllers\Admin\PropertyRuleController)->manage();
-        break;
-
-    case 'admin/addrule':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyRuleController.php';
-        (new App\Controllers\Admin\PropertyRuleController)->add();
-        break;
-
-    case 'admin/editrule':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PropertyRuleController.php';
-        (new App\Controllers\Admin\PropertyRuleController)->edit();
-        break;
-
-
-    case 'admin/inquiries':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/InquiriesController.php';
-        (new App\Controllers\Admin\InquiriesController)->inquiries();
-        break;
-
-    case 'admin/profile':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ProfileControllers.php';
-        (new App\Controllers\Admin\ProfileController)->profile();
-        break;
-
-    case 'admin/settings':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
-        (new App\Controllers\Admin\SettingsController)->settings();
-        break;
-
-    case 'admin/booking-requests':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->bookingRequests();
-        break;
-
-    case 'admin/booking-requests/details':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->bookingDetails();
-        break;
-
-    case 'admin/booking-requests/export':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->exportBookings();
-        break;
-
-    case 'admin/bookings':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->bookingRequests();
-        break;
-
-    case 'admin/blocked-dates':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->blockedDates();
-        break;
-
-    case 'admin/blocked-dates/lock':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->lockDate();
-        break;
-
-    case 'admin/blocked-dates/unlock':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/BookingRequestController.php';
-        (new App\Controllers\Admin\BookingRequestController)->unlockDate();
-        break;
-
-
-    // Admin Payment Verification Routes
-    case 'admin/payments':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PaymentController.php';
-        (new App\Controllers\Admin\PaymentController)->payments();
-        break;
-
-    case 'admin/payments/verify':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PaymentController.php';
-        (new App\Controllers\Admin\PaymentController)->verify();
-        break;
-
-    case 'admin/payments/reject':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/PaymentController.php';
-        (new App\Controllers\Admin\PaymentController)->reject();
-        break;
-
-    // Admin Review Moderation Routes
-    case 'admin/reviews':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
-        (new App\Controllers\Admin\ReviewController)->reviews();
-        break;
-
-    case 'admin/reviews/approve':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
-        (new App\Controllers\Admin\ReviewController)->approve();
-        break;
-
-    case 'admin/reviews/reject':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
-        (new App\Controllers\Admin\ReviewController)->reject();
-        break;
-
-    case 'admin/reviews/delete':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
-        (new App\Controllers\Admin\ReviewController)->delete();
-        break;
-
     case 'admin/owners':
-        AuthMiddleware::adminOnly();
         require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
-        (new App\Controllers\Admin\OwnerController)->owners();
+        (new App\Controllers\Admin\OwnerController())->index();
         break;
 
-    case 'admin/owners/details':
-        AuthMiddleware::adminOnly();
+    case 'admin/owners/create':
         require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
-        (new App\Controllers\Admin\OwnerController)->ownerDetails();
+        (new App\Controllers\Admin\OwnerController())->create();
+        break;
+
+    case 'admin/owners/store':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->store();
+        break;
+
+    case 'admin/owners/view':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->show();
+        break;
+
+    case 'admin/owners/edit':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->edit();
+        break;
+
+    case 'admin/owners/update':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->update();
+        break;
+
+    case 'admin/owners/update-status':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->updateStatus();
+        break;
+
+    case 'admin/owners/update-kyc':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->updateKycStatus();
+        break;
+
+    case 'admin/owners/upload-document':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->uploadDocument();
+        break;
+
+    case 'admin/owners/verify-document':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->verifyDocument();
+        break;
+
+    case 'admin/owners/delete-document':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->deleteDocument();
+        break;
+
+    case 'admin/owners/reassign-property':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->reassignProperty();
+        break;
+
+    case 'admin/owners/delete':
+        require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+        (new App\Controllers\Admin\OwnerController())->delete();
         break;
 
     case 'admin/owners/export':
-        AuthMiddleware::adminOnly();
         require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
-        (new App\Controllers\Admin\OwnerController)->exportOwners();
-        break;
-    case 'admin/users':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/UserController.php';
-        (new App\Controllers\Admin\UserController)->users();
+        (new App\Controllers\Admin\OwnerController())->export();
         break;
 
-    case 'admin/users/online-status':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/UserController.php';
-        (new App\Controllers\Admin\UserController)->onlineStatus();
+    // ============================================================
+    // 👤 ADMIN GUEST & MEMBER MANAGEMENT ROUTES
+    // ============================================================
+    case 'admin/guests':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->index();
         break;
 
-    case 'admin/users/details':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/UserController.php';
-        (new App\Controllers\Admin\UserController)->userDetails();
+    case 'admin/guests/create':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->create();
         break;
 
-    case 'admin/users/export':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/UserController.php';
-        (new App\Controllers\Admin\UserController)->exportUsers();
+    case 'admin/guests/store':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->store();
         break;
 
-    case 'admin/contact-inquiries':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ContactInquiriesController.php';
-        (new App\Controllers\Admin\ContactInquiriesController)->index();
+    case 'admin/guests/update':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->update();
         break;
 
-    case 'admin/contact-inquiries/view':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ContactInquiriesController.php';
-        (new App\Controllers\Admin\ContactInquiriesController)->view();
+    case 'admin/guests/update-status':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->updateStatus();
         break;
 
-    case 'admin/contact-inquiries/delete':
-        AuthMiddleware::adminOnly();
-        require_once __DIR__ . '/Controllers/Admin/ContactInquiriesController.php';
-        (new App\Controllers\Admin\ContactInquiriesController)->delete();
+    case 'admin/guests/update-kyc':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->updateKycStatus();
         break;
 
+    case 'admin/guests/update-membership':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->updateMembership();
+        break;
 
+    case 'admin/guests/upload-document':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->uploadDocument();
+        break;
 
+    case 'admin/guests/verify-document':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->verifyDocument();
+        break;
 
+    case 'admin/guests/delete-document':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->deleteDocument();
+        break;
 
+    case 'admin/guests/add-note':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->addNote();
+        break;
 
+    case 'admin/guests/delete':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->delete();
+        break;
 
+    case 'admin/guests/export':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->export();
+        break;
 
+    case 'admin/guests/search-ajax':
+        require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+        (new App\Controllers\Admin\GuestController())->searchAjax();
+        break;
 
+    // ============================================================
+    // 🛎️ ADMIN BOOKING & STAY MANAGEMENT ROUTES
+    // ============================================================
+    case 'admin/bookings':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->index();
+        break;
 
+    case 'admin/bookings/view':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->show();
+        break;
 
+    case 'admin/bookings/create':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->create();
+        break;
 
+    case 'admin/bookings/store':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->store();
+        break;
 
+    case 'admin/bookings/update-status':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->updateStatus();
+        break;
 
+    case 'admin/bookings/check-in':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->checkIn();
+        break;
 
+    case 'admin/bookings/check-out':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->checkOut();
+        break;
 
+    case 'admin/bookings/extend-stay':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->extendStay();
+        break;
 
+    case 'admin/bookings/add-extra-charge':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->addExtraCharge();
+        break;
 
+    case 'admin/bookings/record-payment':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->recordPayment();
+        break;
 
+    case 'admin/bookings/calendar':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->calendar();
+        break;
 
+    case 'admin/bookings/calendar-data':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->calendarData();
+        break;
 
+    case 'admin/bookings/reports':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->reports();
+        break;
 
+    case 'admin/bookings/invoice':
+        require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+        (new App\Controllers\Admin\BookingController())->invoice();
+        break;
 
+    // ============================================================
+    // ⭐ ADMIN GUEST REVIEW MANAGEMENT ROUTES
+    // ============================================================
+    case 'admin/reviews':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->index();
+        break;
 
+    case 'admin/reviews/update-status':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->updateStatus();
+        break;
 
+    case 'admin/reviews/bulk-update':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->bulkUpdate();
+        break;
 
+    case 'admin/reviews/edit-content':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->editContent();
+        break;
 
+    case 'admin/reviews/delete':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->delete();
+        break;
 
+    case 'admin/reviews/add-response':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->addResponse();
+        break;
 
+    case 'admin/reviews/delete-response':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->deleteResponse();
+        break;
 
+    case 'admin/reviews/export':
+        require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+        (new App\Controllers\Admin\ReviewController())->export();
+        break;
 
+    // ============================================================
+    // ⭐ ADMIN PLATFORM SETTINGS MANAGEMENT ROUTES
+    // ============================================================
+    case 'admin/settings':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->index();
+        break;
 
+    case 'admin/settings/update':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->update();
+        break;
 
+    case 'admin/settings/upload-branding':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->uploadBranding();
+        break;
 
+    case 'admin/settings/toggle-maintenance':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->toggleMaintenance();
+        break;
 
-    //=====================Owner Dashboard============================== 
-    //=====================Owner Dashboard============================== 
-    //=====================Owner Dashboard============================== 
-    //=====================Owner Dashboard============================== 
-// ====================================================================
-//  OWNER ROUTES  —  paste these into your router's switch/case block
-// ====================================================================
+    case 'admin/settings/test-email':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->testEmail();
+        break;
 
-// ── Dashboard ────────────────────────────────────────────────────────
-case 'owner/dashboard':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerDashboardController.php';
-    (new App\Controllers\Owner\OwnerDashboardController)->index();
-    break;
+    case 'admin/settings/reset-category':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->resetCategory();
+        break;
 
-// ── Bookings: list & manage ──────────────────────────────────────────
-case 'owner/bookings':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBookingController.php';
-    (new App\Controllers\Owner\OwnerBookingController)->index();
-    break;
+    case 'admin/settings/clear-cache':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->clearCache();
+        break;
 
-case 'owner/bookings/details':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBookingController.php';
-    (new App\Controllers\Owner\OwnerBookingController)->details();
-    break;
-
-case 'owner/bookings/update-status':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBookingController.php';
-    (new App\Controllers\Owner\OwnerBookingController)->updateStatus();
-    break;
-
-// ── Farmhouses: list ─────────────────────────────────────────────────
-case 'owner/farmhouses':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerFarmhouseController.php';
-    (new App\Controllers\Owner\OwnerFarmhouseController)->index();
-    break;
-
-// ── Farmhouses: show detail ──────────────────────────────────────────
-case 'owner/farmhouses/show':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerFarmhouseController.php';
-    (new App\Controllers\Owner\OwnerFarmhouseController)->show();
-    break;
-
-// ── Farmhouses: add (GET = form, POST = persist) ─────────────────────
-case 'owner/farmhouses/add':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerFarmhouseController.php';
-    $ctrl = new App\Controllers\Owner\OwnerFarmhouseController;
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $ctrl->add();
-    } else {
-        $ctrl->addView();
-    }
-    break;
-
-// ── Farmhouses: edit (GET = form, POST = persist) ────────────────────
-case 'owner/farmhouses/edit':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerFarmhouseController.php';
-    (new App\Controllers\Owner\OwnerFarmhouseController)->edit();
-    break;
-
-// ── Farmhouses: toggle status ────────────────────────────────────────
-case 'owner/farmhouses/toggle-status':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerFarmhouseController.php';
-    (new App\Controllers\Owner\OwnerFarmhouseController)->toggleStatus();
-    break;
-
-// ── Profile ──────────────────────────────────────────────────────────
-case 'owner/profile':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerProfileController.php';
-    (new App\Controllers\Owner\OwnerProfileController)->index();
-    break;
-
-// ── Profile: update info ─────────────────────────────────────────────
-case 'owner/profile/update':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerProfileController.php';
-    (new App\Controllers\Owner\OwnerProfileController)->update();
-    break;
-
-// ── Profile: change password ─────────────────────────────────────────
-case 'owner/profile/change-password':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerProfileController.php';
-    (new App\Controllers\Owner\OwnerProfileController)->changePassword();
-    break;
-
-// ── Date Locks (Blocked Dates) ───────────────────────────────────────
-case 'owner/blocked-dates':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBlockedDatesController.php';
-    (new App\Controllers\Owner\OwnerBlockedDatesController)->index();
-    break;
-
-case 'owner/blocked-dates/lock':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBlockedDatesController.php';
-    (new App\Controllers\Owner\OwnerBlockedDatesController)->lock();
-    break;
-
-case 'owner/blocked-dates/unlock':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerBlockedDatesController.php';
-    (new App\Controllers\Owner\OwnerBlockedDatesController)->unlock();
-    break;
-// ── Owner KYC Verification ───────────────────────────────────────────
-case 'owner/kyc':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerKycController.php';
-    $ctrl = new App\Controllers\Owner\OwnerKycController;
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $ctrl->upload();
-    } else {
-        $ctrl->index();
-    }
-    break;
-
-case 'owner/kyc/delete':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerKycController.php';
-    (new App\Controllers\Owner\OwnerKycController)->delete();
-    break;
-
-// ── Owner Offline Bookings ───────────────────────────────────────────
-case 'owner/offline-bookings':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerOfflineBookingController.php';
-    (new App\Controllers\Owner\OwnerOfflineBookingController)->index();
-    break;
-
-case 'owner/offline-bookings/create':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerOfflineBookingController.php';
-    (new App\Controllers\Owner\OwnerOfflineBookingController)->create();
-    break;
-
-case 'owner/offline-bookings/cancel':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerOfflineBookingController.php';
-    (new App\Controllers\Owner\OwnerOfflineBookingController)->cancel();
-    break;
-
-// ── Owner Earnings & Payouts ─────────────────────────────────────────
-case 'owner/earnings':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerEarningsController.php';
-    (new App\Controllers\Owner\OwnerEarningsController)->index();
-    break;
-
-case 'owner/earnings/request-payout':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerEarningsController.php';
-    (new App\Controllers\Owner\OwnerEarningsController)->requestPayout();
-    break;
-
-// ── Owner Inquiries & Leads ──────────────────────────────────────────
-case 'owner/inquiries':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerInquiriesController.php';
-    (new App\Controllers\Owner\OwnerInquiriesController)->index();
-    break;
-
-case 'owner/inquiries/update-status':
-    AuthMiddleware::ownerOnly();
-    require_once __DIR__ . '/Controllers/Owner/OwnerInquiriesController.php';
-    (new App\Controllers\Owner\OwnerInquiriesController)->updateStatus();
-    break;
+    case 'admin/settings/export':
+        require_once __DIR__ . '/Controllers/Admin/SettingsController.php';
+        (new App\Controllers\Admin\SettingsController())->export();
+        break;
 
     default:
+        // Match parameterized admin property routes with encrypted ID or numeric ID
+        if (preg_match('#^admin/properties/edit/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+            (new App\Controllers\Admin\PropertyController())->edit();
+            break;
+        }
+        if (preg_match('#^admin/properties/view/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+            (new App\Controllers\Admin\PropertyController())->show();
+            break;
+        }
+        if (preg_match('#^admin/properties/delete/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/PropertyController.php';
+            (new App\Controllers\Admin\PropertyController())->delete();
+            break;
+        }
+
+        // Match parameterized admin owner routes
+        if (preg_match('#^admin/owners/view/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+            (new App\Controllers\Admin\OwnerController())->show();
+            break;
+        }
+        if (preg_match('#^admin/owners/edit/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+            (new App\Controllers\Admin\OwnerController())->edit();
+            break;
+        }
+        if (preg_match('#^admin/owners/delete/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/OwnerController.php';
+            (new App\Controllers\Admin\OwnerController())->delete();
+            break;
+        }
+
+        // Match parameterized admin booking routes
+        if (preg_match('#^admin/bookings/view/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+            (new App\Controllers\Admin\BookingController())->show();
+            break;
+        }
+        if (preg_match('#^admin/bookings/invoice/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/BookingController.php';
+            (new App\Controllers\Admin\BookingController())->invoice();
+            break;
+        }
+
+        // Match parameterized admin guest routes
+        if (preg_match('#^admin/guests/view/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+            (new App\Controllers\Admin\GuestController())->show();
+            break;
+        }
+        if (preg_match('#^admin/guests/edit/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+            (new App\Controllers\Admin\GuestController())->edit();
+            break;
+        }
+        if (preg_match('#^admin/guests/delete/([^/]+)$#', $uri, $matches)) {
+            $_GET['id'] = $matches[1];
+            require_once __DIR__ . '/Controllers/Admin/GuestController.php';
+            (new App\Controllers\Admin\GuestController())->delete();
+            break;
+        }
+
+        // Match parameterized admin review routes
+        if (preg_match('#^admin/reviews/view/([^/]+)$#', $uri, $matches) || preg_match('#^admin/reviews/details/([^/]+)$#', $uri, $matches)) {
+            $reviewId = (int)$matches[1];
+            require_once __DIR__ . '/Controllers/Admin/ReviewController.php';
+            (new App\Controllers\Admin\ReviewController())->details($reviewId);
+            break;
+        }
+
         http_response_code(404);
         echo "404 - Page not found";
         break;

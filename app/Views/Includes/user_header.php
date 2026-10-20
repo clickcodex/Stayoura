@@ -4,7 +4,7 @@
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <meta name="robots" content="noindex, nofollow, noarchive"/>
-    <title>Dashboard - Farmlelo</title>
+    <title>Dashboard - Stayora</title>
     <link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
     
     <link rel="icon" type="image/webp" href="<?= asset('assets/images/logo.webp') ?>"/>
@@ -22,21 +22,21 @@
                     "accent": "#C9A227",
                     "accent-container": "#FDF8E8",
                     /* Main logo blue */
-                    "primary": "#1F4D3A",
-                    "primary-container": "#173C2D",
-                    "primary-fixed": "#6F8F72",
+                    "primary": "#1D4ED8",
+                    "primary-container": "#1E40AF",
+                    "primary-fixed": "#3B82F6",
                     "on-primary": "#ffffff",
 
                     /* Secondary palette */
-                    "secondary": "#6F8F72",
-                    "secondary-container": "#EAF1EB",
+                    "secondary": "#0284C7",
+                    "secondary-container": "#E0F2FE",
 
                     /* Tertiary palette */
                     "tertiary": "#0FA0D8",
                     "tertiary-container": "#C8EEF9",
 
                     /* Surface + background from image */
-                    "background": "#F7F3EA",
+                    "background": "#F8FAFC",
                     "surface": "#FFFFFF",
                     "surface-bright": "#FAFAFA",
                     "surface-dim": "#E5E5E5",
@@ -48,12 +48,12 @@
                     "surface-container-highest": "#DDDDDD",
 
                     /* Text colors */
-                    "on-surface": "#24312A",
-                    "on-background": "#24312A",
-                    "on-surface-variant": "#57685F",
+                    "on-surface": "#0F172A",
+                    "on-background": "#0F172A",
+                    "on-surface-variant": "#64748B",
 
                     /* Borders */
-                    "outline-variant": "#E2DBD0",
+                    "outline-variant": "#E2E8F0",
 
                     /* Error */
                     "error-container": "#FFDAD6"
@@ -84,7 +84,7 @@
     <!-- Sidebar Navigation -->
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-72 flex-col z-50 py-8 gap-2 -translate-x-full md:translate-x-0 md:flex flex shadow-2xl md:shadow-none">
         <div class="px-8 mb-8 flex items-center justify-between">
-            <h2 class="font-display text-2xl font-bold tracking-tighter text-primary">Farmlelo</h2>
+            <h2 class="font-display text-2xl font-bold tracking-tighter text-primary">Stayora</h2>
             <button onclick="toggleSidebar()" class="md:hidden p-1 text-on-surface-variant">
                 <span class="material-symbols-outlined">close</span>
             </button>

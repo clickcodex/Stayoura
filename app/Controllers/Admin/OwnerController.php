@@ -1,341 +1,625 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Config\Database;
-use App\Helpers\CryptoHelper;
+use App\Helpers\AdminAuth;
 use App\Models\Admin\OwnerModel;
 use Exception;
 
-class OwnerController
-{
-    public function owners(): void
-    {
-        try {
-            $db    = Database::connect();
-            $model = new OwnerModel($db);
+class OwnerController {
+    protected OwnerModel $ownerModel;
 
-            // Handle Post Actions
-            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $action = $_POST['action'] ?? '';
-
-                // ── ADD OWNER ───────────────────────────────────
-                if ($action === 'add_owner') {
-                    $this->validateOwnerInput($_POST, true);
-
-                    $model->createOwner([
-                        'name'     => trim($_POST['name']),
-                        'email'    => trim($_POST['email']),
-                        'phone'    => trim($_POST['phone']),
-                        'password' => $_POST['password'],
-                        'status'   => in_array($_POST['status'] ?? '', ['active', 'disabled']) ? $_POST['status'] : 'active'
-                    ]);
-                    $this->redirectSuccess("Owner account created successfully.");
-                }
-
-                // ── EDIT OWNER ──────────────────────────────────
-                if ($action === 'edit_owner') {
-                    $ownerId = $this->resolveOwnerId($_POST['owner_id'] ?? '');
-                    $this->validateOwnerInput($_POST, false);
-
-                    $model->updateOwner($ownerId, [
-                        'name'     => trim($_POST['name']),
-                        'email'    => trim($_POST['email']),
-                        'phone'    => trim($_POST['phone']),
-                        'status'   => in_array($_POST['status'] ?? '', ['active', 'disabled']) ? $_POST['status'] : 'active',
-                        'password' => $_POST['password'] ?? null 
-                    ]);
-                    $this->redirectSuccess("Owner account updated successfully.");
-                }
-
-                // ── TOGGLE STATUS ───────────────────────────────
-                if ($action === 'toggle_status') {
-                    $ownerId = $this->resolveOwnerId($_POST['owner_id'] ?? '');
-                    $status = ($_POST['status'] === 'active') ? 'active' : 'disabled';
-                    
-                    $model->updateStatus($ownerId, $status);
-                    if ($status === 'disabled') {
-                        $this->redirectSuccess("Owner account suspended and active sessions terminated.");
-                    } else {
-                        $this->redirectSuccess("Owner account activated successfully.");
-                    }
-                }
-
-                // ── BULK STATUS ─────────────────────────────────
-                if ($action === 'bulk_status') {
-                    $rawIds = $_POST['owner_ids'] ?? [];
-                    $targetStatus = in_array($_POST['target_status'] ?? '', ['active', 'disabled']) ? $_POST['target_status'] : 'active';
-                    
-                    if (!empty($rawIds) && is_array($rawIds)) {
-                        $resolvedIds = [];
-                        foreach ($rawIds as $raw) {
-                            try {
-                                $resolvedIds[] = $this->resolveOwnerId($raw);
-                            } catch (Exception $e) {}
-                        }
-                        $count = $model->bulkUpdateStatus($resolvedIds, $targetStatus);
-                        $this->redirectSuccess("Updated status for {$count} owner(s) to {$targetStatus}.");
-                    }
-                    $this->redirectError("No owners selected for bulk action.");
-                }
-
-                // ── BULK DELETE ─────────────────────────────────
-                if ($action === 'bulk_delete') {
-                    $rawIds = $_POST['owner_ids'] ?? [];
-                    if (!empty($rawIds) && is_array($rawIds)) {
-                        $resolvedIds = [];
-                        foreach ($rawIds as $raw) {
-                            try {
-                                $resolvedIds[] = $this->resolveOwnerId($raw);
-                            } catch (Exception $e) {}
-                        }
-                        $count = $model->bulkDelete($resolvedIds);
-                        $this->redirectSuccess("Permanently deleted {$count} owner(s) and unassigned their properties.");
-                    }
-                    $this->redirectError("No owners selected for deletion.");
-                }
-
-                // ── FORCE LOGOUT ────────────────────────────────
-                if ($action === 'force_logout') {
-                    $ownerId = $this->resolveOwnerId($_POST['owner_id'] ?? '');
-                    $model->forceLogout($ownerId);
-                    $this->redirectSuccess("Owner session formally terminated.");
-                }
-
-                // ── DELETE OWNER ────────────────────────────────
-                if ($action === 'delete') {
-                    $ownerId = $this->resolveOwnerId($_POST['owner_id'] ?? '');
-                    $model->deleteOwner($ownerId);
-                    $this->redirectSuccess("Owner deleted and their listed properties were unassigned.");
-                }
-            }
-
-            // Fetch all owners & statistics
-            $allOwners = $model->getAllOwners();
-            $stats     = $model->getOwnerStats();
-
-            // Encrypt each owner's ID
-            $allOwners = array_map(function (array $o): array {
-                $o['encrypted_id'] = CryptoHelper::encrypt((string) $o['id']);
-                return $o;
-            }, $allOwners);
-
-            // Filtering parameters
-            $searchQuery  = trim($_GET['q'] ?? '');
-            $statusFilter = strtolower(trim($_GET['status'] ?? 'all'));
-            $sortBy       = strtolower(trim($_GET['sort'] ?? 'newest'));
-
-            $filteredOwners = array_filter($allOwners, function($o) use ($searchQuery, $statusFilter) {
-                // Search match
-                if ($searchQuery !== '') {
-                    $haystack = strtolower($o['name'] . ' ' . $o['email'] . ' ' . $o['phone']);
-                    if (strpos($haystack, strtolower($searchQuery)) === false) {
-                        return false;
-                    }
-                }
-
-                // Status match
-                if ($statusFilter === 'active' && strtolower($o['status'] ?? '') !== 'active') return false;
-                if ($statusFilter === 'disabled' && strtolower($o['status'] ?? '') !== 'disabled') return false;
-                if ($statusFilter === 'has_properties' && (int)($o['property_count'] ?? 0) === 0) return false;
-                if ($statusFilter === 'online' && empty($o['is_online'])) return false;
-
-                return true;
-            });
-
-            // Sorting
-            usort($filteredOwners, function($a, $b) use ($sortBy) {
-                return match($sortBy) {
-                    'oldest'          => strtotime($a['created_at']) <=> strtotime($b['created_at']),
-                    'name_asc'        => strcasecmp($a['name'], $b['name']),
-                    'name_desc'       => strcasecmp($b['name'], $a['name']),
-                    'most_properties' => ($b['property_count'] ?? 0) <=> ($a['property_count'] ?? 0),
-                    'most_bookings'   => ($b['total_bookings_received'] ?? 0) <=> ($a['total_bookings_received'] ?? 0),
-                    default           => strtotime($b['created_at']) <=> strtotime($a['created_at']),
-                };
-            });
-
-            // Pagination calculations
-            $perPage     = max(5, min(100, (int) ($_GET['per_page'] ?? 10)));
-            $totalCount  = count($filteredOwners);
-            $totalPages  = max(1, (int) ceil($totalCount / $perPage));
-            $currentPage = max(1, min($totalPages, (int) ($_GET['page'] ?? 1)));
-            $offset      = ($currentPage - 1) * $perPage;
-
-            // Paginated slice
-            $owners = array_slice($filteredOwners, $offset, $perPage);
-
-            // Handle Session messages
-            if (session_status() === PHP_SESSION_NONE) session_start();
-            $success_message = $_SESSION['owner_success'] ?? null;
-            $error_message   = $_SESSION['owner_error'] ?? null;
-            unset($_SESSION['owner_success'], $_SESSION['owner_error']);
-
-            include __DIR__ . '/../../Views/admin/owners.php';
-            $db->close();
-
-        } catch (Exception $e) {
-            die("Error loading owners: " . $e->getMessage());
-        }
+    public function __construct() {
+        $this->ownerModel = new OwnerModel();
     }
 
-    // ============================================================
-    //  AJAX — Owner Details Dossier Inspector
-    //  GET /admin/owners/details?id=...
-    // ============================================================
+    /**
+     * Display Property Owners Dashboard & Directory
+     */
+    public function index(): void {
+        $admin = AdminAuth::requireAuth();
 
-    public function ownerDetails(): void
-    {
-        header('Content-Type: application/json');
+        // ── 1. Read & Sanitize Filters ──
+        $filters = [
+            'search'     => trim($_GET['search'] ?? ''),
+            'status'     => trim($_GET['status'] ?? 'all'),
+            'kyc_status' => trim($_GET['kyc_status'] ?? 'all'),
+            'owner_type' => trim($_GET['owner_type'] ?? 'all'),
+            'city'       => trim($_GET['city'] ?? 'all'),
+            'sort'       => trim($_GET['sort'] ?? 'created_desc'),
+        ];
+
+        // ── 2. Pagination ──
+        $page    = max(1, (int)($_GET['page'] ?? 1));
+        $perPage = 10;
+
+        $results = $this->ownerModel->getAll($filters, $page, $perPage);
+        $kpis    = $this->ownerModel->getStats();
+        $cities  = $this->ownerModel->getDistinctCities();
+
+        $totalRecords = $results['total'];
+        $totalPages   = $results['totalPages'];
+        $owners       = $results['data'];
+
+        $startItem = $totalRecords > 0 ? (($page - 1) * $perPage) + 1 : 0;
+        $endItem   = min($totalRecords, $page * $perPage);
+
+        $pageTitle   = "Property Owners Hub • Stayora Executive Console";
+        $currentPage = "owners";
+        $headerTitle = "Property Owners";
+
+        require_once __DIR__ . '/../../Views/admin/owners/index.php';
+    }
+
+    /**
+     * Show Add Owner Registration Form
+     */
+    public function create(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $formData = $_SESSION['owner_form_data'] ?? [];
+        unset($_SESSION['owner_form_data']);
+
+        $pageTitle   = "Add New Property Owner • Stayora Executive Console";
+        $currentPage = "owners";
+        $headerTitle = "Register Property Owner";
+
+        require_once __DIR__ . '/../../Views/admin/owners/create.php';
+    }
+
+    /**
+     * Store New Owner
+     */
+    public function store(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+               || (isset($_GET['format']) && $_GET['format'] === 'json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+                return;
+            }
+            redirect('admin/owners');
+            return;
+        }
+
         try {
-            $rawId = $_GET['id'] ?? '';
-            $ownerId = $this->resolveOwnerId($rawId);
+            $avatarFile = (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) ? $_FILES['avatar'] : null;
+            $ownerId = $this->ownerModel->create($_POST, $avatarFile);
 
-            $db = Database::connect();
-            $model = new OwnerModel($db);
-            $dossier = $model->getOwnerDetails($ownerId);
-
-            if (!$dossier) {
-                echo json_encode(['success' => false, 'message' => 'Owner not found.']);
-                $db->close();
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success'  => true,
+                    'message'  => 'Property owner registered successfully.',
+                    'owner_id' => $ownerId,
+                    'redirect' => url('admin/owners/view/' . $ownerId),
+                ]);
                 return;
             }
 
-            $dossier['owner']['encrypted_id'] = CryptoHelper::encrypt((string) $dossier['owner']['id']);
-            
-            // Format dates
-            $dossier['owner']['formatted_joined'] = !empty($dossier['owner']['created_at']) 
-                ? date('d M Y, h:i A', strtotime($dossier['owner']['created_at'])) 
-                : 'N/A';
-            $dossier['owner']['formatted_last_login'] = !empty($dossier['owner']['last_login']) 
-                ? date('d M Y, h:i A', strtotime($dossier['owner']['last_login'])) 
-                : 'Never logged in';
-
-            echo json_encode([
-                'success' => true,
-                'data'    => $dossier,
-            ]);
-            $db->close();
-
+            $_SESSION['success'] = "Owner registered successfully.";
+            redirect('admin/owners/view/' . $ownerId);
         } catch (Exception $e) {
-            http_response_code(400);
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                return;
+            }
+
+            $_SESSION['error'] = $e->getMessage();
+            $_SESSION['owner_form_data'] = $_POST;
+            redirect('admin/owners/create');
+        }
+    }
+
+    /**
+     * Show 360° Dedicated Owner Profile Dossier
+     */
+    public function show(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $id = (int)($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $_SESSION['error'] = "Invalid owner reference.";
+            redirect('admin/owners');
+            return;
+        }
+
+        $owner = $this->ownerModel->getById($id);
+        if (!$owner) {
+            $_SESSION['error'] = "Owner #{$id} not found.";
+            redirect('admin/owners');
+            return;
+        }
+
+        $tab = trim($_GET['tab'] ?? 'properties');
+        if (!in_array($tab, ['properties', 'bookings', 'financials', 'documents', 'history', 'reviews'], true)) {
+            $tab = 'properties';
+        }
+
+        $properties       = $this->ownerModel->getProperties($id);
+        $bookings         = $this->ownerModel->getBookings($id, ['status' => $_GET['booking_status'] ?? 'all'], 30);
+        $financials       = $this->ownerModel->getFinancialSummary($id);
+        $documents        = $this->ownerModel->getDocuments($id);
+        $ownershipHistory = $this->ownerModel->getOwnershipHistory($id);
+        $activeOwners     = $this->ownerModel->getActiveOwnersList();
+
+        // ── Reviews & Social Proof for Owner's Properties ──
+        require_once __DIR__ . '/../../Models/Admin/ReviewManagementModel.php';
+        $reviewMgmtModel  = new \App\Models\Admin\ReviewManagementModel();
+        $ownerReviews     = $reviewMgmtModel->getOwnerReviews($id);
+        $ownerReviewStats = $reviewMgmtModel->getStats(null, $id);
+
+        $pageTitle   = htmlspecialchars($owner['name']) . " • Owner Dossier";
+        $currentPage = "owners";
+        $headerTitle = "Owner Dossier: " . htmlspecialchars($owner['name']);
+
+        require_once __DIR__ . '/../../Views/admin/owners/show.php';
+    }
+
+    /**
+     * Show Edit Owner Form
+     */
+    public function edit(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $id = (int)($_GET['id'] ?? 0);
+        if ($id <= 0) {
+            $_SESSION['error'] = "Invalid owner reference.";
+            redirect('admin/owners');
+            return;
+        }
+
+        $owner = $this->ownerModel->getById($id);
+        if (!$owner) {
+            $_SESSION['error'] = "Owner #{$id} not found.";
+            redirect('admin/owners');
+            return;
+        }
+
+        $pageTitle   = "Edit Owner: " . htmlspecialchars($owner['name']) . " • Stayora Console";
+        $currentPage = "owners";
+        $headerTitle = "Edit Owner Profile";
+
+        require_once __DIR__ . '/../../Views/admin/owners/edit.php';
+    }
+
+    /**
+     * Update Owner Profile
+     */
+    public function update(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+               || (isset($_GET['format']) && $_GET['format'] === 'json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+                return;
+            }
+            redirect('admin/owners');
+            return;
+        }
+
+        $id = (int)($_POST['id'] ?? 0);
+        if ($id <= 0) {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Invalid owner reference.']);
+                return;
+            }
+            $_SESSION['error'] = "Invalid owner reference.";
+            redirect('admin/owners');
+            return;
+        }
+
+        try {
+            $avatarFile = (!empty($_FILES['avatar']) && $_FILES['avatar']['error'] === UPLOAD_ERR_OK) ? $_FILES['avatar'] : null;
+            $this->ownerModel->update($id, $_POST, $avatarFile);
+
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success'  => true,
+                    'message'  => 'Owner profile updated successfully.',
+                    'owner_id' => $id,
+                    'redirect' => url('admin/owners/view/' . $id),
+                ]);
+                return;
+            }
+
+            $_SESSION['success'] = "Owner profile updated successfully.";
+            redirect('admin/owners/view/' . $id);
+        } catch (Exception $e) {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                return;
+            }
+
+            $_SESSION['error'] = $e->getMessage();
+            redirect('admin/owners/edit/' . $id);
+        }
+    }
+
+    /**
+     * AJAX Endpoint: Update Owner Status (active, inactive, suspended, pending)
+     */
+    public function updateStatus(): void {
+        $admin = AdminAuth::requireAuth();
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+            return;
+        }
+
+        $id     = (int)($_POST['id'] ?? 0);
+        $status = trim($_POST['status'] ?? '');
+
+        if ($id <= 0 || empty($status)) {
+            echo json_encode(['success' => false, 'message' => 'Owner ID and status are required.']);
+            return;
+        }
+
+        try {
+            $ok = $this->ownerModel->updateStatus($id, $status);
+            if ($ok) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Owner status updated to " . ucfirst($status) . ".",
+                    'status'  => $status,
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update owner status.']);
+            }
+        } catch (Exception $e) {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
-    // ============================================================
-    //  EXPORT OWNERS TO CSV
-    //  GET /admin/owners/export
-    // ============================================================
+    /**
+     * AJAX Endpoint: Update Owner KYC Verification Status
+     */
+    public function updateKycStatus(): void {
+        $admin = AdminAuth::requireAuth();
+        header('Content-Type: application/json');
 
-    public function exportOwners(): void
-    {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+            return;
+        }
+
+        $id        = (int)($_POST['id'] ?? 0);
+        $kycStatus = trim($_POST['kyc_status'] ?? '');
+        $notes     = trim($_POST['notes'] ?? '');
+
+        if ($id <= 0 || empty($kycStatus)) {
+            echo json_encode(['success' => false, 'message' => 'Owner ID and KYC status are required.']);
+            return;
+        }
+
         try {
-            $db = Database::connect();
-            $model = new OwnerModel($db);
-            $owners = $model->getAllOwners();
-
-            $filename = "farmlelo_owners_export_" . date('Y-m-d_His') . ".csv";
-
-            header('Content-Type: text/csv; charset=utf-8');
-            header('Content-Disposition: attachment; filename="' . $filename . '"');
-            header('Pragma: no-cache');
-            header('Expires: 0');
-
-            $output = fopen('php://output', 'w');
-            
-            // CSV Header Row
-            fputcsv($output, [
-                'ID',
-                'Owner Name',
-                'Email',
-                'Phone',
-                'Status',
-                'Online Presence',
-                'Total Properties Listed',
-                'Total Bookings Received',
-                'Registration Date',
-                'Last Login Time'
-            ]);
-
-            foreach ($owners as $o) {
-                fputcsv($output, [
-                    $o['id'],
-                    $o['name'],
-                    $o['email'] ?? 'N/A',
-                    $o['phone'] ?? 'N/A',
-                    ucfirst($o['status'] ?? 'active'),
-                    !empty($o['is_online']) ? 'Online' : 'Offline',
-                    $o['property_count'] ?? 0,
-                    $o['total_bookings_received'] ?? 0,
-                    $o['created_at'] ?? 'N/A',
-                    $o['last_login'] ?? 'Never'
+            $ok = $this->ownerModel->updateKycStatus($id, $kycStatus, (int)$admin['id'], $notes);
+            if ($ok) {
+                echo json_encode([
+                    'success'    => true,
+                    'message'    => "Owner KYC status updated to " . ucfirst($kycStatus) . ".",
+                    'kyc_status' => $kycStatus,
                 ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update KYC status.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Upload and Attach Owner Document
+     */
+    public function uploadDocument(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+               || (isset($_GET['format']) && $_GET['format'] === 'json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+                return;
+            }
+            redirect('admin/owners');
+            return;
+        }
+
+        $ownerId = (int)($_POST['owner_id'] ?? 0);
+        if ($ownerId <= 0) {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Owner ID is required.']);
+                return;
+            }
+            $_SESSION['error'] = "Owner ID is required.";
+            redirect('admin/owners');
+            return;
+        }
+
+        if (empty($_FILES['document_file']) || $_FILES['document_file']['error'] !== UPLOAD_ERR_OK) {
+            $msg = "Please select a valid document file to upload.";
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $msg]);
+                return;
+            }
+            $_SESSION['error'] = $msg;
+            redirect('admin/owners/view/' . $ownerId . '?tab=documents');
+            return;
+        }
+
+        try {
+            $docId = $this->ownerModel->addDocument($ownerId, $_POST, $_FILES['document_file'], (int)$admin['id']);
+
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success'     => true,
+                    'message'     => 'Document uploaded and logged successfully.',
+                    'document_id' => $docId,
+                ]);
+                return;
             }
 
-            fclose($output);
-            $db->close();
-            exit;
-
+            $_SESSION['success'] = "Document uploaded successfully.";
+            redirect('admin/owners/view/' . $ownerId . '?tab=documents');
         } catch (Exception $e) {
-            die("Export error: " . $e->getMessage());
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                return;
+            }
+
+            $_SESSION['error'] = $e->getMessage();
+            redirect('admin/owners/view/' . $ownerId . '?tab=documents');
         }
     }
 
-    // ============================================================
-    //  PRIVATE HELPERS
-    // ============================================================
+    /**
+     * AJAX Endpoint: Verify or Reject Document
+     */
+    public function verifyDocument(): void {
+        $admin = AdminAuth::requireAuth();
+        header('Content-Type: application/json');
 
-    private function resolveOwnerId(string $raw): int
-    {
-        if (empty($raw)) {
-            throw new Exception("Missing owner_id.");
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+            return;
         }
 
-        if (ctype_digit($raw)) {
-            return (int) $raw;
+        $docId  = (int)($_POST['document_id'] ?? 0);
+        $status = trim($_POST['status'] ?? '');
+        $reason = trim($_POST['rejection_reason'] ?? '');
+
+        if ($docId <= 0 || !in_array($status, ['verified', 'rejected', 'pending'], true)) {
+            echo json_encode(['success' => false, 'message' => 'Valid document ID and verification status required.']);
+            return;
         }
 
-        $decrypted = CryptoHelper::decrypt($raw);
-        if (!$decrypted || !ctype_digit($decrypted)) {
-            throw new Exception("Invalid or tampered owner_id.");
-        }
-        return (int) $decrypted;
-    }
-
-    private function validateOwnerInput(array $data, bool $requirePw): void
-    {
-        if (empty(trim($data['name'] ?? ''))) {
-            $this->redirectError("Name is required.");
-        }
-
-        if (empty(trim($data['email'] ?? '')) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $this->redirectError("A valid email address is required.");
-        }
-
-        if (empty(trim($data['phone'] ?? ''))) {
-            $this->redirectError("Phone number is required.");
-        }
-
-        if ($requirePw && empty($data['password'])) {
-            $this->redirectError("Password is required when creating a new owner.");
-        }
-
-        if (!empty($data['password']) && strlen($data['password']) < 6) {
-            $this->redirectError("Password must be at least 6 characters.");
+        try {
+            $ok = $this->ownerModel->verifyDocument($docId, $status, $reason ?: null, (int)$admin['id']);
+            if ($ok) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => "Document marked as " . ucfirst($status) . ".",
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update document status.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 
-    private function redirectSuccess(string $msg): never
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        $_SESSION['owner_success'] = $msg;
-        redirect('admin/owners');
+    /**
+     * AJAX Endpoint: Delete Document
+     */
+    public function deleteDocument(): void {
+        $admin = AdminAuth::requireAuth();
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+            return;
+        }
+
+        $docId = (int)($_POST['document_id'] ?? 0);
+        if ($docId <= 0) {
+            echo json_encode(['success' => false, 'message' => 'Valid document ID required.']);
+            return;
+        }
+
+        try {
+            $ok = $this->ownerModel->deleteDocument($docId);
+            if ($ok) {
+                echo json_encode(['success' => true, 'message' => 'Document deleted successfully.']);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to delete document.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
     }
 
-    private function redirectError(string $msg): never
-    {
-        if (session_status() === PHP_SESSION_NONE) session_start();
-        $_SESSION['owner_error'] = $msg;
-        redirect('admin/owners');
+    /**
+     * AJAX Endpoint: Reassign Property to another owner
+     */
+    public function reassignProperty(): void {
+        $admin = AdminAuth::requireAuth();
+        header('Content-Type: application/json');
+
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            echo json_encode(['success' => false, 'message' => 'Method not allowed.']);
+            return;
+        }
+
+        $farmhouseId = (int)($_POST['farmhouse_id'] ?? 0);
+        $newOwnerId  = (int)($_POST['new_owner_id'] ?? 0);
+        $reason      = trim($_POST['transfer_reason'] ?? '');
+        $notes       = trim($_POST['notes'] ?? '');
+
+        if ($farmhouseId <= 0 || $newOwnerId <= 0 || empty($reason)) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Property, target owner, and transfer reason are mandatory.'
+            ]);
+            return;
+        }
+
+        try {
+            $ok = $this->ownerModel->reassignProperty($farmhouseId, $newOwnerId, (int)$admin['id'], $reason, $notes ?: null);
+            if ($ok) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Property ownership successfully reassigned and recorded.',
+                ]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to reassign property.']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Delete Owner (Orphan Prevention Protected)
+     */
+    public function delete(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $isAjax = (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+               || (isset($_GET['format']) && $_GET['format'] === 'json');
+
+        $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
+        if ($id <= 0) {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => 'Invalid owner ID.']);
+                return;
+            }
+            $_SESSION['error'] = "Invalid owner ID.";
+            redirect('admin/owners');
+            return;
+        }
+
+        try {
+            $this->ownerModel->delete($id);
+
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success'  => true,
+                    'message'  => 'Owner record deleted successfully.',
+                    'redirect' => url('admin/owners'),
+                ]);
+                return;
+            }
+
+            $_SESSION['success'] = "Owner record deleted successfully.";
+            redirect('admin/owners');
+        } catch (Exception $e) {
+            if ($isAjax) {
+                header('Content-Type: application/json');
+                echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                return;
+            }
+
+            $_SESSION['error'] = $e->getMessage();
+            redirect('admin/owners');
+        }
+    }
+
+    /**
+     * Export Owners to CSV
+     */
+    public function export(): void {
+        $admin = AdminAuth::requireAuth();
+
+        $filters = [
+            'search'     => trim($_GET['search'] ?? ''),
+            'status'     => trim($_GET['status'] ?? 'all'),
+            'kyc_status' => trim($_GET['kyc_status'] ?? 'all'),
+            'owner_type' => trim($_GET['owner_type'] ?? 'all'),
+            'city'       => trim($_GET['city'] ?? 'all'),
+            'sort'       => trim($_GET['sort'] ?? 'created_desc'),
+        ];
+
+        // Fetch all matching without pagination limit
+        $results = $this->ownerModel->getAll($filters, 1, 10000);
+        $data = $results['data'];
+
+        $filename = "stayora_property_owners_" . date('Y-m-d_His') . ".csv";
+
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $out = fopen('php://output', 'w');
+
+        // CSV Header Row
+        fputcsv($out, [
+            'Owner ID',
+            'Name',
+            'Business Name',
+            'Type',
+            'Email',
+            'Phone',
+            'Alternate Phone',
+            'City',
+            'State',
+            'Country',
+            'Status',
+            'KYC Status',
+            'Properties Count',
+            'Gross Booking Value (INR)',
+            'Total Collected (INR)',
+            'Bank Name',
+            'Bank Account',
+            'IFSC',
+            'Registered Date'
+        ]);
+
+        foreach ($data as $row) {
+            fputcsv($out, [
+                $row['id'],
+                $row['name'],
+                $row['business_name'] ?? 'N/A',
+                ucfirst($row['owner_type']),
+                $row['email'],
+                $row['phone'],
+                $row['alternate_phone'] ?? '',
+                $row['city'] ?? '',
+                $row['state'] ?? '',
+                $row['country'] ?? 'India',
+                ucfirst($row['status']),
+                ucfirst($row['kyc_status']),
+                (int)$row['properties_count'],
+                number_format((float)$row['gross_booking_value'], 2, '.', ''),
+                number_format((float)$row['total_collected'], 2, '.', ''),
+                $row['bank_name'] ?? '',
+                $row['bank_account_number'] ?? '',
+                $row['bank_ifsc'] ?? '',
+                $row['created_at'],
+            ]);
+        }
+
+        fclose($out);
+        exit;
     }
 }

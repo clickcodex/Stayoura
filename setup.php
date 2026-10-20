@@ -1,13 +1,13 @@
 <?php
 /**
- * Farmlelo - Automated Local Environment Setup Script
+ * Stayora - Automated Local Environment Setup Script
  * Run: php setup.php
  */
 
 date_default_timezone_set('Asia/Kolkata');
 
 echo "\n=======================================================\n";
-echo "            FARMLELO - LOCAL SETUP WIZARD             \n";
+echo "            STAYORA - LOCAL SETUP WIZARD              \n";
 echo "=======================================================\n\n";
 
 // 1. PHP Version Check
@@ -71,7 +71,7 @@ $dbHost = $envVars['DB_HOST'] ?? 'localhost';
 $dbPort = (int)($envVars['DB_PORT'] ?? 3306);
 $dbUser = $envVars['DB_USER'] ?? 'root';
 $dbPass = $envVars['DB_PASS'] ?? '';
-$dbName = $envVars['DB_NAME'] ?? 'farmlelo';
+$dbName = $envVars['DB_NAME'] ?? 'Stayora';
 
 echo "  Database config: Host={$dbHost}:{$dbPort}, User={$dbUser}, DB={$dbName}\n\n";
 
@@ -118,9 +118,9 @@ if (extension_loaded('mysqli')) {
         
         echo "  Found {$tableCount} table(s) in '{$dbName}'.\n";
         
-        $sqlFile = __DIR__ . '/database/farmlelo.sql';
+        $sqlFile = __DIR__ . '/database/stayora.sql';
         if ($tableCount === 0 && file_exists($sqlFile)) {
-            echo "  [IMPORTING] Importing initial database schema from database/farmlelo.sql...\n";
+            echo "  [IMPORTING] Importing initial database schema from database/stayora.sql...\n";
             $sqlContent = file_get_contents($sqlFile);
             if ($conn->multi_query($sqlContent)) {
                 do {
@@ -153,7 +153,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 echo "=======================================================\n";
 echo "           SETUP COMPLETED SUCCESSFULLY! 🎉           \n";
 echo "=======================================================\n\n";
-echo "How to start working on Farmlelo locally:\n\n";
+echo "How to start working on Stayora locally:\n\n";
 echo "Option 1 (Fastest / Built-in Server):\n";
 echo "  Run: composer dev\n";
 echo "  Or:  php -S localhost:8000 router.php\n";
@@ -161,4 +161,4 @@ echo "  Or:  Double-click 'serve.bat'\n";
 echo "  Then open: http://localhost:8000\n\n";
 echo "Option 2 (XAMPP Apache):\n";
 echo "  Make sure Apache is started in XAMPP Control Panel\n";
-echo "  Open: http://localhost/Farmlelo/\n\n";
+echo "  Open: http://localhost/Stayora/\n\n";

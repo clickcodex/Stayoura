@@ -32,9 +32,15 @@ class MyBookingModel {
 
         if (!empty($status) && strtolower($status) !== 'all') {
             $st = strtolower(trim($status));
-            $sql .= " AND br.status = ?";
-            $types .= "s";
-            $params[] = $st;
+            if ($st === 'confirmed' || $st === 'approved') {
+                $sql .= " AND br.status IN ('approved', 'confirmed', 'checked_in')";
+            } elseif ($st === 'completed') {
+                $sql .= " AND br.status IN ('checked_out', 'completed')";
+            } else {
+                $sql .= " AND br.status = ?";
+                $types .= "s";
+                $params[] = $st;
+            }
         }
 
         if (!empty($search)) {
@@ -61,13 +67,13 @@ class MyBookingModel {
         $sql = "SELECT 
                     br.*, 
                     COALESCE(f.title, CONCAT('Farmhouse #', br.farmhouse_id)) as farm_title, 
-                    COALESCE(f.location, '—') as location,
+                    COALESCE(f.location, '—') as location, 
                     COALESCE(f.category, 'Farmhouse') as farm_category,
                     COALESCE(f.price, br.price) as farmhouse_price,
                     (SELECT image_url FROM images WHERE farmhouse_id = f.id LIMIT 1) as main_image
                 FROM booking_requests br
                 LEFT JOIN farmhouses f ON br.farmhouse_id = f.id
-                WHERE br.user_id = ? AND br.status = 'approved'
+                WHERE br.user_id = ? AND br.status IN ('approved', 'confirmed', 'checked_in', 'checked_out', 'completed')
                 ORDER BY br.created_at DESC";
 
         $stmt = $this->db->prepare($sql);

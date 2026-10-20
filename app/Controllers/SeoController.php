@@ -127,7 +127,7 @@ class SeoController {
         $sitemapUrl = absolute_url('sitemap.xml');
 
         echo "# ==================================================\n";
-        echo "# FarmLelo Robots.txt - Search Engine Crawl Directives\n";
+        echo "# Stayora Robots.txt - Search Engine Crawl Directives\n";
         echo "# ==================================================\n\n";
         echo "User-agent: *\n";
         echo "Allow: /\n";

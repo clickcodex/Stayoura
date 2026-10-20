@@ -4,16 +4,16 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-$pageTitle       = "Contact Customer Support & Booking Inquiries | FarmLelo";
-$pageDescription = "Get in touch with FarmLelo for farmhouse bookings, owner listings, partnerships, and customer support. Call, WhatsApp, or message us today.";
-$pageKeywords    = "contact farmlelo, farmhouse customer support, list farmhouse contact, book farmhouse help";
+$pageTitle       = "Contact Customer Support & Booking Inquiries | Stayora";
+$pageDescription = "Get in touch with Stayora for farmhouse bookings, owner listings, partnerships, and customer support. Call, WhatsApp, or message us today.";
+$pageKeywords    = "contact stayora, farmhouse customer support, list farmhouse contact, book farmhouse help";
 $canonicalUrl    = absolute_url('contact');
 
 include __DIR__ . "/Includes/header.php"; 
 
 $phoneNum = htmlspecialchars($globalSite['mobile_number'] ?? '+91 88890 00399');
-$emailAdd = htmlspecialchars($globalSite['email'] ?? 'support@farmlelo.com');
-$address  = htmlspecialchars($globalSite['address'] ?? 'Farmlelo HQ, Near Bypass Road, Indore, MP 452010');
+$emailAdd = htmlspecialchars($globalSite['email'] ?? 'support@stayora.com');
+$address  = htmlspecialchars($globalSite['address'] ?? 'Stayora HQ, Near Bypass Road, Indore, MP 452010');
 $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^0-9]/', '', $phoneNum));
 ?>
 
@@ -24,7 +24,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 
 .cnt-page-wrap {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
   max-width: 1200px;
   margin: 0 auto;
   padding: 100px 20px 80px;
@@ -34,7 +34,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 .cnt-breadcrumb {
   font-size: 13px;
   font-weight: 600;
-  color: #57685F;
+  color: #64748B;
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -42,13 +42,13 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 }
 
 .cnt-breadcrumb a {
-  color: #173C2D;
+  color: #1E40AF;
   text-decoration: none;
   transition: color 0.15s;
 }
 
 .cnt-breadcrumb a:hover {
-  color: #133225;
+  color: #1E3A8A;
   text-decoration: underline;
 }
 
@@ -58,7 +58,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 }
 
 .cnt-tag {
-  color: #173C2D;
+  color: #1E40AF;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -72,7 +72,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 .cnt-title {
   font-size: 38px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   line-height: 1.15;
   letter-spacing: -0.02em;
   margin: 0 0 10px;
@@ -80,7 +80,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 
 .cnt-sub {
   font-size: 16px;
-  color: #57685F;
+  color: #64748B;
   max-width: 650px;
   line-height: 1.6;
   margin: 0;
@@ -103,7 +103,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 
 .cnt-info-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
   padding: 20px 22px;
   display: flex;
@@ -116,7 +116,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 }
 
 .cnt-info-card:hover {
-  border-color: #D4E4DC;
+  border-color: #DBEAFE;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(22, 165, 222, 0.08);
 }
@@ -125,8 +125,8 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
   width: 46px;
   height: 46px;
   border-radius: 14px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,7 +136,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 .cnt-card-label {
   font-size: 11px;
   font-weight: 800;
-  color: #57685F;
+  color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 2px;
@@ -145,13 +145,13 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 .cnt-card-val {
   font-size: 15px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   line-height: 1.4;
 }
 
 /* WhatsApp Priority Card */
 .cnt-wa-card {
-  background: linear-gradient(135deg, #24312A 0%, #24312A 100%);
+  background: linear-gradient(135deg, #0F172A 0%, #0F172A 100%);
   border-radius: 22px;
   padding: 24px;
   color: #ffffff;
@@ -205,7 +205,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 /* Right Form Card */
 .cnt-form-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 36px 32px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
@@ -214,13 +214,13 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 .cnt-form-title {
   font-size: 22px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 6px;
 }
 
 .cnt-form-sub {
   font-size: 13.5px;
-  color: #57685F;
+  color: #64748B;
   margin: 0 0 24px;
 }
 
@@ -263,12 +263,12 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
   width: 100%;
   height: 46px;
   padding: 0 14px 0 42px;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 12px;
   font-size: 13.5px;
   font-family: inherit;
-  color: #24312A;
-  background: #F7F3EA;
+  color: #0F172A;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -276,19 +276,19 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 
 .cnt-input:focus {
   background: #ffffff;
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
 
 .cnt-textarea {
   width: 100%;
   padding: 12px 14px 12px 42px;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 12px;
   font-size: 13.5px;
   font-family: inherit;
-  color: #24312A;
-  background: #F7F3EA;
+  color: #0F172A;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -298,14 +298,14 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 
 .cnt-textarea:focus {
   background: #ffffff;
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
 
 .cnt-submit-btn {
   width: 100%;
   height: 50px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   border: none;
   border-radius: 14px;
@@ -322,7 +322,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
 }
 
 .cnt-submit-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(2, 132, 199, 0.45);
 }
@@ -449,7 +449,7 @@ $waNum    = htmlspecialchars($globalSite['whatsapp_number'] ?? preg_replace('/[^
           <h4>Instant WhatsApp Support</h4>
         </div>
         <p class="cnt-wa-p">Need an immediate answer regarding dates, group booking discounts, or property availability? Chat with us live.</p>
-        <a href="https://wa.me/91<?= $waNum ?>?text=<?= urlencode('Hello Farmlelo team, I have an inquiry regarding farmhouse stays.') ?>" target="_blank" rel="noopener" class="cnt-wa-btn">
+        <a href="https://wa.me/91<?= $waNum ?>?text=<?= urlencode('Hello Stayora team, I have an inquiry regarding farmhouse stays.') ?>" target="_blank" rel="noopener" class="cnt-wa-btn">
           <span class="material-symbols-outlined" style="font-size:18px;">chat</span>
           <span>Message on WhatsApp</span>
         </a>

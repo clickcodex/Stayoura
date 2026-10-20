@@ -16,21 +16,32 @@ class ProfileController {
 
         // 2. Fetch User Data
         $db = Database::connect();
-$model = new ProfileModel($db);
-$user = $model->getUserDetails($_SESSION['user_id']);
-// Fetch booking count for the stats bar
-$stats_sql = "SELECT COUNT(*) as total FROM booking_requests WHERE user_id = ?";
-$stmt = $db->prepare($stats_sql);
-if (!$stmt) {
-    die("Prepare failed: " . $db->error);
-}
-$stmt->bind_param("i", $_SESSION['user_id']);
+        $model = new ProfileModel($db);
+        $user = $model->getUserDetails($_SESSION['user_id']);
+        
+        // Fetch booking count for stats
+        $stats_sql = "SELECT COUNT(*) as total FROM booking_requests WHERE user_id = ?";
+        $stmt = $db->prepare($stats_sql);
+        $booking_count = 0;
+        if ($stmt) {
+            $stmt->bind_param("i", $_SESSION['user_id']);
+            $stmt->execute();
+            $booking_count = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+            $stmt->close();
+        }
 
-$stmt->execute();
-$booking_count = $stmt->get_result()->fetch_assoc()['total'];
+        // Fetch wishlist count for stats
+        $wishlist_count = 0;
+        $wish_stmt = $db->prepare("SELECT COUNT(*) as total FROM wishlists WHERE user_id = ?");
+        if ($wish_stmt) {
+            $wish_stmt->bind_param("i", $_SESSION['user_id']);
+            $wish_stmt->execute();
+            $wishlist_count = $wish_stmt->get_result()->fetch_assoc()['total'] ?? 0;
+            $wish_stmt->close();
+        }
 
-include __DIR__ . '/../../Views/user/profile.php';
-}
+        include __DIR__ . '/../../Views/user/profile.php';
+    }
 
     /**
      * Logic for handling profile update POST request
@@ -119,6 +130,13 @@ include __DIR__ . '/../../Views/user/profile.php';
                     $uploadPath = $uploadDir . $newFileName;
 
                     if (move_uploaded_file($_FILES['profile_image']['tmp_name'], $uploadPath)) {
+                        // Also sync to avatars directory so all dashboard and header views find it
+                        $avatarsDir = __DIR__ . '/../../../assets/images/uploads/avatars/';
+                        if (!is_dir($avatarsDir)) {
+                            mkdir($avatarsDir, 0755, true);
+                        }
+                        @copy($uploadPath, $avatarsDir . $newFileName);
+
                         $model->updateProfileImage($userId, $newFileName);
                         $_SESSION['profile_image'] = $newFileName;
                     }
@@ -132,6 +150,51 @@ include __DIR__ . '/../../Views/user/profile.php';
             $_SESSION['success'] = "Profile details updated successfully!";
             redirect('user/profile?msg=updated');
         }
+    }
+
+    /**
+     * Logic for handling password change POST request
+     */
+    public function changePassword() {
+        if (session_status() === PHP_SESSION_NONE) session_start();
+        if (!isset($_SESSION['user_id'])) {
+            redirect('login');
+        }
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $userId = (int)$_SESSION['user_id'];
+            $currentPassword = trim($_POST['current_password'] ?? '');
+            $newPassword     = trim($_POST['new_password'] ?? '');
+            $confirmPassword = trim($_POST['confirm_password'] ?? '');
+
+            if (empty($currentPassword) || empty($newPassword)) {
+                redirect('user/profile?error=password_required');
+            }
+
+            if (strlen($newPassword) < 6) {
+                redirect('user/profile?error=password_length');
+            }
+
+            if (!empty($confirmPassword) && $newPassword !== $confirmPassword) {
+                redirect('user/profile?error=password_mismatch');
+            }
+
+            $db = Database::connect();
+            $model = new ProfileModel($db);
+
+            if (!$model->verifyPassword($userId, $currentPassword)) {
+                redirect('user/profile?error=current_password_incorrect');
+            }
+
+            if ($model->updatePassword($userId, $newPassword)) {
+                $_SESSION['success'] = "Your security password was updated successfully!";
+                redirect('user/profile?msg=password_updated');
+            } else {
+                redirect('user/profile?error=password_failed');
+            }
+        }
+
+        redirect('user/profile');
     }
 
     /**

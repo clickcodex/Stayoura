@@ -25,21 +25,6 @@ namespace App\Controllers;
             return require_once __DIR__ . '/../Views/login.php';
         }
     
-        public function adminLogin() {
-            AuthMiddleware::guestOnly();
-            $pageTitle = "Admin Login";
-            $role = "admins";
-            return require_once __DIR__ . '/../Views/admin/admin-login.php';
-        }
-    
-        public function ownerLogin() {
-        AuthMiddleware::guestOnly();
-        $pageTitle = "Owner Login";
-        $role = "owners";
-        $activeTab = "login";
-        return require_once __DIR__ . '/../Views/owner/owner-login.php';
-    }
-
     public function registerView() {
         AuthMiddleware::guestOnly();
         return require_once __DIR__ . '/../Views/register.php';
@@ -256,102 +241,6 @@ namespace App\Controllers;
         
         
         
-        public function ownerRegisterView() {
-            AuthMiddleware::guestOnly();
-            $pageTitle = "Owner Registration";
-            $role = "owners";
-            $activeTab = "register";
-            return require_once __DIR__ . '/../Views/owner/owner-login.php';
-        }
-
-public function ownerRegister() {
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        return $this->ownerRegisterView();
-    }
-
-    $name     = trim($_POST['name']     ?? '');
-    $email    = trim($_POST['email']    ?? '');
-    $phone    = trim($_POST['phone']    ?? '');
-    $password = $_POST['password']      ?? '';
-    $confirm  = $_POST['password_confirmation'] ?? '';
-    $role     = 'owners';
-
-    // ── Validate name ──────────────────────────────────────────────
-    if (empty($name)) {
-        $_SESSION['error'] = "Full name is required.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Validate email ─────────────────────────────────────────────
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error'] = "Invalid email format.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Validate phone (exactly 10 digits) ─────────────────────────
-    if (!preg_match('/^[0-9]{10}$/', $phone)) {
-        $_SESSION['error'] = "Phone number must be exactly 10 digits.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Validate password strength ─────────────────────────────────
-    if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d).{8,}$/', $password)) {
-        $_SESSION['error'] = "Password must be at least 8 characters and contain letters and numbers.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Confirm password match ─────────────────────────────────────
-    if ($password !== $confirm) {
-        $_SESSION['error'] = "Passwords do not match.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Check duplicate email ──────────────────────────────────────
-    if ($this->userModel->emailExists($email, $role)) {
-        $_SESSION['error'] = "An owner account with this email already exists.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Check duplicate phone ──────────────────────────────────────
-    if ($this->userModel->phoneExists($phone, $role)) {
-        $_SESSION['error'] = "An owner account with this phone number already exists.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-
-    // ── Build and insert ───────────────────────────────────────────
-    $userData = [
-        'name'          => $name,
-        'email'         => $email,
-        'phone'         => $phone,
-        'password'      => password_hash($password, PASSWORD_DEFAULT),
-        'status'        => 'active',
-        'profile_image' => '',
-        'created_at'    => date('Y-m-d H:i:s'),
-    ];
-
-    if ($this->userModel->createUser($userData, $role)) {
-        $_SESSION['success'] = "Owner account created! You can now sign in.";
-        redirect('owner/login');
-    } else {
-        $_SESSION['error'] = "Database error. Please try again later.";
-        redirect($_SERVER['HTTP_REFERER'] ?? 'owner/register');
-    }
-}
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-    
         private function redirectBasedOnRole($role): void
         {
             $redirectParam = trim($_POST['redirect'] ?? '');
@@ -359,34 +248,19 @@ public function ownerRegister() {
                 redirect(ltrim($redirectParam, '/'));
             }
 
-            if ($role === 'users') {
-                redirect('dashboard');
-            } elseif ($role === 'owners') {
-                redirect('owner/dashboard');
-            } else {
-                redirect('admin/dashboard');
-            }
+            redirect('dashboard');
         }
     
         public function logout(): void
         {
             if (session_status() === PHP_SESSION_NONE) session_start();
     
-            // Store role before destroying session
-            $role = $_SESSION['role'] ?? null;
-    
             // Clear token from DB & SET is_logged_in to 0 (vital for middleware sync)
-            if (isset($_SESSION['user_id'], $_SESSION['role'])) {
-                $table = $_SESSION['role'] . 's'; // user → users
-                if (in_array($table, ['users', 'admins', 'owners'])) {
-                    $this->userModel->logoutUser(
-                        $_SESSION['user_id'],
-                        $table
-                    );
-                }
-                if ($_SESSION['role'] === 'admin') {
-                    $this->userModel->clearAdminActiveSession((int)$_SESSION['user_id']);
-                }
+            if (isset($_SESSION['user_id'])) {
+                $this->userModel->logoutUser(
+                    $_SESSION['user_id'],
+                    'users'
+                );
             }
     
             // Destroy session locally
@@ -396,14 +270,7 @@ public function ownerRegister() {
             // Delete long-lasting cookie locally
             setcookie('remember_me', '', time() - 3600, '/');
     
-            // Redirect based on role back to login
-            if ($role === 'admin') {
-                redirect('admin/login');
-            } elseif ($role === 'owner') {
-                redirect('owner/login');
-            } else {
-                redirect('login');
-            }
+            redirect('login');
         }
 
     /**
@@ -467,7 +334,7 @@ public function ownerRegister() {
         if (!$userData && (isset($_GET['demo_user']) || empty(getenv('GOOGLE_CLIENT_ID')))) {
             $userData = [
                 'sub' => 'google_' . substr(md5($_SERVER['REMOTE_ADDR'] ?? 'test'), 0, 16),
-                'email' => 'google.traveler@farmlelo.com',
+                'email' => 'google.traveler@stayora.com',
                 'name' => 'Google Traveler',
                 'picture' => 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop'
             ];

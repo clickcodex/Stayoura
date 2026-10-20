@@ -38,7 +38,7 @@ class SeoHelper {
         $settings = self::getSiteSettings();
         $route    = self::getCurrentRoute();
 
-        $siteName = !empty($settings['site_name']) ? $settings['site_name'] : 'FarmLelo';
+        $siteName = !empty($settings['site_name']) ? $settings['site_name'] : 'Stayora';
         $tagline  = !empty($settings['tagline'])   ? $settings['tagline']   : 'Luxury Farmhouses & Private Villa Escapes';
 
         // Base defaults
@@ -49,7 +49,7 @@ class SeoHelper {
                                     : "Book verified luxury farmhouses, private pool villas, party estates & holiday retreats in Indore, Surat, Delhi NCR, Hyderabad & Mumbai. Best price guaranteed on {$siteName}.",
             'keywords'         => !empty($settings['meta_keywords'])
                                     ? $settings['meta_keywords']
-                                    : "luxury farmhouses, private pool villas, farm stays india, weekend getaways, farmhouse for rent, party villas indore, farmhouses near surat, delhi ncr farmhouses, vacation rentals, farmlelo",
+                                    : "luxury farmhouses, private pool villas, farm stays india, weekend getaways, farmhouse for rent, party villas indore, farmhouses near surat, delhi ncr farmhouses, vacation rentals, stayora",
             'author'           => $siteName,
             'canonical'        => site_canonical_url(),
             'robots'           => 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
@@ -174,17 +174,17 @@ class SeoHelper {
      * Render all HTML Head SEO Meta Tags
      */
     public static function renderMetaTags(array $metadata): void {
-        $title       = htmlspecialchars($metadata['title'] ?? 'FarmLelo');
+        $title       = htmlspecialchars($metadata['title'] ?? 'Stayora');
         $description = htmlspecialchars($metadata['description'] ?? '');
         $keywords    = htmlspecialchars($metadata['keywords'] ?? '');
-        $author      = htmlspecialchars($metadata['author'] ?? 'FarmLelo');
+        $author      = htmlspecialchars($metadata['author'] ?? 'Stayora');
         $canonical   = htmlspecialchars($metadata['canonical'] ?? absolute_url());
         $robots      = htmlspecialchars($metadata['robots'] ?? 'index, follow');
         $ogType      = htmlspecialchars($metadata['og_type'] ?? 'website');
         $ogImage     = htmlspecialchars($metadata['og_image'] ?? absolute_url('assets/images/uploads/luxury_pool_hero.jpg'));
         $ogImageAlt  = htmlspecialchars($metadata['og_image_alt'] ?? $title);
         $twitterCard = htmlspecialchars($metadata['twitter_card'] ?? 'summary_large_image');
-        $siteName    = htmlspecialchars($metadata['site_name'] ?? 'FarmLelo');
+        $siteName    = htmlspecialchars($metadata['site_name'] ?? 'Stayora');
 
         $settings = self::getSiteSettings();
         $googleVerify = $settings['google_site_verification'] ?? (getenv('GOOGLE_SITE_VERIFICATION') ?: ($_ENV['GOOGLE_SITE_VERIFICATION'] ?? ''));
@@ -245,14 +245,14 @@ class SeoHelper {
      */
     public static function renderSchemaJsonLd(array $metadata): void {
         $settings = self::getSiteSettings();
-        $siteName = !empty($settings['site_name']) ? $settings['site_name'] : 'FarmLelo';
+        $siteName = !empty($settings['site_name']) ? $settings['site_name'] : 'Stayora';
         $siteUrl  = absolute_url();
         $logoUrl  = !empty($settings['logo']) 
             ? (str_starts_with($settings['logo'], 'http') ? $settings['logo'] : absolute_url('assets/images/uploads/settings/' . $settings['logo']))
             : absolute_url('assets/images/logo.webp');
 
         $phone = !empty($settings['mobile_number']) ? $settings['mobile_number'] : '+91-9111666415';
-        $email = !empty($settings['email']) ? $settings['email'] : 'contact@farmlelo.com';
+        $email = !empty($settings['email']) ? $settings['email'] : 'contact@stayora.com';
 
         $socialLinks = array_values(array_filter([
             $settings['instagram_link'] ?? 'https://instagram.com/farmleloofficial',

@@ -1,7 +1,7 @@
 <?php
-$pageTitle       = "Why Choose Us | FarmLelo - 100% Verified Farmhouses & Stays";
-$pageDescription = "Discover why thousands choose FarmLelo: 100% verified private properties, direct owner booking rates, transparent pricing, and 24/7 dedicated guest support.";
-$pageKeywords    = "why farmlelo, verified farmhouses, trusted farmhouse booking, best pool villas india";
+$pageTitle       = "Why Choose Us | Stayora - 100% Verified Farmhouses & Stays";
+$pageDescription = "Discover why thousands choose Stayora: 100% verified private properties, direct owner booking rates, transparent pricing, and 24/7 dedicated guest support.";
+$pageKeywords    = "why stayora, verified farmhouses, trusted farmhouse booking, best pool villas india";
 $canonicalUrl    = absolute_url('why-choose-us');
 include __DIR__ . "/Includes/header.php";
 ?>
@@ -12,11 +12,11 @@ include __DIR__ . "/Includes/header.php";
    ═══════════════════════════════════════════════════════════ */
 
 .wcu-page-wrap {
-  min-height: calc(100vh - 72px);
-  padding-top: 72px;
-  background: #F7F3EA;
+  min-height: 100vh;
+  padding-top: 0;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
   overflow-x: hidden;
 }
 
@@ -27,7 +27,7 @@ include __DIR__ . "/Includes/header.php";
     linear-gradient(180deg, rgba(15, 23, 42, 0.80) 0%, rgba(15, 23, 42, 0.52) 45%, rgba(15, 23, 42, 0.90) 100%),
     url('<?= asset('assets/images/uploads/luxury_pool_hero.jpg') ?>') center 35% / cover no-repeat;
   color: #ffffff;
-  padding: 85px 0 105px;
+  padding: 135px 0 105px;
   overflow: hidden;
   text-align: center;
   box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
@@ -54,10 +54,10 @@ include __DIR__ . "/Includes/header.php";
   align-items: center;
   gap: 8px;
   background: rgba(15, 23, 42, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(56, 189, 248, 0.35);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  color: #C9A227;
+  color: #38BDF8;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -81,14 +81,16 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .wcu-hero-title span {
-  background: linear-gradient(135deg, #C9A227 0%, #1F4D3A 100%);
+  background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 14px rgba(2, 132, 199, 0.45));
+  font-weight: 900;
 }
 
 .wcu-hero-sub {
   font-size: 17px;
-  color: #E2DBD0;
+  color: #E2E8F0;
   line-height: 1.6;
   max-width: 720px;
   margin: 0 auto 36px;
@@ -109,7 +111,7 @@ include __DIR__ . "/Includes/header.php";
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   font-size: 15px;
   font-weight: 800;
@@ -121,7 +123,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .wcu-hero-btn-primary:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
 }
 
@@ -197,8 +199,8 @@ include __DIR__ . "/Includes/header.php";
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   font-size: 11px;
   font-weight: 800;
   text-transform: uppercase;
@@ -212,14 +214,14 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 34px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 10px;
   letter-spacing: -0.02em;
 }
 
 .wcu-section-sub {
   font-size: 15px;
-  color: #57685F;
+  color: #64748B;
   margin: 0;
 }
 
@@ -231,7 +233,7 @@ include __DIR__ . "/Includes/header.php";
 
 .wcu-pillar-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 22px;
   padding: 30px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
@@ -248,8 +250,8 @@ include __DIR__ . "/Includes/header.php";
   width: 52px;
   height: 52px;
   border-radius: 14px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -260,13 +262,13 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 18px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 8px;
 }
 
 .wcu-pillar-desc {
   font-size: 13.5px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.6;
   margin: 0;
 }
@@ -274,8 +276,8 @@ include __DIR__ . "/Includes/header.php";
 /* ── Comparison Section ── */
 .wcu-compare-section {
   background: #ffffff;
-  border-top: 1px solid #E2DBD0;
-  border-bottom: 1px solid #E2DBD0;
+  border-top: 1px solid #E2E8F0;
+  border-bottom: 1px solid #E2E8F0;
   padding: 80px 0;
   margin-bottom: 80px;
 }
@@ -292,7 +294,7 @@ include __DIR__ . "/Includes/header.php";
   border-spacing: 0;
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
@@ -303,8 +305,8 @@ include __DIR__ . "/Includes/header.php";
   text-align: left;
 }
 
-.wcu-compare-table th.farmlelo-col {
-  background: #1F4D3A;
+.wcu-compare-table th.stayora-col {
+  background: #1D4ED8;
   color: #ffffff;
   text-align: center;
   font-size: 15px;
@@ -312,7 +314,7 @@ include __DIR__ . "/Includes/header.php";
 
 .wcu-compare-table th.other-col {
   background: #f1f5f9;
-  color: #57685F;
+  color: #64748B;
   text-align: center;
 }
 
@@ -328,13 +330,13 @@ include __DIR__ . "/Includes/header.php";
 
 .wcu-compare-table td.feature-title {
   font-weight: 700;
-  color: #24312A;
+  color: #0F172A;
 }
 
-.wcu-compare-table td.farmlelo-val {
+.wcu-compare-table td.stayora-val {
   text-align: center;
   font-weight: 800;
-  color: #173C2D;
+  color: #1E40AF;
   background: rgba(22, 165, 222, 0.04);
 }
 
@@ -358,7 +360,7 @@ include __DIR__ . "/Includes/header.php";
 
 .wcu-standard-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
   padding: 24px 20px;
   text-align: center;
@@ -366,13 +368,13 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .wcu-standard-card:hover {
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   transform: translateY(-2px);
 }
 
 .wcu-standard-icon {
   font-size: 36px;
-  color: #1F4D3A;
+  color: #1D4ED8;
   margin-bottom: 12px;
   display: block;
 }
@@ -381,13 +383,13 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 16px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 6px;
 }
 
 .wcu-standard-desc {
   font-size: 12.5px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.5;
   margin: 0;
 }
@@ -407,7 +409,7 @@ include __DIR__ . "/Includes/header.php";
 
 .wcu-review-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 22px;
   padding: 28px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
@@ -442,13 +444,13 @@ include __DIR__ . "/Includes/header.php";
 .wcu-review-name {
   font-size: 14px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
 .wcu-review-role {
   font-size: 11.5px;
-  color: #57685F;
+  color: #64748B;
   margin: 0;
 }
 
@@ -460,7 +462,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .wcu-cta-card {
-  background: linear-gradient(135deg, #24312A 0%, #24312A 100%);
+  background: linear-gradient(135deg, #0F172A 0%, #0F172A 100%);
   color: #ffffff;
   border-radius: 28px;
   padding: 50px 40px;
@@ -542,11 +544,11 @@ include __DIR__ . "/Includes/header.php";
       </div>
 
       <h1 class="wcu-hero-title">
-        Why Farmlelo is India's <span>#1 Farmhouse Discovery</span> Platform
+        Why Stayora is India's <span>#1 Farmhouse Discovery</span> Platform
       </h1>
 
       <p class="wcu-hero-sub">
-        We bridge the gap between discerning travelers seeking luxury weekend getaways and exclusive farmhouse owners. Enjoy verified listings, zero hidden brokerage, and seamless hospitality.
+        We curate handpicked, verified private farmhouses and luxury pool villas across India. Enjoy transparent direct pricing, zero hidden brokerage, and seamless hospitality.
       </p>
 
       <div class="wcu-hero-actions">
@@ -555,14 +557,9 @@ include __DIR__ . "/Includes/header.php";
           <span>Explore Verified Farmhouses</span>
         </a>
 
-        <a href="<?= url('list_your_farm') ?>" class="wcu-hero-btn-secondary">
-          <span class="material-symbols-outlined" style="font-size:18px;">villa</span>
-          <span>List Your Farm</span>
-        </a>
-
-        <a href="<?= url('owner/login') ?>" class="wcu-hero-btn-secondary">
-          <span class="material-symbols-outlined" style="font-size:18px;">vpn_key</span>
-          <span>Owner Portal</span>
+        <a href="<?= url('contact') ?>" class="wcu-hero-btn-secondary">
+          <span class="material-symbols-outlined" style="font-size:18px;">support_agent</span>
+          <span>Contact Concierge</span>
         </a>
       </div>
 
@@ -593,7 +590,7 @@ include __DIR__ . "/Includes/header.php";
     <div class="wcu-section-heading">
       <div class="wcu-section-tag">
         <span class="material-symbols-outlined" style="font-size:14px;">military_tech</span>
-        <span>The Farmlelo Standard</span>
+        <span>The Stayora Standard</span>
       </div>
       <h2 class="wcu-section-title">Built on Trust, Quality &amp; Transparency</h2>
       <p class="wcu-section-sub">We eliminate the uncertainty of rural weekend bookings by setting strict quality benchmarks for every listing.</p>
@@ -656,7 +653,7 @@ include __DIR__ . "/Includes/header.php";
     </div>
   </section>
 
-  <!-- ── 3. Farmlelo vs Others Comparison ── -->
+  <!-- ── 3. Stayora vs Others Comparison ── -->
   <section class="wcu-compare-section">
     <div class="wcu-compare-container">
       <div class="wcu-section-heading">
@@ -664,7 +661,7 @@ include __DIR__ . "/Includes/header.php";
           <span class="material-symbols-outlined" style="font-size:14px;">compare_arrows</span>
           <span>Clear Difference</span>
         </div>
-        <h2 class="wcu-section-title">Farmlelo vs Traditional Booking Methods</h2>
+        <h2 class="wcu-section-title">Stayora vs Traditional Booking Methods</h2>
         <p class="wcu-section-sub">See how we compare against unverified classified ads and generic booking sites.</p>
       </div>
 
@@ -672,56 +669,56 @@ include __DIR__ . "/Includes/header.php";
         <table class="wcu-compare-table">
           <thead>
             <tr>
-              <th style="background:#F7F3EA;width:40%;">Key Features</th>
-              <th class="farmlelo-col" style="width:30%;">Farmlelo Guarantee</th>
+              <th style="background:#F8FAFC;width:40%;">Key Features</th>
+              <th class="stayora-col" style="width:30%;">Stayora Guarantee</th>
               <th class="other-col" style="width:30%;">Local Brokers / Portals</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td class="feature-title">On-Ground Physical Verification</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>100% Audited</span>
               </td>
               <td class="other-val">Rarely / Unverified</td>
             </tr>
             <tr>
               <td class="feature-title">Transparent Direct Pricing</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>Zero Broker Markup</span>
               </td>
               <td class="other-val">15% - 30% Added Markup</td>
             </tr>
             <tr>
               <td class="feature-title">Direct WhatsApp Host Access</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>Instant Connection</span>
               </td>
               <td class="other-val">Blocked / Middleman Only</td>
             </tr>
             <tr>
               <td class="feature-title">Swimming Pool &amp; Hygiene Standards</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>Strict Cleanliness Protocol</span>
               </td>
               <td class="other-val">Hit or Miss</td>
             </tr>
             <tr>
               <td class="feature-title">Screened Family &amp; Corporate Guests</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>Government ID Checked</span>
               </td>
               <td class="other-val">Unfiltered Guests</td>
             </tr>
             <tr>
               <td class="feature-title">Real-Time Host Calendar</td>
-              <td class="farmlelo-val">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;vertical-align:middle;">check_circle</span>
+              <td class="stayora-val">
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;vertical-align:middle;">check_circle</span>
                 <span>Live Availability</span>
               </td>
               <td class="other-val">Double Booking Risk</td>
@@ -740,7 +737,7 @@ include __DIR__ . "/Includes/header.php";
         <span>Quality Checklist</span>
       </div>
       <h2 class="wcu-section-title">What We Require From Every Farmhouse</h2>
-      <p class="wcu-section-sub">Before any property goes live on Farmlelo, it must satisfy our mandatory comfort and safety checklist.</p>
+      <p class="wcu-section-sub">Before any property goes live on Stayora, it must satisfy our mandatory comfort and safety checklist.</p>
     </div>
 
     <div class="wcu-standards-grid">
@@ -777,15 +774,15 @@ include __DIR__ . "/Includes/header.php";
         <span class="material-symbols-outlined" style="font-size:14px;">reviews</span>
         <span>Verified Reviews</span>
       </div>
-      <h2 class="wcu-section-title">Loved by Guests &amp; Farm Owners</h2>
-      <p class="wcu-section-sub">Real stories from families, corporate teams, and property hosts.</p>
+      <h2 class="wcu-section-title">Loved by Discerning Guests Across India</h2>
+      <p class="wcu-section-sub">Real stories from families, couples, and corporate teams.</p>
     </div>
 
     <div class="wcu-reviews-grid">
       <!-- 1 -->
       <div class="wcu-review-card">
         <div class="wcu-review-quote">
-          "Booking our weekend family reunion in Jaipur through Farmlelo was the smoothest experience. The villa and pool were even better than the photos, and the caretaker prepared amazing local food!"
+          "Booking our weekend family reunion in Jaipur through Stayora was the smoothest experience. The villa and pool were even better than the photos, and the caretaker prepared amazing local food!"
         </div>
         <div class="wcu-review-user">
           <img src="https://ui-avatars.com/api/?name=Rohit+Mehta&background=16A5DE&color=fff" alt="Rohit Mehta" class="wcu-review-avatar">
@@ -799,13 +796,13 @@ include __DIR__ . "/Includes/header.php";
       <!-- 2 -->
       <div class="wcu-review-card">
         <div class="wcu-review-quote">
-          "As a farmhouse owner, listing on Farmlelo doubled our weekend occupancy. We receive verified family guests and payouts are always on time before check-in. Highly recommended!"
+          "Finding a luxury private estate with a clean swimming pool for our anniversary celebration was effortless on Stayora. Transparent rates and instant manager confirmation made all the difference!"
         </div>
         <div class="wcu-review-user">
           <img src="https://ui-avatars.com/api/?name=Ananya+Deshmukh&background=0284c7&color=fff" alt="Ananya Deshmukh" class="wcu-review-avatar">
           <div>
             <p class="wcu-review-name">Ananya Deshmukh</p>
-            <p class="wcu-review-role">Estate Host • Udaipur</p>
+            <p class="wcu-review-role">Anniversary Stay • Udaipur</p>
           </div>
         </div>
       </div>
@@ -846,14 +843,9 @@ include __DIR__ . "/Includes/header.php";
           <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
         </a>
 
-        <a href="<?= url('list_your_farm') ?>" class="wcu-hero-btn-secondary">
-          <span class="material-symbols-outlined" style="font-size:18px;">villa</span>
-          <span>List Your Farm</span>
-        </a>
-
-        <a href="<?= url('owner/login') ?>" class="wcu-hero-btn-secondary">
-          <span class="material-symbols-outlined" style="font-size:18px;">vpn_key</span>
-          <span>Owner Portal</span>
+        <a href="<?= url('contact') ?>" class="wcu-hero-btn-secondary">
+          <span class="material-symbols-outlined" style="font-size:18px;">support_agent</span>
+          <span>Contact Concierge</span>
         </a>
       </div>
     </div>

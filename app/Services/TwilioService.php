@@ -164,17 +164,17 @@ class TwilioService {
     }
 
     /**
-     * Send an OTP SMS with standard FarmLelo branding
+     * Send an OTP SMS with standard Stayora branding
      */
     public function sendOtpSms(string $phone, string $otp, string $purpose = 'verification'): array {
         $purposeLabel = match ($purpose) {
-            'registration'        => 'FarmLelo account registration',
+            'registration'        => 'Stayora account registration',
             'phone_change'        => 'updating your mobile number',
             'forgot_password_sms' => 'password reset request',
             default               => 'verification',
         };
 
-        $body = "Your FarmLelo verification code for {$purposeLabel} is {$otp}. Valid for 10 minutes. Please do not share this code with anyone.";
+        $body = "Your Stayora verification code for {$purposeLabel} is {$otp}. Valid for 10 minutes. Please do not share this code with anyone.";
 
         return $this->sendSms($phone, $body);
     }

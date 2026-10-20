@@ -1,48 +1,31 @@
 <?php
 namespace App\Controllers\Admin;
 
-use App\Config\Database;
-use App\Models\Admin\DashboardModel;
-use Exception;
+use App\Models\Admin\AdminModel;
 
 class DashboardController {
-    
-    public function dashboard() {
-        try {
-            // 1. Establish Database Connection using your DB class
-            $db = Database::connect();
+    protected AdminModel $adminModel;
 
-            // 2. Initialize Model with mysqli connection
-            $dashboardModel = new DashboardModel($db);
+    public function __construct() {
+        $this->adminModel = new AdminModel();
+    }
 
-            // 3. Fetch data from DB
-            $stats            = $dashboardModel->getStatistics();
-            $recentBookings   = $dashboardModel->getRecentBookingRequests(6);
-            $recentInquiries  = $dashboardModel->getRecentInquiries(6);
-            $inquiries        = $dashboardModel->getAllInquiries();
-            $recentProperties = $dashboardModel->getRecentProperties(4);
+    /**
+     * Display Admin Executive Dashboard
+     */
+    public function dashboard(): void {
+        // ── 1. Strict Server-Side Single-Active-Session Access Control Guard ──
+        $admin = \App\Helpers\AdminAuth::requireAuth();
 
-            // 4. Extract data for the view
-            $data = [
-                'stats'            => $stats,
-                'recentBookings'   => $recentBookings,
-                'recentInquiries'  => $recentInquiries,
-                'inquiries'        => $inquiries,
-                'recentProperties' => $recentProperties,
-            ];
-            extract($data); 
+        // ── 2. Query Real Business KPIs & Trends ──
+        $kpis             = $this->adminModel->getDashboardKPIs();
+        $recentBookings   = $this->adminModel->getRecentBookings(6);
+        $recentFarmhouses = $this->adminModel->getRecentFarmhouses(6);
+        $chartData        = $this->adminModel->getMonthlyChartData();
+        $categoryDist     = $this->adminModel->getCategoryDistribution();
 
-            // 5. Load the View
-            include __DIR__ . '/../../Views/admin/dashboard.php';
+        $pageTitle = "Admin Dashboard • Stayora Executive Console";
 
-            // Optional: Close connection when done
-            $db->close();
-
-        } catch (Exception $e) {
-            // Handle DB Connection error (e.g. show an error view)
-            echo "Dashboard Error: " . htmlspecialchars($e->getMessage());
-            // include __DIR__ . '/../../Views/errors/500.php';
-        }
+        require_once __DIR__ . '/../../Views/admin/dashboard.php';
     }
 }
-?>

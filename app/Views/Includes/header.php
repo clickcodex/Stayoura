@@ -27,8 +27,6 @@ $isLoggedIn = isset($_SESSION['is_logged_in']) && $_SESSION['is_logged_in'];
 $role = strtolower(rtrim((string)($_SESSION['role'] ?? 'user'), 's'));
 
 $dashboardUrl = url('dashboard');
-if ($role === 'admin')  $dashboardUrl = url('admin/dashboard');
-if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 ?>
 
 <!DOCTYPE html>
@@ -39,12 +37,12 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 
   <?php SeoHelper::renderMetaTags($seoMetadata); ?>
 
-    <link rel="stylesheet" href="<?= asset('assets/css/style.css?v=15') ?>">
+    <link rel="stylesheet" href="<?= asset('assets/css/style.css?v=16') ?>">
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
   
-  <link rel="icon" type="image/webp" href="<?= asset('assets/images/logo.webp') ?>"/>
-  <link rel="shortcut icon" href="<?= asset('assets/images/logo.webp') ?>"/>
-  <link rel="apple-touch-icon" href="<?= asset('assets/images/logo.webp') ?>"/>
+  <link rel="icon" type="image/png" href="<?= SiteHelper::getFaviconUrl() ?>"/>
+  <link rel="shortcut icon" href="<?= SiteHelper::getFaviconUrl() ?>"/>
+  <link rel="apple-touch-icon" href="<?= SiteHelper::getFaviconUrl() ?>"/>
 
   <!-- Google Fonts Preconnect & Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
@@ -60,24 +58,24 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
     theme: {
       extend: {
         colors: {
-          accent: "#C9A227",
+          accent: "<?= !empty($globalSite['accent_theme_color']) ? htmlspecialchars($globalSite['accent_theme_color']) : '#C9A227' ?>",
           "accent-hover": "#B5911F",
           "accent-container": "#FDF8E8",
           "on-accent": "#ffffff",
           /* Core Theme Colors */
-          primary: "#1F4D3A",
-          "primary-container": "#173C2D",
-          "primary-fixed": "#6F8F72",
+          primary: "<?= !empty($globalSite['primary_theme_color']) ? htmlspecialchars($globalSite['primary_theme_color']) : '#1D4ED8' ?>",
+          "primary-container": "#1E40AF",
+          "primary-fixed": "#3B82F6",
           "on-primary": "#ffffff",
           "on-primary-container": "#ffffff",
 
-          secondary: "#6F8F72",
-          "secondary-container": "#EAF1EB",
+          secondary: "<?= !empty($globalSite['secondary_theme_color']) ? htmlspecialchars($globalSite['secondary_theme_color']) : '#0284C7' ?>",
+          "secondary-container": "#E0F2FE",
           "on-secondary": "#ffffff",
           "on-secondary-container": "#0A4D66",
 
           surface: "#FFFFFF",
-          background: "#F7F3EA",
+          background: "#FFFFFF",
 
           "surface-container-lowest": "#FFFFFF",
           "surface-container-low": "#F7F7F7",
@@ -86,17 +84,17 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 
           "surface-variant": "#E3E3E3",
 
-          "on-surface": "#24312A",
-          "on-background": "#24312A",
-          "on-surface-variant": "#57685F",
+          "on-surface": "#0F172A",
+          "on-background": "#0F172A",
+          "on-surface-variant": "#64748B",
 
           outline: "#9AA4AA",
-          "outline-variant": "#E2DBD0",
+          "outline-variant": "#E2E8F0",
 
           error: "#BA1A1A",
           "on-error": "#FFFFFF",
 
-          "surface-tint": "#1F4D3A",
+          "surface-tint": "#1D4ED8",
 
           /* Extended Brand Colors */
           "brand-emerald": {
@@ -118,19 +116,228 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
     },
   };
 </script>
+
+<style>
+/* ══════════════════════════════════════════════════════════
+   STAYORA DYNAMIC HEADER — TRANSPARENT BLUR & SCROLL TO WHITE
+   ══════════════════════════════════════════════════════════ */
+#main-site-header {
+  transition: background-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+              backdrop-filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── STATE 1: TRANSPARENT BLUR (At Top of Page Over Hero) ── */
+#main-site-header.is-transparent {
+  background: rgba(15, 23, 42, 0.28) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.12) !important;
+}
+
+#main-site-header.is-transparent .header-logo-light { display: none !important; }
+#main-site-header.is-transparent .header-logo-dark { display: block !important; }
+
+#main-site-header.is-transparent .header-brand-title { color: #FFFFFF !important; }
+#main-site-header.is-transparent .header-brand-accent { color: #38BDF8 !important; }
+
+#main-site-header.is-transparent .header-nav-link {
+  color: rgba(255, 255, 255, 0.9) !important;
+}
+#main-site-header.is-transparent .header-nav-link:hover {
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.14) !important;
+}
+
+#main-site-header.is-transparent .nav-search {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+#main-site-header.is-transparent .nav-search input {
+  color: #FFFFFF !important;
+}
+#main-site-header.is-transparent .nav-search input::placeholder {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+#main-site-header.is-transparent .nav-search svg {
+  stroke: rgba(255, 255, 255, 0.85) !important;
+}
+#main-site-header.is-transparent .nav-search:focus-within {
+  border-color: #38BDF8 !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25) !important;
+}
+
+#main-site-header.is-transparent .header-btn-list {
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+  color: #FFFFFF !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+#main-site-header.is-transparent .header-btn-list:hover {
+  background: #FFFFFF !important;
+  color: #1D4ED8 !important;
+  border-color: #FFFFFF !important;
+}
+
+#main-site-header.is-transparent .header-divider {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+#main-site-header.is-transparent .header-btn-login {
+  color: #FFFFFF !important;
+}
+#main-site-header.is-transparent .header-btn-login:hover {
+  color: #38BDF8 !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+
+#main-site-header.is-transparent .india-badge {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.22) !important;
+  backdrop-filter: blur(8px);
+}
+#main-site-header.is-transparent .india-badge .badge-text div:last-child {
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+#main-site-header.is-transparent .header-mobile-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+}
+#main-site-header.is-transparent .header-mobile-btn span,
+#main-site-header.is-transparent .header-mobile-btn svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+#main-site-header.is-transparent .header-mobile-list-btn {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+  color: #FFFFFF !important;
+}
+
+#main-site-header.is-transparent .header-user-btn {
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+}
+#main-site-header.is-transparent .header-user-btn .header-user-name {
+  color: #FFFFFF !important;
+}
+
+/* ── STATE 2: SOLID WHITE (When Scrolled Down) ── */
+#main-site-header.is-scrolled {
+  background: rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08) !important;
+}
+
+#main-site-header.is-scrolled .header-logo-light { display: block !important; }
+#main-site-header.is-scrolled .header-logo-dark { display: none !important; }
+
+#main-site-header.is-scrolled .header-brand-title { color: #0F172A !important; }
+#main-site-header.is-scrolled .header-brand-accent { color: #1D4ED8 !important; }
+
+#main-site-header.is-scrolled .header-nav-link {
+  color: #334155 !important;
+}
+#main-site-header.is-scrolled .header-nav-link:hover {
+  color: #1D4ED8 !important;
+  background: rgba(29, 78, 216, 0.06) !important;
+}
+
+#main-site-header.is-scrolled .nav-search {
+  background: #F8FAFC !important;
+  border: 1.5px solid #E2E8F0 !important;
+}
+#main-site-header.is-scrolled .nav-search input {
+  color: #0F172A !important;
+}
+#main-site-header.is-scrolled .nav-search input::placeholder {
+  color: #94A3B8 !important;
+}
+#main-site-header.is-scrolled .nav-search svg {
+  stroke: #94A3B8 !important;
+}
+#main-site-header.is-scrolled .nav-search:focus-within {
+  border-color: #1D4ED8 !important;
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12) !important;
+}
+
+#main-site-header.is-scrolled .header-btn-list {
+  border: 2px solid #1D4ED8 !important;
+  color: #1D4ED8 !important;
+  background: transparent !important;
+}
+#main-site-header.is-scrolled .header-btn-list:hover {
+  background: #1D4ED8 !important;
+  color: #FFFFFF !important;
+}
+
+#main-site-header.is-scrolled .header-divider {
+  background: #E2E8F0 !important;
+}
+
+#main-site-header.is-scrolled .header-btn-login {
+  color: #334155 !important;
+}
+#main-site-header.is-scrolled .header-btn-login:hover {
+  color: #1D4ED8 !important;
+  background: rgba(29, 78, 216, 0.05) !important;
+}
+
+#main-site-header.is-scrolled .india-badge {
+  background: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+#main-site-header.is-scrolled .india-badge .badge-text div:last-child {
+  color: #555555 !important;
+}
+
+#main-site-header.is-scrolled .header-mobile-btn {
+  background: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+#main-site-header.is-scrolled .header-mobile-btn span,
+#main-site-header.is-scrolled .header-mobile-btn svg {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+#main-site-header.is-scrolled .header-mobile-list-btn {
+  background: rgba(29, 78, 216, 0.1) !important;
+  border-color: rgba(29, 78, 216, 0.3) !important;
+  color: #1D4ED8 !important;
+}
+
+#main-site-header.is-scrolled .header-user-btn {
+  color: #334155 !important;
+  border-color: #E2E8F0 !important;
+  background: #F8FAFC !important;
+}
+#main-site-header.is-scrolled .header-user-btn .header-user-name {
+  color: #0F172A !important;
+}
+</style>
 </head>
 
 <body class="bg-background text-on-background antialiased">
 
 <!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
-<header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-md border-b border-outline-variant/40 shadow-sm transition-all duration-300"style="background-color: #153427;">
+<header id="main-site-header" class="main-site-header fixed top-0 left-0 right-0 z-50 transition-all duration-300 is-transparent">
   <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 h-[72px] flex items-center justify-between gap-4">
 
     <!-- ── Logo ── -->
     <a href="<?= url('home') ?>" class="flex items-center gap-2.5 shrink-0 group transition-transform hover:scale-[1.03]">
-      <img src="<?= asset('assets/images/uploads/PNG.png') ?>" alt="Farm Lelo Logo" class="w-9 h-9 object-contain">
-      <span class="font-headline font-bold text-xl tracking-tight text-on-surface leading-none" style="color:#fff;">
-        Farm<span class="text-primary">Lelo</span>
+      <img src="<?= asset('assets/images/logo.webp') ?>" alt="Stayora" class="header-logo-light h-9 w-auto object-contain">
+      <img src="<?= asset('assets/images/logo-dark.webp') ?>" alt="Stayora" class="header-logo-dark h-9 w-auto object-contain hidden">
+      <span class="header-brand-title font-headline font-bold text-xl tracking-tight leading-none transition-colors">
+        Stay<span class="header-brand-accent transition-colors">ora</span>
       </span>
     </a>
 
@@ -144,7 +351,7 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
     </div>
 
     <!-- ── Search Bar (desktop) ── -->
-    <form method="GET" action="<?= url('farmhouses') ?>" class="nav-search hidden md:flex flex-1 max-w-xs lg:max-w-sm" id="nav-search-form">
+    <form method="GET" action="<?= url('farmhouses') ?>" class="nav-search header-search hidden md:flex flex-1 max-w-xs lg:max-w-sm transition-all" id="nav-search-form">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#9AA4AA" stroke-width="2.5">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
@@ -153,33 +360,24 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 
     <!-- ── Desktop Nav Links ── -->
     <nav class="hidden lg:flex items-center gap-1 shrink-0">
-      <a href="<?= url('farmhouses') ?>"    class="px-3 py-2 text-sm font-semibold text-slate-100 hover:text-primary rounded-lg hover:bg-primary/5 transition-all">Farms</a>
-      <a href="<?= url('why-choose-us') ?>" class="px-3 py-2 text-sm font-semibold text-slate-100 hover:text-primary rounded-lg hover:bg-primary/5 transition-all">Why Choose Us</a>
-      <a href="<?= url('about') ?>"         class="px-3 py-2 text-sm font-semibold text-slate-100 hover:text-primary rounded-lg hover:bg-primary/5 transition-all">About</a>
-      <a href="<?= url('contact') ?>"       class="px-3 py-2 text-sm font-semibold text-slate-100 hover:text-primary rounded-lg hover:bg-primary/5 transition-all">Contact</a>
+      <a href="<?= url('farmhouses') ?>"    class="header-nav-link px-3 py-2 text-sm font-semibold rounded-lg transition-all">Farms</a>
+      <a href="<?= url('why-choose-us') ?>" class="header-nav-link px-3 py-2 text-sm font-semibold rounded-lg transition-all">Why Choose Us</a>
+      <a href="<?= url('about') ?>"         class="header-nav-link px-3 py-2 text-sm font-semibold rounded-lg transition-all">About</a>
+      <a href="<?= url('contact') ?>"       class="header-nav-link px-3 py-2 text-sm font-semibold rounded-lg transition-all">Contact</a>
     </nav>
 
     <!-- ── Desktop CTA + Auth ── -->
     <div class="hidden lg:flex items-center gap-3 shrink-0">
-      <a href="<?= url('list_your_farm') ?>"
-         class="px-4 py-2 text-xs font-bold border-2 border-primary text-primary rounded-full hover:bg-primary hover:text-white transition-all whitespace-nowrap">
-        + List Your Farm
-      </a>
-
-      <div class="w-px h-6 bg-slate-200 mx-1"></div>
-
       <?php if ($isLoggedIn): ?>
         <!-- Logged-in state with rich user dropdown -->
         <div class="relative group" id="user-menu-dropdown-wrap">
-          <button type="button" class="flex items-center gap-2.5 px-3 py-1.5 text-slate-700 hover:text-slate-700 rounded-full hover:bg-slate-100 transition-all border border-transparent hover:border-slate-200">
+          <button type="button" class="header-user-btn flex items-center gap-2.5 px-3 py-1.5 rounded-full transition-all border border-transparent">
             <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-white shadow-xs overflow-hidden shrink-0">
               <?php 
                 $imgName = $_SESSION['profile_image'] ?? '';
                 $avatarUrl = '';
                 if (!empty($imgName)) {
-                    $avatarUrl = ($role === 'owner') 
-                        ? asset('assets/images/uploads/avatars/' . htmlspecialchars($imgName))
-                        : asset('assets/images/uploads/profiles/' . htmlspecialchars($imgName));
+                    $avatarUrl = asset('assets/images/uploads/profiles/' . htmlspecialchars($imgName));
                 }
               ?>
               <?php if (!empty($avatarUrl)): ?>
@@ -194,7 +392,7 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
                 <?= htmlspecialchars(explode(' ', $_SESSION['user_name'] ?? 'User')[0]) ?>
               </span>
               <span class="text-[10px] font-bold text-primary block leading-tight uppercase tracking-wider">
-                <?= $role === 'owner' ? 'Host Partner' : ($role === 'admin' ? 'Administrator' : 'My Account') ?>
+                My Account
               </span>
             </div>
             <span class="material-symbols-outlined text-slate-400 text-sm group-hover:rotate-180 transition-transform duration-200">expand_more</span>
@@ -213,87 +411,33 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
                 </div>
               </div>
 
-              <!-- Role-Specific Navigation links -->
-              <?php if ($role === 'owner'): ?>
-                <!-- ── OWNER WORKSPACE LINKS ── -->
-                <a href="<?= url('owner/dashboard') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">grid_view</span>
-                  <span>Host Dashboard</span>
-                </a>
+              <!-- Navigation links -->
+              <a href="<?= url('dashboard') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[18px] text-primary">grid_view</span>
+                <span>Dashboard Overview</span>
+              </a>
 
-                <a href="<?= url('owner/farmhouses') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">villa</span>
-                  <span>My Farmhouses</span>
-                </a>
+              <a href="<?= url('user/my-bookings') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
+                <span>My Bookings</span>
+              </a>
 
-                <a href="<?= url('owner/farmhouses/add') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">add_circle</span>
-                  <span>List New Farm</span>
-                </a>
+              <a href="<?= url('my-wishlist') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[18px] text-pink-500" style="font-variation-settings:'FILL' 1;">favorite</span>
+                <span>Saved Farmhouses</span>
+              </a>
 
-                <a href="<?= url('owner/profile') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">manage_accounts</span>
-                  <span>Profile &amp; Security</span>
-                </a>
+              <a href="<?= url('user/profile') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[18px] text-primary">manage_accounts</span>
+                <span>Profile &amp; Settings</span>
+              </a>
 
-                <div class="h-px bg-slate-100 my-1"></div>
+              <div class="h-px bg-slate-100 my-1"></div>
 
-                <a href="<?= url('why-choose-us') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">military_tech</span>
-                  <span>Host Benefits &amp; Trust</span>
-                </a>
-
-              <?php elseif ($role === 'admin'): ?>
-                <!-- ── ADMIN LINKS ── -->
-                <a href="<?= url('admin/dashboard') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">admin_panel_settings</span>
-                  <span>Admin Dashboard</span>
-                </a>
-
-                <a href="<?= url('admin/managefarmhouses') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">villa</span>
-                  <span>Manage Farmhouses</span>
-                </a>
-
-                <a href="<?= url('admin/booking-requests') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
-                  <span>Booking Requests</span>
-                </a>
-
-                <a href="<?= url('admin/settings') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">settings</span>
-                  <span>Site Settings</span>
-                </a>
-
-              <?php else: ?>
-                <!-- ── GUEST USER LINKS ── -->
-                <a href="<?= url('dashboard') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">grid_view</span>
-                  <span>Dashboard Overview</span>
-                </a>
-
-                <a href="<?= url('user/my-bookings') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">calendar_month</span>
-                  <span>My Bookings</span>
-                </a>
-
-                <a href="<?= url('my-wishlist') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-pink-500" style="font-variation-settings:'FILL' 1;">favorite</span>
-                  <span>Saved Farmhouses</span>
-                </a>
-
-                <a href="<?= url('user/profile') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-primary">manage_accounts</span>
-                  <span>Profile &amp; Settings</span>
-                </a>
-
-                <div class="h-px bg-slate-100 my-1"></div>
-
-                <a href="<?= url('contact') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
-                  <span class="material-symbols-outlined text-[18px] text-slate-400">support_agent</span>
-                  <span>Concierge Support</span>
-                </a>
-              <?php endif; ?>
+              <a href="<?= url('contact') ?>" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-primary hover:bg-primary/5 transition-all">
+                <span class="material-symbols-outlined text-[18px] text-slate-400">support_agent</span>
+                <span>Concierge Support</span>
+              </a>
 
               <div class="h-px bg-slate-100 my-1"></div>
 
@@ -308,7 +452,7 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
       <?php else: ?>
         <!-- Guest state -->
         <a href="<?= url('login') ?>"
-           class="px-4 py-2 text-sm font-bold text-slate-100 hover:text-primary hover:bg-primary/5 rounded-full transition-colors">
+           class="header-btn-login px-4 py-2 text-sm font-bold rounded-full transition-colors">
           Log In
         </a>
         <a href="<?= url('register') ?>"
@@ -322,18 +466,13 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
     <div class="flex items-center gap-2 lg:hidden shrink-0">
       <!-- Mobile search toggle -->
       <button id="mobile-search-btn" type="button"
-              class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-700 flex items-center justify-center transition-all border border-slate-200 shadow-2xs"
+              class="header-mobile-btn w-9 h-9 rounded-xl active:scale-95 flex items-center justify-center transition-all border shadow-2xs"
               aria-label="Search">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
       </button>
 
-      <!-- List Your Farmhouse (Sleek Compact Pill) -->
-      <a href="<?= url('list_your_farm') ?>"
-         class="px-2.5 py-1.5 text-xs font-bold bg-primary/10 hover:bg-primary text-primary hover:text-white border border-primary/30 rounded-full transition-all flex items-center gap-1 shadow-2xs whitespace-nowrap active:scale-95 leading-none">
-        <span>+ List Farm</span>
-      </a>
 
       <?php if ($isLoggedIn): ?>
         <!-- User avatar shortcut on mobile -->
@@ -349,7 +488,7 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 
       <!-- Hamburger Button (Light Style) -->
       <button id="mobile-menu-btn" type="button" onclick="toggleMobileNav()"
-              class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:scale-95 text-slate-800 flex items-center justify-center transition-all border border-slate-200 shadow-2xs"
+              class="header-mobile-btn w-9 h-9 rounded-xl active:scale-95 flex items-center justify-center transition-all border shadow-2xs"
               aria-label="Menu" aria-expanded="false">
         <span class="material-symbols-outlined text-[20px] text-slate-800 leading-none" id="menu-icon">menu</span>
       </button>
@@ -368,6 +507,37 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
     </form>
   </div>
 
+
+  <!-- ── Dynamic Header Scroll Controller (Transparent Blur to Solid White) ── -->
+  <script>
+  (function() {
+    function updateStayoraHeader() {
+      var header = document.getElementById('main-site-header');
+      if (!header) return;
+
+      var hasDarkHero = document.querySelector('.hm-hero-wrap, .wcu-hero, .abt-hero, .contact-hero, .lyf-hero, .legal-hero, [data-hero-dark]');
+      var scrollY = window.pageYOffset || document.documentElement.scrollTop || window.scrollY || 0;
+
+      if (hasDarkHero) {
+        if (scrollY > 30) {
+          header.classList.add('is-scrolled');
+          header.classList.remove('is-transparent');
+        } else {
+          header.classList.add('is-transparent');
+          header.classList.remove('is-scrolled');
+        }
+      } else {
+        header.classList.add('is-scrolled');
+        header.classList.remove('is-transparent');
+      }
+    }
+
+    window.addEventListener('scroll', updateStayoraHeader, { passive: true });
+    document.addEventListener('DOMContentLoaded', updateStayoraHeader);
+    updateStayoraHeader();
+  })();
+  </script>
+
 </header>
 
 <!-- ══════════════════════════════════════════════
@@ -377,9 +547,9 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
 <aside id="mob-nav-drawer" class="mob-nav-drawer" aria-label="Mobile Navigation">
   <div class="mob-nav-header">
     <a href="<?= url('home') ?>" class="flex items-center gap-2.5">
-      <img src="<?= asset('assets/images/logo-dark.webp') ?>" alt="Farm Lelo Logo" class="h-9 w-auto object-contain">
+      <img src="<?= asset('assets/images/logo.webp') ?>" alt="Stayora Logo" class="h-9 w-auto object-contain">
       <span class="font-headline font-bold text-lg tracking-tight text-slate-900 leading-none">
-        Farm<span class="text-primary">Lelo</span>
+        Stay<span class="text-primary">ora</span>
       </span>
     </a>
     <button type="button" class="mob-nav-close" onclick="closeMobileNav()" aria-label="Close menu">✕</button>
@@ -397,83 +567,37 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
           <?php endif; ?>
         </div>
         <div style="min-width:0;flex:1;">
-          <div style="font-size:14px;font-weight:800;color:#24312A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+          <div style="font-size:14px;font-weight:800;color:#0F172A;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
             <?= htmlspecialchars($_SESSION['user_name'] ?? 'User') ?>
           </div>
-          <div style="font-size:11px;color:#C9A227;font-weight:700;text-transform:uppercase;">
-            <?= $role === 'owner' ? 'Host Partner' : ($role === 'admin' ? 'Administrator' : 'Guest Account') ?>
+          <div style="font-size:11px;color:#0284C7;font-weight:700;text-transform:uppercase;">
+            Guest Account
           </div>
         </div>
       </div>
 
-      <!-- ROLE-SPECIFIC ACCOUNT SECTION -->
-      <?php if ($role === 'owner'): ?>
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.5px;margin-top:4px;">
-          Host Workspace
-        </div>
-        <nav class="mob-nav-links">
-          <a href="<?= url('owner/dashboard') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">grid_view</span>
-            <span>Host Dashboard</span>
-          </a>
-          <a href="<?= url('owner/farmhouses') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">villa</span>
-            <span>My Farmhouses</span>
-          </a>
-          <a href="<?= url('owner/farmhouses/add') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">add_circle</span>
-            <span>List New Farm</span>
-          </a>
-          <a href="<?= url('owner/profile') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">manage_accounts</span>
-            <span>Profile &amp; Security</span>
-          </a>
-        </nav>
-      <?php elseif ($role === 'admin'): ?>
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.5px;margin-top:4px;">
-          Admin Management
-        </div>
-        <nav class="mob-nav-links">
-          <a href="<?= url('admin/dashboard') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">admin_panel_settings</span>
-            <span>Admin Dashboard</span>
-          </a>
-          <a href="<?= url('admin/managefarmhouses') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">villa</span>
-            <span>Manage Farmhouses</span>
-          </a>
-          <a href="<?= url('admin/booking-requests') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">calendar_month</span>
-            <span>Booking Requests</span>
-          </a>
-          <a href="<?= url('admin/settings') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">settings</span>
-            <span>Site Settings</span>
-          </a>
-        </nav>
-      <?php else: ?>
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.5px;margin-top:4px;">
-          My Account
-        </div>
-        <nav class="mob-nav-links">
-          <a href="<?= url('dashboard') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">grid_view</span>
-            <span>Dashboard Overview</span>
-          </a>
-          <a href="<?= url('user/my-bookings') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">calendar_month</span>
-            <span>My Bookings</span>
-          </a>
-          <a href="<?= url('my-wishlist') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined" style="color:#ec4899;font-variation-settings:'FILL' 1;">favorite</span>
-            <span>Saved Wishlist</span>
-          </a>
-          <a href="<?= url('user/profile') ?>" class="mob-nav-link">
-            <span class="material-symbols-outlined">manage_accounts</span>
-            <span>Profile &amp; Settings</span>
-          </a>
-        </nav>
-      <?php endif; ?>
+      <!-- ACCOUNT SECTION -->
+      <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#94a3b8;letter-spacing:0.5px;margin-top:4px;">
+        My Account
+      </div>
+      <nav class="mob-nav-links">
+        <a href="<?= url('dashboard') ?>" class="mob-nav-link">
+          <span class="material-symbols-outlined">grid_view</span>
+          <span>Dashboard Overview</span>
+        </a>
+        <a href="<?= url('user/my-bookings') ?>" class="mob-nav-link">
+          <span class="material-symbols-outlined">calendar_month</span>
+          <span>My Bookings</span>
+        </a>
+        <a href="<?= url('my-wishlist') ?>" class="mob-nav-link">
+          <span class="material-symbols-outlined" style="color:#ec4899;font-variation-settings:'FILL' 1;">favorite</span>
+          <span>Saved Wishlist</span>
+        </a>
+        <a href="<?= url('user/profile') ?>" class="mob-nav-link">
+          <span class="material-symbols-outlined">manage_accounts</span>
+          <span>Profile &amp; Settings</span>
+        </a>
+      </nav>
 
       <div style="height:1px;background:#f1f5f9;margin:4px 0;"></div>
 
@@ -503,18 +627,6 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
           <span>Contact Concierge</span>
         </a>
       </nav>
-
-      <?php if ($role !== 'owner'): ?>
-        <a href="<?= url('list_your_farm') ?>" class="mob-nav-cta">
-          <span class="material-symbols-outlined" style="font-size:18px;">add_home</span>
-          <span>+ List Your Farmhouse</span>
-        </a>
-      <?php else: ?>
-        <a href="<?= url('owner/farmhouses/add') ?>" class="mob-nav-cta">
-          <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
-          <span>+ List New Farm</span>
-        </a>
-      <?php endif; ?>
 
       <a href="<?= url('logout') ?>" class="mob-nav-link" style="color:#ef4444;margin-top:auto;justify-content:center;background:#fef2f2;border:1px solid #fee2e2;border-radius:12px;">
         <span class="material-symbols-outlined" style="color:#ef4444;">logout</span>
@@ -549,11 +661,6 @@ if ($role === 'owner')  $dashboardUrl = url('owner/dashboard');
           <span>Contact &amp; Support</span>
         </a>
       </nav>
-
-      <a href="<?= url('list_your_farm') ?>" class="mob-nav-cta">
-        <span class="material-symbols-outlined" style="font-size:18px;">add_home</span>
-        <span>+ List Your Farmhouse</span>
-      </a>
 
       <div class="mob-nav-auth-grid">
         <a href="<?= url('login') ?>" class="mob-nav-auth-btn mob-nav-login-btn">Log In</a>

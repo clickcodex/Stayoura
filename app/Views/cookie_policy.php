@@ -1,6 +1,6 @@
 <?php
-$pageTitle       = "Cookie Policy | FarmLelo";
-$pageDescription = "Learn how FarmLelo uses cookies to remember your preferences and deliver an optimal browsing experience.";
+$pageTitle       = "Cookie Policy | Stayora";
+$pageDescription = "Learn how Stayora uses cookies to remember your preferences and deliver an optimal browsing experience.";
 $canonicalUrl    = absolute_url('cookie_policy');
 include __DIR__ . "/Includes/header.php";
 ?>
@@ -13,9 +13,9 @@ include __DIR__ . "/Includes/header.php";
 .legal-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 /* ── Hero Section ── */
@@ -63,7 +63,8 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .legal-hero-title span {
-  background: linear-gradient(135deg, #C9A227 0%, #1F4D3A 100%);
+  background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
+  filter: drop-shadow(0 2px 14px rgba(2, 132, 199, 0.45));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -91,7 +92,7 @@ include __DIR__ . "/Includes/header.php";
   position: sticky;
   top: 96px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -103,7 +104,7 @@ include __DIR__ . "/Includes/header.php";
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #24312A;
+  color: #0F172A;
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f1f5f9;
@@ -122,7 +123,7 @@ include __DIR__ . "/Includes/header.php";
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 10px;
@@ -131,7 +132,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-toc-link:hover {
   background: #f0f9ff;
-  color: #1F4D3A;
+  color: #1D4ED8;
   transform: translateX(3px);
 }
 
@@ -144,7 +145,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 28px;
   padding: 36px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -164,7 +165,7 @@ include __DIR__ . "/Includes/header.php";
   height: 44px;
   border-radius: 14px;
   background: rgba(22, 165, 222, 0.12);
-  color: #1F4D3A;
+  color: #1D4ED8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +176,7 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 20px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -211,13 +212,13 @@ include __DIR__ . "/Includes/header.php";
   border-spacing: 0;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   margin: 20px 0;
 }
 
 .cookie-table th {
-  background: #F7F3EA;
-  color: #24312A;
+  background: #F8FAFC;
+  color: #0F172A;
   font-family: 'Epilogue', sans-serif;
   font-weight: 800;
   font-size: 12.5px;
@@ -225,7 +226,7 @@ include __DIR__ . "/Includes/header.php";
   letter-spacing: 0.5px;
   padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid #E2DBD0;
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .cookie-table td {
@@ -270,7 +271,7 @@ include __DIR__ . "/Includes/header.php";
       </div>
 
       <h1 class="legal-hero-title">
-        Farmlelo <span>Cookie Policy</span>
+        Stayora <span>Cookie Policy</span>
       </h1>
 
       <p class="legal-hero-meta">
@@ -326,7 +327,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <ul>
-            <li><strong>Strictly Necessary / Authentication Cookies:</strong> Essential for you to browse Farmlelo, log into your user or owner workspace, and access secured booking pages.</li>
+            <li><strong>Strictly Necessary / Authentication Cookies:</strong> Essential for you to browse Stayora, log into your user or owner workspace, and access secured booking pages.</li>
             <li><strong>Functional / Preference Cookies:</strong> Remembers your saved wishlist favorites, location filter preferences, and theme preferences.</li>
             <li><strong>Performance &amp; Analytics Cookies:</strong> Gathers anonymized aggregated data regarding website traffic, load speeds, and popular farmhouse listings to optimize our user experience.</li>
           </ul>
@@ -359,7 +360,7 @@ include __DIR__ . "/Includes/header.php";
                 <td>Session</td>
               </tr>
               <tr>
-                <td><code>farmlelo_remember</code></td>
+                <td><code>stayora_remember</code></td>
                 <td>Functional</td>
                 <td>Preserves "Remember Me" login status</td>
                 <td>30 Days</td>
@@ -441,7 +442,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            If you have questions about how Farmlelo uses cookies and tracking technologies, please contact our data privacy team at <a href="mailto:privacy@farmlelo.com" style="color:#1F4D3A;font-weight:700;text-decoration:none;">privacy@farmlelo.com</a>.
+            If you have questions about how Stayora uses cookies and tracking technologies, please contact our data privacy team at <a href="mailto:privacy@stayora.com" style="color:#1D4ED8;font-weight:700;text-decoration:none;">privacy@stayora.com</a>.
           </p>
         </div>
       </section>

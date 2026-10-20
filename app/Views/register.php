@@ -9,15 +9,15 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
   min-height: calc(100vh - 80px);
   padding-top: 80px;
   display: flex;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 .auth-hero-pane {
   flex: 1.1;
   position: relative;
-  background: #24312A;
+  background: #0F172A;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -114,14 +114,14 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
   align-items: center;
   justify-content: center;
   padding: 40px 20px 60px;
-  background: #F7F3EA;
+  background: #F8FAFC;
 }
 
 .auth-card {
   width: 100%;
   max-width: 440px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 26px;
   padding: 36px 32px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.05);
@@ -142,7 +142,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
   background: transparent;
   font-size: 13px;
   font-weight: 800;
-  color: #57685F;
+  color: #64748B;
   border-radius: 10px;
   text-align: center;
   text-decoration: none;
@@ -153,7 +153,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 
 .auth-tab-btn.active {
   background: #ffffff;
-  color: #24312A;
+  color: #0F172A;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
@@ -164,14 +164,14 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 .auth-heading h3 {
   font-size: 22px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   letter-spacing: -0.01em;
   margin: 0 0 4px;
 }
 
 .auth-heading p {
   font-size: 13px;
-  color: #57685F;
+  color: #64748B;
   margin: 0;
 }
 
@@ -207,12 +207,12 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
   width: 100%;
   height: 46px;
   padding: 0 14px 0 42px;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 12px;
   font-size: 13.5px;
   font-family: inherit;
-  color: #24312A;
-  background: #F7F3EA;
+  color: #0F172A;
+  background: #F8FAFC;
   outline: none;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -220,7 +220,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 
 .auth-input:focus {
   background: #ffffff;
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   box-shadow: 0 0 0 3px rgba(22, 165, 222, 0.15);
 }
 
@@ -243,7 +243,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 }
 
 .auth-eye-btn:hover {
-  color: #24312A;
+  color: #0F172A;
 }
 
 .auth-error-msg {
@@ -261,7 +261,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 .auth-submit-btn {
   width: 100%;
   height: 48px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   border: none;
   border-radius: 14px;
@@ -277,7 +277,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 }
 
 .auth-submit-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 25px rgba(2, 132, 199, 0.45);
 }
@@ -337,7 +337,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 
     <div class="auth-brand-badge">
       <span class="material-symbols-outlined" style="font-size:16px;">villa</span>
-      <span>Farmlelo Retreats</span>
+      <span>Stayora Retreats</span>
     </div>
 
     <div class="auth-hero-body">
@@ -394,7 +394,7 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 
       <div class="auth-heading">
         <h3>Create Your Account</h3>
-        <p>Start your journey with Farmlelo today.</p>
+        <p>Start your journey with Stayora today.</p>
       </div>
 
       <form id="reg-form" action="<?= url('register') ?>" method="POST" novalidate onsubmit="return validateRegister(event)">
@@ -461,12 +461,12 @@ $redirectParam = htmlspecialchars($_GET['redirect'] ?? '');
 
         <!-- OR Social Divider -->
         <div style="display:flex;align-items:center;margin:20px 0;gap:12px;">
-          <div style="flex:1;height:1px;background:#E2DBD0;"></div>
+          <div style="flex:1;height:1px;background:#E2E8F0;"></div>
           <span style="font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.5px;">Or register with</span>
-          <div style="flex:1;height:1px;background:#E2DBD0;"></div>
+          <div style="flex:1;height:1px;background:#E2E8F0;"></div>
         </div>
 
-        <a href="<?= url('auth/google') ?>" class="google-auth-btn" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 16px;border:1px solid #cbd5e1;background:#ffffff;border-radius:12px;font-size:14px;font-weight:600;color:#24312A;text-decoration:none;transition:all 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.05);" onmouseover="this.style.background='#F7F3EA';this.style.borderColor='#94a3b8'" onmouseout="this.style.background='#ffffff';this.style.borderColor='#cbd5e1'">
+        <a href="<?= url('auth/google') ?>" class="google-auth-btn" style="display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:11px 16px;border:1px solid #cbd5e1;background:#ffffff;border-radius:12px;font-size:14px;font-weight:600;color:#0F172A;text-decoration:none;transition:all 0.2s;box-shadow:0 1px 2px rgba(0,0,0,0.05);" onmouseover="this.style.background='#F8FAFC';this.style.borderColor='#94a3b8'" onmouseout="this.style.background='#ffffff';this.style.borderColor='#cbd5e1'">
           <svg width="18" height="18" viewBox="0 0 18 18">
             <path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.616z"/>
             <path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.184l-2.908-2.258c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/>

@@ -36,11 +36,16 @@ class WhatsAppGatewayService {
         $checkOut  = $booking['check_out'] ?? '';
         $voucherUrl = url('booking/voucher?id=' . $booking['id']);
 
-        $message = "✨ *Reservation Confirmed — Stayora*\n\n"
+        $settings = \App\Helpers\SiteHelper::getSettings();
+        $checkInTime = \App\Helpers\SiteHelper::formatTime($settings['default_checkin_time'] ?? '13:00');
+        $checkOutTime = \App\Helpers\SiteHelper::formatTime($settings['default_checkout_time'] ?? '11:00');
+        $siteName = $settings['site_name'] ?? 'Stayora';
+
+        $message = "✨ *Reservation Confirmed — {$siteName}*\n\n"
                  . "Hello {$guestName},\n"
                  . "Your booking at *{$property}* is officially confirmed!\n\n"
-                 . "📅 *Check-In:* {$checkIn} (from 1:00 PM)\n"
-                 . "📅 *Check-Out:* {$checkOut} (until 11:00 AM)\n"
+                 . "📅 *Check-In:* {$checkIn} (from {$checkInTime})\n"
+                 . "📅 *Check-Out:* {$checkOut} (until {$checkOutTime})\n"
                  . "🧾 *Digital Voucher:* {$voucherUrl}\n\n"
                  . "Have a wonderful stay! Reach out if you need directions or special assistance.";
 

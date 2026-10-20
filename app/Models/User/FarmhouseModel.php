@@ -241,6 +241,13 @@ class FarmhouseModel
      */
     public function getAdminSettings(): ?array
     {
+        $settings = \App\Helpers\SiteHelper::getSettings();
+        if (!empty($settings['mobile_number'])) {
+            return [
+                'admin_phone'    => $settings['mobile_number'],
+                'admin_whatsapp' => $settings['whatsapp_number'] ?? $settings['mobile_number']
+            ];
+        }
         return $this->queryOne("SELECT admin_phone, admin_whatsapp FROM settings LIMIT 1");
     }
 

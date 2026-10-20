@@ -2,7 +2,7 @@
 /**
  * Stayora Official Booking Confirmation Voucher & Tax Invoice (F73)
  */
-$bookingIdPad = 'STAY-BK-' . str_pad($booking['id'], 5, '0', STR_PAD_LEFT);
+$bookingIdPad = !empty($booking['booking_reference']) ? $booking['booking_reference'] : ('STAY-BK-' . str_pad($booking['id'], 5, '0', STR_PAD_LEFT));
 $checkInDate  = date('D, d M Y', strtotime($booking['check_in']));
 $checkOutDate = date('D, d M Y', strtotime($booking['check_out']));
 $nights       = max(1, (int)round((strtotime($booking['check_out']) - strtotime($booking['check_in'])) / 86400));
@@ -10,7 +10,8 @@ $siteName     = $siteSettings['site_name'] ?? 'Stayora';
 $sitePhone    = $siteSettings['mobile_number'] ?? '8889000399';
 $siteEmail    = $siteSettings['contact_email'] ?? 'support@stayora.com';
 $addonsArray  = !empty($booking['addons_selected']) ? (is_string($booking['addons_selected']) ? json_decode($booking['addons_selected'], true) : $booking['addons_selected']) : [];
-$isInstant    = ($booking['status'] === 'approved');
+$isConfirmed  = in_array($booking['status'], ['approved', 'confirmed', 'checked_in', 'checked_out', 'completed']);
+$isAdminView  = !empty($_SESSION['admin_logged_in']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,13 +26,13 @@ $isInstant    = ($booking['status'] === 'approved');
   
   <style>
     :root {
-      --primary: #173C2D;
-      --primary-dark: #133225;
+      --primary: #1E40AF;
+      --primary-dark: #1E3A8A;
       --success: #059669;
-      --ink: #24312A;
-      --muted: #57685F;
-      --surface: #F7F3EA;
-      --border: #E2DBD0;
+      --ink: #0F172A;
+      --muted: #64748B;
+      --surface: #F8FAFC;
+      --border: #E2E8F0;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -51,7 +52,7 @@ $isInstant    = ($booking['status'] === 'approved');
       border: 1px solid var(--border);
     }
     .voucher-header {
-      background: linear-gradient(135deg, #24312A 0%, #24312A 100%);
+      background: linear-gradient(135deg, #0F172A 0%, #0F172A 100%);
       color: #ffffff;
       padding: 36px 40px 30px;
       display: flex;
@@ -68,7 +69,7 @@ $isInstant    = ($booking['status'] === 'approved');
     .voucher-logo-icon {
       width: 44px;
       height: 44px;
-      background: #173C2D;
+      background: #1E40AF;
       border-radius: 12px;
       display: flex;
       align-items: center;
@@ -88,7 +89,7 @@ $isInstant    = ($booking['status'] === 'approved');
     }
     .status-confirmed { background: #dcfce7; color: #15803d; border: 1px solid #86efac; }
     .status-pending   { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
-    .status-held      { background: #EAF1EB; color: #133225; border: 1px solid #D4E4DC; }
+    .status-held      { background: #E0F2FE; color: #1E3A8A; border: 1px solid #DBEAFE; }
 
     .voucher-body {
       padding: 36px 40px;
@@ -136,12 +137,12 @@ $isInstant    = ($booking['status'] === 'approved');
     .timeline-col .tl-date {
       font-size: 16px;
       font-weight: 800;
-      color: #24312A;
+      color: #0F172A;
     }
     .timeline-col .tl-time {
       font-size: 12px;
       font-weight: 600;
-      color: #57685F;
+      color: #64748B;
     }
     .timeline-divider {
       text-align: center;
@@ -163,7 +164,7 @@ $isInstant    = ($booking['status'] === 'approved');
       margin: 20px 0;
     }
     .bill-table th {
-      background: #F7F3EA;
+      background: #F8FAFC;
       color: var(--muted);
       font-size: 11.5px;
       font-weight: 800;
@@ -192,7 +193,7 @@ $isInstant    = ($booking['status'] === 'approved');
       justify-content: space-between;
       align-items: center;
       padding: 20px 40px;
-      background: #F7F3EA;
+      background: #F8FAFC;
       border-top: 1px solid var(--border);
       flex-wrap: wrap;
       gap: 12px;
@@ -209,8 +210,8 @@ $isInstant    = ($booking['status'] === 'approved');
       text-decoration: none;
       transition: all 0.15s;
     }
-    .btn-primary { background: #173C2D; color: #fff; border: none; }
-    .btn-primary:hover { background: #133225; }
+    .btn-primary { background: #1E40AF; color: #fff; border: none; }
+    .btn-primary:hover { background: #1E3A8A; }
     .btn-outline { background: #fff; color: #334155; border: 1px solid #cbd5e1; }
     .btn-outline:hover { background: #f1f5f9; }
 
@@ -247,10 +248,25 @@ $isInstant    = ($booking['status'] === 'approved');
     </div>
 
     <div style="text-align:right;">
-      <?php if ($booking['status'] === 'approved'): ?>
+      <?php if (in_array($booking['status'], ['approved', 'confirmed'])): ?>
         <div class="voucher-status-pill status-confirmed">
           <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
           <span>Confirmed &amp; Approved</span>
+        </div>
+      <?php elseif ($booking['status'] === 'checked_in'): ?>
+        <div class="voucher-status-pill status-confirmed" style="background:#ecfdf5;color:#047857;border-color:#a7f3d0;">
+          <span class="material-symbols-outlined" style="font-size:16px;">hotel</span>
+          <span>Checked In (In-House)</span>
+        </div>
+      <?php elseif (in_array($booking['status'], ['checked_out', 'completed'])): ?>
+        <div class="voucher-status-pill" style="background:#f1f5f9;color:#334155;border-color:#cbd5e1;">
+          <span class="material-symbols-outlined" style="font-size:16px;">task_alt</span>
+          <span>Stay Completed</span>
+        </div>
+      <?php elseif (in_array($booking['status'], ['cancelled', 'rejected'])): ?>
+        <div class="voucher-status-pill" style="background:#fef2f2;color:#b91c1c;border-color:#fecaca;">
+          <span class="material-symbols-outlined" style="font-size:16px;">cancel</span>
+          <span><?= ucfirst($booking['status']) ?></span>
         </div>
       <?php elseif (!empty($booking['hold_expires_at']) && strtotime($booking['hold_expires_at']) > time()): ?>
         <div class="voucher-status-pill status-held">
@@ -298,16 +314,16 @@ $isInstant    = ($booking['status'] === 'approved');
     <div class="voucher-grid-2">
       <!-- Property Card -->
       <div class="info-card">
-        <h4><span class="material-symbols-outlined" style="font-size:16px;color:#173C2D;">home_pin</span> Property Information</h4>
-        <h3 style="font-size:16px;font-weight:800;color:#24312A;margin-bottom:4px;">
+        <h4><span class="material-symbols-outlined" style="font-size:16px;color:#1E40AF;">home_pin</span> Property Information</h4>
+        <h3 style="font-size:16px;font-weight:800;color:#0F172A;margin-bottom:4px;">
           <?= htmlspecialchars($booking['farmhouse_title'] ?? 'Luxury Estate') ?>
         </h3>
         <p style="font-size:12.5px;color:#475569;margin-bottom:8px;">
           <?= htmlspecialchars($booking['farmhouse_address'] ?: ($booking['farmhouse_location'] ?? '')) ?>
         </p>
-        <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:#173C2D;font-weight:700;">
+        <div style="display:flex;align-items:center;gap:12px;font-size:12px;color:#1E40AF;font-weight:700;">
           <?php if (!empty($booking['google_map_link'])): ?>
-            <a href="<?= htmlspecialchars($booking['google_map_link']) ?>" target="_blank" style="color:#173C2D;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">
+            <a href="<?= htmlspecialchars($booking['google_map_link']) ?>" target="_blank" style="color:#1E40AF;text-decoration:none;display:inline-flex;align-items:center;gap:3px;">
               <span class="material-symbols-outlined" style="font-size:14px;">map</span>
               <span>Open in Google Maps</span>
             </a>
@@ -319,8 +335,8 @@ $isInstant    = ($booking['status'] === 'approved');
 
       <!-- Guest Card -->
       <div class="info-card">
-        <h4><span class="material-symbols-outlined" style="font-size:16px;color:#173C2D;">person</span> Primary Guest Information</h4>
-        <div style="font-size:15px;font-weight:800;color:#24312A;">
+        <h4><span class="material-symbols-outlined" style="font-size:16px;color:#1E40AF;">person</span> Primary Guest Information</h4>
+        <div style="font-size:15px;font-weight:800;color:#0F172A;">
           <?= htmlspecialchars($booking['user_name'] ?? 'Guest') ?>
         </div>
         <div style="font-size:12.5px;color:#475569;margin:3px 0;">
@@ -369,16 +385,16 @@ $isInstant    = ($booking['status'] === 'approved');
           default                => 'Unpaid / Settle on Arrival'
       };
     ?>
-    <div style="background:#F7F3EA;border:1px solid #E2DBD0;border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
       <div>
-        <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#57685F;letter-spacing:0.5px;display:block;">Payment Method (F38)</span>
-        <strong style="font-size:13.5px;color:#24312A;"><?= $payMethodLabel ?></strong>
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:0.5px;display:block;">Payment Method (F38)</span>
+        <strong style="font-size:13.5px;color:#0F172A;"><?= $payMethodLabel ?></strong>
         <?php if (!empty($booking['utr_number'])): ?>
           <span style="font-size:11.5px;color:#475569;margin-left:8px;font-family:monospace;background:#f1f5f9;padding:2px 6px;border-radius:6px;">UTR: <?= htmlspecialchars($booking['utr_number']) ?></span>
         <?php endif; ?>
       </div>
       <div>
-        <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#57685F;letter-spacing:0.5px;display:block;text-align:right;">Payment Reconciliation (F40)</span>
+        <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:0.5px;display:block;text-align:right;">Payment Reconciliation (F40)</span>
         <span style="display:inline-block;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:800;color:<?= $payStatusColor ?>;background:<?= $payStatusBg ?>;border:1px solid <?= $payStatusBorder ?>;">
           ● <?= $payStatusText ?>
         </span>
@@ -386,7 +402,7 @@ $isInstant    = ($booking['status'] === 'approved');
     </div>
 
     <!-- Transparent Financial Ledger & Breakdown -->
-    <h4 style="font-size:12px;font-weight:800;text-transform:uppercase;color:#57685F;letter-spacing:0.5px;margin-bottom:8px;">
+    <h4 style="font-size:12px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:0.5px;margin-bottom:8px;">
       Financial Ledger &amp; Price Breakdown
     </h4>
 
@@ -402,7 +418,7 @@ $isInstant    = ($booking['status'] === 'approved');
         <tr>
           <td>
             <strong>Accommodation Tariff (<?= $nights ?> Nights)</strong><br>
-            <span style="font-size:11.5px;color:#57685F;">
+            <span style="font-size:11.5px;color:#64748B;">
               <?= ($booking['booking_type'] === 'complete') ? 'Entire Farmhouse Estate' : ((int)$booking['rooms'] . ' × ' . ($booking['room_type_name'] ?: 'Room')) ?>
               <?php if (!empty($booking['weekend_nights'])): ?>
                 (includes <?= (int)$booking['weekend_nights'] ?> weekend surge night<?= $booking['weekend_nights'] > 1 ? 's' : '' ?>)
@@ -471,7 +487,7 @@ $isInstant    = ($booking['status'] === 'approved');
         <tr>
           <td>
             <strong>Refundable Security Deposit</strong><br>
-            <span style="font-size:11px;color:#57685F;">100% refundable at check-out following property inspection</span>
+            <span style="font-size:11px;color:#64748B;">100% refundable at check-out following property inspection</span>
           </td>
           <td>Refundable Deposit</td>
           <td style="text-align:right;font-weight:700;">+ ₹<?= number_format((float)$booking['security_deposit']) ?></td>
@@ -481,12 +497,30 @@ $isInstant    = ($booking['status'] === 'approved');
         <tr class="total-row">
           <td colspan="2">
             <strong>TOTAL AMOUNT PAYABLE / CHARGED</strong><br>
-            <span style="font-size:11px;font-weight:500;color:#57685F;">Includes accommodation tariff, selected addons, and refundable deposit</span>
+            <span style="font-size:11px;font-weight:500;color:#64748B;">Includes accommodation tariff, selected addons, and refundable deposit</span>
           </td>
-          <td style="text-align:right;color:#173C2D;font-size:20px;">
+          <td style="text-align:right;color:#1E40AF;font-size:20px;">
             ₹<?= number_format((float)$booking['price']) ?>
           </td>
         </tr>
+        <?php if (isset($booking['amount_paid'])): ?>
+        <tr>
+          <td colspan="2" style="font-weight:700;color:#059669;">
+            Amount Paid / Settled to Date
+          </td>
+          <td style="text-align:right;font-weight:800;color:#059669;font-size:15px;">
+            ₹<?= number_format((float)$booking['amount_paid']) ?>
+          </td>
+        </tr>
+        <tr style="background:#fffbeb;">
+          <td colspan="2" style="font-weight:800;color:#b45309;">
+            Outstanding Balance Due
+          </td>
+          <td style="text-align:right;font-weight:900;color:#b45309;font-size:16px;">
+            ₹<?= number_format(max(0, (float)$booking['balance_amount'])) ?>
+          </td>
+        </tr>
+        <?php endif; ?>
       </tbody>
     </table>
 
@@ -499,10 +533,17 @@ $isInstant    = ($booking['status'] === 'approved');
 
   <!-- Actions Bar -->
   <div class="actions-bar">
-    <a href="<?= url('user/bookings') ?>" class="btn btn-outline">
-      <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
-      <span>My Bookings</span>
-    </a>
+    <?php if ($isAdminView): ?>
+      <a href="<?= url('admin/bookings/view/' . $booking['id']) ?>" class="btn btn-outline">
+        <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+        <span>Back to Booking Details</span>
+      </a>
+    <?php else: ?>
+      <a href="<?= url('user/bookings') ?>" class="btn btn-outline">
+        <span class="material-symbols-outlined" style="font-size:16px;">arrow_back</span>
+        <span>My Bookings</span>
+      </a>
+    <?php endif; ?>
 
     <div style="display:flex;gap:10px;">
       <a href="https://wa.me/91<?= preg_replace('/[^0-9]/', '', $sitePhone) ?>?text=<?= urlencode("Hi Stayora, I have a question regarding my booking #{$bookingIdPad}") ?>" target="_blank" class="btn btn-outline" style="color:#16a34a;">

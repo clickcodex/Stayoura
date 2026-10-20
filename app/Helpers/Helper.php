@@ -5,6 +5,10 @@ if (date_default_timezone_get() !== 'Asia/Kolkata') {
     date_default_timezone_set('Asia/Kolkata');
 }
 
+if (!defined('ROOT_PATH')) {
+    define('ROOT_PATH', realpath(__DIR__ . '/../..'));
+}
+
 if (!function_exists('ist_now')) {
     /**
      * Get current Indian Standard Time (IST) datetime string (Y-m-d H:i:s)
@@ -103,7 +107,7 @@ if (!function_exists('absolute_url')) {
             || (($_SERVER['SERVER_PORT'] ?? '') == 443)
             || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         $scheme = $isHttps ? 'https://' : 'http://';
-        $host = $_SERVER['HTTP_HOST'] ?? 'farmlelo.com';
+        $host = $_SERVER['HTTP_HOST'] ?? 'stayora.com';
 
         $relUrl = url($path);
         $relUrl = '/' . ltrim($relUrl, '/');
@@ -358,5 +362,127 @@ if (!function_exists('build_google_map_direct_url')) {
 
         $query = !empty($raw) ? $raw : (!empty($fallback) ? $fallback : 'India');
         return 'https://www.google.com/maps/search/?api=1&query=' . urlencode($query);
+    }
+}
+
+if (!function_exists('get_stayora_rule_icon')) {
+    /**
+     * Context-aware Material Symbols icon for property house rules
+     */
+    function get_stayora_rule_icon(?string $ruleName, ?string $existingIcon = ''): string {
+        $icon = trim((string)$existingIcon);
+        if (!empty($icon) && $icon !== 'gavel') {
+            return $icon;
+        }
+
+        $name = strtolower(trim((string)$ruleName));
+        if (str_contains($name, 'alcohol') || str_contains($name, 'liquor') || str_contains($name, 'drink') || str_contains($name, 'bar') || str_contains($name, 'beer') || str_contains($name, 'wine')) {
+            return 'sports_bar';
+        }
+        if (str_contains($name, 'music') || str_contains($name, 'sound') || str_contains($name, 'speaker') || str_contains($name, 'dj') || str_contains($name, 'noise') || str_contains($name, 'volume')) {
+            return 'volume_up';
+        }
+        if (str_contains($name, 'pet') || str_contains($name, 'dog') || str_contains($name, 'cat') || str_contains($name, 'animal')) {
+            return 'pets';
+        }
+        if (str_contains($name, 'pool') || str_contains($name, 'swim')) {
+            return 'pool';
+        }
+        if (str_contains($name, 'part') || str_contains($name, 'event') || str_contains($name, 'gather') || str_contains($name, 'celebrat')) {
+            return 'celebration';
+        }
+        if (str_contains($name, 'smok') || str_contains($name, 'cigar') || str_contains($name, 'hookah') || str_contains($name, 'tobacco')) {
+            return 'smoking_rooms';
+        }
+        if (str_contains($name, 'cook') || str_contains($name, 'kitchen') || str_contains($name, 'food') || str_contains($name, 'meal') || str_contains($name, 'non-veg') || str_contains($name, 'veg')) {
+            return 'restaurant';
+        }
+        if (str_contains($name, 'id') || str_contains($name, 'identity') || str_contains($name, 'proof') || str_contains($name, 'gov') || str_contains($name, 'document')) {
+            return 'badge';
+        }
+        if (str_contains($name, 'quiet') || str_contains($name, 'silent') || str_contains($name, 'night') || str_contains($name, 'sleep')) {
+            return 'bedtime';
+        }
+        if (str_contains($name, 'clean') || str_contains($name, 'trash') || str_contains($name, 'waste') || str_contains($name, 'litter') || str_contains($name, 'garbage') || str_contains($name, 'dustbin')) {
+            return 'cleaning_services';
+        }
+        if (str_contains($name, 'visitor') || str_contains($name, 'guest') || str_contains($name, 'bachelor') || str_contains($name, 'couple') || str_contains($name, 'family')) {
+            return 'group';
+        }
+        if (str_contains($name, 'check') || str_contains($name, 'time') || str_contains($name, 'hour')) {
+            return 'schedule';
+        }
+        if (str_contains($name, 'fire') || str_contains($name, 'bonfire') || str_contains($name, 'flame') || str_contains($name, 'cracker')) {
+            return 'local_fire_department';
+        }
+        if (str_contains($name, 'park') || str_contains($name, 'car') || str_contains($name, 'vehicle')) {
+            return 'local_parking';
+        }
+
+        return 'verified_user';
+    }
+}
+
+if (!function_exists('get_stayora_amenity_icon')) {
+    /**
+     * Resolves appropriate Material Symbols icon for property amenities
+     */
+    function get_stayora_amenity_icon(?string $name, ?string $category = '', ?string $existingIcon = ''): string {
+        $icon = trim((string)$existingIcon);
+        if (!empty($icon) && $icon !== 'check') {
+            return $icon;
+        }
+
+        $n = strtolower(trim((string)$name));
+        $c = strtolower(trim((string)$category));
+
+        if (str_contains($n, 'pool') || str_contains($n, 'swim')) return 'pool';
+        if (str_contains($n, 'air') || str_contains($n, 'ac') || str_contains($n, 'cool')) return 'ac_unit';
+        if (str_contains($n, 'wifi') || str_contains($n, 'internet')) return 'wifi';
+        if (str_contains($n, 'chef') || str_contains($n, 'kitchen') || str_contains($n, 'cook') || str_contains($n, 'dining')) return 'restaurant';
+        if (str_contains($n, 'pet') || str_contains($n, 'dog') || str_contains($n, 'animal')) return 'pets';
+        if (str_contains($n, 'garden') || str_contains($n, 'lawn') || str_contains($n, 'yard') || str_contains($n, 'tree')) return 'yard';
+        if (str_contains($n, 'park') || str_contains($n, 'garage')) return 'local_parking';
+        if (str_contains($n, 'bbq') || str_contains($n, 'grill') || str_contains($n, 'bonfire') || str_contains($n, 'fire')) return 'outdoor_grill';
+        if (str_contains($n, 'jacuzzi') || str_contains($n, 'tub') || str_contains($n, 'spa')) return 'hot_tub';
+        if (str_contains($n, 'game') || str_contains($n, 'billiard') || str_contains($n, 'snooker') || str_contains($n, 'play')) return 'sports_esports';
+        if (str_contains($n, 'cinema') || str_contains($n, 'tv') || str_contains($n, 'theatre') || str_contains($n, 'movie')) return 'tv';
+        if (str_contains($n, 'music') || str_contains($n, 'speaker') || str_contains($n, 'audio') || str_contains($n, 'sound')) return 'speaker';
+        if (str_contains($n, 'security') || str_contains($n, 'cctv') || str_contains($n, 'guard') || str_contains($n, 'butler')) return 'shield';
+        if (str_contains($n, 'helipad') || str_contains($n, 'valet')) return 'local_taxi';
+        if (str_contains($n, 'bed') || str_contains($n, 'bedroom') || str_contains($n, 'mattress')) return 'bed';
+        if (str_contains($n, 'bath') || str_contains($n, 'washroom') || str_contains($n, 'toilet')) return 'shower';
+        if (str_contains($n, 'view') || str_contains($n, 'mountain') || str_contains($n, 'lake')) return 'landscape';
+        if (str_contains($n, 'trail') || str_contains($n, 'orchard') || str_contains($n, 'nature')) return 'park';
+
+        if ($c === 'comfort') return 'ac_unit';
+        if ($c === 'dining') return 'restaurant';
+        if ($c === 'leisure') return 'pool';
+        if ($c === 'outdoor') return 'nature_people';
+        if ($c === 'entertainment') return 'sports_esports';
+        if ($c === 'wellness') return 'spa';
+        if ($c === 'technology') return 'wifi';
+        if ($c === 'service') return 'room_service';
+        if ($c === 'bedroom') return 'bed';
+
+        return 'check_circle';
+    }
+}
+
+if (!function_exists('encrypt_id')) {
+    /**
+     * Encrypt an entity ID for secure URL generation and link sharing
+     */
+    function encrypt_id($id): string {
+        return \App\Helpers\CryptoHelper::encryptId($id);
+    }
+}
+
+if (!function_exists('decrypt_id')) {
+    /**
+     * Decrypt a secure URL token into an integer ID
+     */
+    function decrypt_id($token): int {
+        return \App\Helpers\CryptoHelper::decryptId($token);
     }
 }

@@ -48,18 +48,52 @@ class ReviewModel {
     }
 
     /**
-     * Get approved reviews for a specific farmhouse
+     * Get approved reviews for a specific farmhouse with any host responses
      */
     public function getApprovedReviews(int $farmhouseId): array {
         $stmt = $this->db->prepare("
-            SELECT * FROM reviews 
-            WHERE farmhouse_id = ? AND status = 'approved'
-            ORDER BY created_at DESC
+            SELECT r.*,
+                   u.membership_tier,
+                   u.avatar_url,
+                   u.profile_image
+            FROM reviews r 
+            LEFT JOIN users u ON r.user_id = u.id
+            WHERE r.farmhouse_id = ? AND r.status = 'approved'
+            ORDER BY r.created_at DESC
         ");
         if (!$stmt) return [];
         $stmt->bind_param("i", $farmhouseId);
         $stmt->execute();
-        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $reviews = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+        $stmt->close();
+
+        // Attach published host responses
+        if (!empty($reviews)) {
+            $rIds = array_column($reviews, 'id');
+            $idPlaceholders = implode(',', array_fill(0, count($rIds), '?'));
+            $types = str_repeat('i', count($rIds));
+            
+            $respSql = "SELECT * FROM review_responses WHERE review_id IN ($idPlaceholders) AND status = 'published' ORDER BY created_at ASC";
+            $respStmt = $this->db->prepare($respSql);
+            if ($respStmt) {
+                $respStmt->bind_param($types, ...$rIds);
+                $respStmt->execute();
+                $responses = $respStmt->get_result()->fetch_all(MYSQLI_ASSOC);
+                $respStmt->close();
+
+                $respGrouped = [];
+                foreach ($responses as $resp) {
+                    $respGrouped[$resp['review_id']][] = $resp;
+                }
+
+                foreach ($reviews as &$rev) {
+                    $rev['responses'] = $respGrouped[$rev['id']] ?? [];
+                }
+                unset($rev);
+            }
+        }
+
+        return $reviews;
     }
 
     /**
@@ -69,29 +103,46 @@ class ReviewModel {
         $stmt = $this->db->prepare("
             SELECT 
                 COUNT(*) as total_reviews,
-                COALESCE(AVG(overall_rating), 5.0) as avg_overall,
-                COALESCE(AVG(cleanliness_rating), 5.0) as avg_cleanliness,
-                COALESCE(AVG(location_rating), 5.0) as avg_location,
-                COALESCE(AVG(value_rating), 5.0) as avg_value,
-                COALESCE(AVG(hospitality_rating), 5.0) as avg_hospitality
+                AVG(overall_rating) as avg_overall,
+                AVG(cleanliness_rating) as avg_cleanliness,
+                AVG(location_rating) as avg_location,
+                AVG(value_rating) as avg_value,
+                AVG(hospitality_rating) as avg_hospitality
             FROM reviews
             WHERE farmhouse_id = ? AND status = 'approved'
         ");
         if (!$stmt) {
             return [
                 'total_reviews'   => 0,
-                'avg_overall'     => 5.0,
-                'avg_cleanliness' => 5.0,
-                'avg_location'    => 5.0,
-                'avg_value'       => 5.0,
-                'avg_hospitality' => 5.0,
+                'has_reviews'     => false,
+                'avg_overall'     => 0.0,
+                'avg_cleanliness' => 0.0,
+                'avg_location'    => 0.0,
+                'avg_value'       => 0.0,
+                'avg_hospitality' => 0.0,
             ];
         }
         $stmt->bind_param("i", $farmhouseId);
         $stmt->execute();
         $row = $stmt->get_result()->fetch_assoc();
+        $stmt->close();
+
+        $total = (int)($row['total_reviews'] ?? 0);
+        if ($total === 0) {
+            return [
+                'total_reviews'   => 0,
+                'has_reviews'     => false,
+                'avg_overall'     => 0.0,
+                'avg_cleanliness' => 0.0,
+                'avg_location'    => 0.0,
+                'avg_value'       => 0.0,
+                'avg_hospitality' => 0.0,
+            ];
+        }
+
         return [
-            'total_reviews'   => (int)($row['total_reviews'] ?? 0),
+            'total_reviews'   => $total,
+            'has_reviews'     => true,
             'avg_overall'     => round((float)($row['avg_overall'] ?? 5.0), 1),
             'avg_cleanliness' => round((float)($row['avg_cleanliness'] ?? 5.0), 1),
             'avg_location'    => round((float)($row['avg_location'] ?? 5.0), 1),

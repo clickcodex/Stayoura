@@ -39,9 +39,6 @@ class HomeController {
         // Calling UI rendering layout configured layout properly populated correctly structured properly dynamically optimally structure smoothly visually seamlessly layout structurally natively mapping accurate structurally seamlessly linking structure correctly successfully natively visually cleanly accurately setup mappings effectively visually natively dynamically structure correctly layout parameter natively natively layout correctly mapped mapping parameters
         include __DIR__ . '/../Views/home.php';
     }
-    public function owner_register() {
-        include __DIR__ . '/../Views/owner/owner_view_register.php';
-    }
     public function whychooseus() {
         include __DIR__ . '/../Views/why-choose-us.php';
     }

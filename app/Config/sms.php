@@ -1,6 +1,6 @@
 <?php
 /**
- * FarmLelo - SMS & Twilio Configuration
+ * Stayora - SMS & Twilio Configuration
  * Loads settings from environment variables with sensible defaults.
  */
 
@@ -11,7 +11,7 @@ return [
         'msg91' => [
             'auth_key'    => getenv('MSG91_AUTH_KEY') ?: ($_ENV['MSG91_AUTH_KEY'] ?? ''),
             'template_id' => getenv('MSG91_TEMPLATE_ID') ?: ($_ENV['MSG91_TEMPLATE_ID'] ?? ''),
-            'sender_id'   => getenv('MSG91_SENDER_ID') ?: ($_ENV['MSG91_SENDER_ID'] ?? 'FRMLEL'),
+            'sender_id'   => getenv('MSG91_SENDER_ID') ?: ($_ENV['MSG91_SENDER_ID'] ?? 'STYORA'),
             'otp_expiry'  => 10, // Expiry in minutes
             'otp_length'  => 6,
         ],

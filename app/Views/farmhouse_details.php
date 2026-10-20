@@ -17,17 +17,17 @@ $encryptedId = htmlspecialchars($_GET['id'] ?? '');
 // ── SEO Metadata & Schema Computation ──
 $fhTitle    = trim($farmhouse['title'] ?? 'Luxury Farmhouse');
 $fhLocation = trim($farmhouse['location'] ?? 'India');
-$pageTitle  = "{$fhTitle} in {$fhLocation} | Luxury Farmhouse Booking - FarmLelo";
+$pageTitle  = "{$fhTitle} in {$fhLocation} | Luxury Farmhouse Booking - Stayora";
 
 $rawDesc = strip_tags($farmhouse['description'] ?? '');
 $cleanDesc = trim(preg_replace('/\s+/', ' ', $rawDesc));
 if (!empty($cleanDesc)) {
     $pageDescription = (mb_strlen($cleanDesc) > 155) ? mb_substr($cleanDesc, 0, 152) . '...' : $cleanDesc;
 } else {
-    $pageDescription = "Book {$fhTitle} in {$fhLocation}. Features " . max(1, (int)($farmhouse['bedrooms'] ?? 1)) . " bedrooms, private pool, lawn & luxury amenities. Best price guaranteed on FarmLelo.";
+    $pageDescription = "Book {$fhTitle} in {$fhLocation}. Features " . max(1, (int)($farmhouse['bedrooms'] ?? 1)) . " bedrooms, private pool, lawn & luxury amenities. Best price guaranteed on Stayora.";
 }
 
-$pageKeywords = "{$fhTitle}, farmhouse in {$fhLocation}, pool villa {$fhLocation}, rent farmhouse {$fhLocation}, private pool stay, party villa, farmlelo";
+$pageKeywords = "{$fhTitle}, farmhouse in {$fhLocation}, pool villa {$fhLocation}, rent farmhouse {$fhLocation}, private pool stay, party villa, stayora";
 $canonicalUrl = absolute_url('farmhouse_details?id=' . urlencode($encryptedId));
 
 $fhPhotos = [];
@@ -102,16 +102,20 @@ $adminCleanPhone = preg_replace('/[^0-9+]/', '', $adminPhone);
 $adminCleanWa    = preg_replace('/[^0-9]/', '', $adminWhatsApp);
 
 $adminCallLink = $adminCleanPhone ? 'tel:' . $adminCleanPhone : '#';
-$adminWaLink   = $adminCleanWa ? 'https://wa.me/91' . $adminCleanWa . '?text=' . urlencode('Hi FarmLelo Support, I want to inquire about ' . ($farmhouse['title'] ?? 'this farmhouse') . ' (ID: ' . $farmhouse['id'] . ').') : '#';
+$adminWaLink   = $adminCleanWa ? 'https://wa.me/91' . $adminCleanWa . '?text=' . urlencode('Hi Stayora Support, I want to inquire about ' . ($farmhouse['title'] ?? 'this farmhouse') . ' (ID: ' . $farmhouse['id'] . ').') : '#';
 
 // ── Capacity & Pricing configuration ──
-$fullFarmPrice    = (float)($farmhouse['price'] ?? 0);
-$allowRoomBooking = !empty($farmhouse['allow_room_booking']);
-$roomPriceConfig  = (float)($farmhouse['room_price'] ?? 0);
-$bedroomCapacity  = max(1, (int)($farmhouse['bedroom_capacity'] ?? 2)); // Default max 2 guests per bedroom
-$totalBedrooms    = max(1, (int)($farmhouse['bedrooms'] ?? 1));
-$nightCapacity    = (int)($farmhouse['night_capacity'] ?? 0);
-$maxAllowedGuests = $nightCapacity > 0 ? $nightCapacity : ($totalBedrooms * $bedroomCapacity);
+$fullFarmPrice      = (float)($farmhouse['price'] ?? 0);
+$rentalType         = $farmhouse['rental_type'] ?? (!empty($farmhouse['allow_room_booking']) ? 'both' : 'complete');
+$supportsComplete   = ($rentalType === 'complete' || $rentalType === 'both');
+$supportsRoomWise   = ($rentalType === 'room_wise' || $rentalType === 'both');
+$allowRoomBooking   = $supportsRoomWise;
+$defaultBookingMode = ($rentalType === 'room_wise') ? 'per_room' : 'complete';
+$roomPriceConfig    = (float)($farmhouse['room_price'] ?? 0);
+$bedroomCapacity    = max(1, (int)($farmhouse['bedroom_capacity'] ?? 2)); // Default max 2 guests per bedroom
+$totalBedrooms      = max(1, (int)($farmhouse['bedrooms'] ?? 1));
+$nightCapacity      = (int)($farmhouse['night_capacity'] ?? 0);
+$maxAllowedGuests   = $nightCapacity > 0 ? $nightCapacity : ($totalBedrooms * $bedroomCapacity);
 
 $roomTypes = !empty($roomTypes) ? $roomTypes : [];
 if ($allowRoomBooking && !empty($roomTypes)) {
@@ -158,7 +162,7 @@ if (!function_exists('fmt')) {
 // ── Image URLs helper ──
 if (!function_exists('resolveFarmImg')) {
     function resolveFarmImg(?string $img): string {
-        return farmhouse_img_url($img, 'https://placehold.co/800x550/E8F0EC/1F4D3A?text=Farmlelo+Estate');
+        return farmhouse_img_url($img, 'https://placehold.co/800x550/E8F0EC/1F4D3A?text=Stayora+Estate');
     }
 }
 
@@ -278,17 +282,45 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 .frd-desc-text em {
   font-style: italic !important;
 }
+.frd-desc-text u {
+  text-decoration: underline !important;
+}
+.frd-desc-text h1, .frd-desc-text h2, .frd-desc-text h3, .frd-desc-text h4, .frd-desc-text h5, .frd-desc-text h6 {
+  color: #0F172A;
+  font-weight: 700;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.frd-desc-text h1 { font-size: 1.45rem; }
+.frd-desc-text h2 { font-size: 1.25rem; }
+.frd-desc-text h3 { font-size: 1.1rem; }
+.frd-desc-text h4, .frd-desc-text h5, .frd-desc-text h6 { font-size: 1rem; }
+.frd-desc-text a {
+  color: #1E40AF !important;
+  text-decoration: underline !important;
+  font-weight: 600 !important;
+}
+.frd-desc-text a:hover {
+  color: #1d4ed8 !important;
+}
+.frd-desc-text blockquote {
+  border-left: 3px solid #cbd5e1;
+  padding-left: 12px;
+  margin: 8px 0;
+  color: #64748B;
+  font-style: italic;
+}
 
 /* ── DUAL BOOKING MODE SELECTOR & LUXURY PRICING STYLES ── */
 .frd-mode-switcher {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   padding: 6px;
   border-radius: 18px;
   margin-bottom: 14px;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
 }
 .frd-mode-btn {
   display: flex;
@@ -310,7 +342,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 }
 .frd-mode-btn.active {
   background: #f0f9ff;
-  border-color: #173C2D;
+  border-color: #1E40AF;
   box-shadow: 0 4px 16px rgba(2, 132, 199, 0.16);
 }
 .frd-mode-btn-header {
@@ -324,15 +356,15 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   width: 26px;
   height: 26px;
   border-radius: 8px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 14px;
 }
 .frd-mode-btn.active .frd-mode-icon-circle {
-  background: #173C2D;
+  background: #1E40AF;
   color: #ffffff;
 }
 .frd-mode-badge {
@@ -346,7 +378,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   color: #475569;
 }
 .frd-mode-btn.active .frd-mode-badge {
-  background: #173C2D;
+  background: #1E40AF;
   color: #ffffff;
 }
 .frd-mode-badge-green {
@@ -362,26 +394,26 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 .frd-mode-title {
   font-size: 13px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   line-height: 1.25;
 }
 .frd-mode-sub {
   font-size: 11px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
 }
 .frd-mode-btn.active .frd-mode-sub {
-  color: #173C2D;
+  color: #1E40AF;
   font-weight: 800;
 }
 .frd-mode-info-box {
   background: #f0f9ff;
-  border: 1px solid #D4E4DC;
+  border: 1px solid #DBEAFE;
   border-radius: 12px;
   padding: 10px 14px;
   margin-bottom: 14px;
   font-size: 11.5px;
-  color: #133225;
+  color: #1E3A8A;
   line-height: 1.45;
   display: flex;
   align-items: flex-start;
@@ -389,7 +421,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 }
 .frd-room-selector-card {
   background: #ffffff;
-  border: 1.5px solid #E2DBD0;
+  border: 1.5px solid #E2E8F0;
   border-radius: 14px;
   padding: 12px 14px;
   margin-top: 10px;
@@ -406,9 +438,9 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   letter-spacing: 0.3px;
 }
 .frd-active-mode-badge.complete {
-  background: #EAF1EB;
-  color: #133225;
-  border: 1px solid #D4E4DC;
+  background: #E0F2FE;
+  color: #1E3A8A;
+  border: 1px solid #DBEAFE;
 }
 .frd-active-mode-badge.room {
   background: #ecfdf5;
@@ -472,7 +504,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
       <?php if ($reqIdParam): ?>
       <a href="<?= url('booking/voucher?id=' . $reqIdParam) ?>" target="_blank" rel="noopener"
-         style="background:#24312A;color:#fff;text-decoration:none;padding:9px 15px;border-radius:12px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(15,23,42,0.25);">
+         style="background:#0F172A;color:#fff;text-decoration:none;padding:9px 15px;border-radius:12px;font-size:12.5px;font-weight:700;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 8px rgba(15,23,42,0.25);">
         📄 Download Voucher &amp; Invoice (PDF)
       </a>
       <?php endif; ?>
@@ -515,7 +547,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   <div class="frd-prop-title-row">
     <div class="frd-prop-title-left">
       <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
-        <span class="frd-loc-badge" style="background:#EAF1EB;color:#133225;border-color:#D4E4DC;display:inline-flex;align-items:center;gap:4px;">
+        <span class="frd-loc-badge" style="background:#E0F2FE;color:#1E3A8A;border-color:#DBEAFE;display:inline-flex;align-items:center;gap:4px;">
           <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;">
             <?= htmlspecialchars($farmhouse['property_type_icon'] ?? 'villa') ?>
           </span>
@@ -532,7 +564,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <h1><?= htmlspecialchars($farmhouse['title'] ?? '') ?></h1>
       <div class="frd-prop-location">
         <span style="display:inline-flex;align-items:center;gap:4px;">
-          <span class="material-symbols-outlined" style="font-size:16px;color:#1F4D3A;">location_on</span>
+          <span class="material-symbols-outlined" style="font-size:16px;color:#1D4ED8;">location_on</span>
           <?= htmlspecialchars($farmhouse['location'] ?? '') ?>
         </span>
         <?php if (!empty($farmhouse['address'])): ?>
@@ -544,7 +576,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     <div class="frd-price-area">
       <div style="text-align:right;">
         <div style="display:inline-flex;align-items:center;gap:6px;margin-bottom:6px;flex-wrap:wrap;justify-content:flex-end;">
-          <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#173C2D;background:#EAF1EB;padding:3px 8px;border-radius:6px;letter-spacing:0.4px;">
+          <span style="font-size:11px;font-weight:800;text-transform:uppercase;color:#1E40AF;background:#E0F2FE;padding:3px 8px;border-radius:6px;letter-spacing:0.4px;">
             🏡 Complete: <?= fmt($fullFarmPrice) ?>/nt
           </span>
           <?php if ($allowRoomBooking && !empty($ratePerRoom)): ?>
@@ -558,7 +590,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           <span class="frd-price-num" id="frd-header-price-display"><?= number_format($fullFarmPrice) ?></span>
           <span class="frd-price-period" id="frd-header-period-display"><?= $allowRoomBooking ? '/ night (Complete)' : '/ night' ?></span>
         </div>
-        <div style="font-size:11.5px;font-weight:700;color:#57685F;margin-top:2px;" id="frd-header-sub-display">
+        <div style="font-size:11.5px;font-weight:700;color:#64748B;margin-top:2px;" id="frd-header-sub-display">
           🏡 Entire <?= $totalBedrooms ?> BHK Estate · Up to <?= $maxAllowedGuests ?> Overnight Guests
         </div>
         <?php if ($priceOld > $fullFarmPrice): ?>
@@ -570,7 +602,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
   <!-- ── CATEGORIZED GALLERY FILTER PILLS (F08) ── -->
   <div class="frd-gallery-categories" style="display:flex;align-items:center;gap:8px;margin-bottom:12px;overflow-x:auto;padding-bottom:4px;">
-    <button type="button" class="frd-cat-pill active" onclick="frdFilterCategory('all', this)" style="background:#24312A;color:#ffffff;border:1px solid #24312A;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
+    <button type="button" class="frd-cat-pill active" onclick="frdFilterCategory('all', this)" style="background:#0F172A;color:#ffffff;border:1px solid #0F172A;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;">
       <span class="material-symbols-outlined" style="font-size:14px;">photo_library</span>
       <span>All (<?= count($allResolvedImages) ?>)</span>
     </button>
@@ -584,7 +616,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     ];
     foreach ($catLabels as $cKey => $cMeta):
       if (!empty($categorizedImages[$cKey])): ?>
-        <button type="button" class="frd-cat-pill" onclick="frdFilterCategory('<?= $cKey ?>', this)" style="background:#F7F3EA;color:#475569;border:1px solid #E2DBD0;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;">
+        <button type="button" class="frd-cat-pill" onclick="frdFilterCategory('<?= $cKey ?>', this)" style="background:#F8FAFC;color:#475569;border:1px solid #E2E8F0;padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;">
           <span class="material-symbols-outlined" style="font-size:14px;"><?= $cMeta[1] ?></span>
           <span><?= $cMeta[0] ?> (<?= count($categorizedImages[$cKey]) ?>)</span>
         </button>
@@ -596,7 +628,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   <div class="frd-photo-grid <?= ($imgCount <= 1) ? 'frd-single-photo' : '' ?>">
     <div class="frd-photo-main" onclick="frdOpenGallery(0)">
       <img src="<?= $coverImgUrl ?>" alt="<?= htmlspecialchars($farmhouse['title'] ?? '') ?>" id="frd-main-display-img"
-           onerror="this.src='https://placehold.co/800x550/E8F0EC/1F4D3A?text=Farmlelo+Estate'"/>
+           onerror="this.src='https://placehold.co/800x550/E8F0EC/1F4D3A?text=Stayora+Estate'"/>
       <button class="frd-view-all-btn" onclick="event.stopPropagation();frdOpenGallery(0)">
         <span class="material-symbols-outlined" style="font-size:15px;">photo_library</span>
         <span id="frd-view-photos-count">View all <?= max(1, $imgCount) ?> photos</span>
@@ -606,11 +638,11 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     <div class="frd-photo-right">
       <div class="frd-photo-small" onclick="frdOpenGallery(1)">
         <img src="<?= $img2Url ?>" alt="Photo 2"
-             onerror="this.src='https://placehold.co/400x270/E8F0EC/1F4D3A?text=Farmlelo+Estate'"/>
+             onerror="this.src='https://placehold.co/400x270/E8F0EC/1F4D3A?text=Stayora+Estate'"/>
       </div>
       <div class="frd-photo-small" onclick="frdOpenGallery(2)">
         <img src="<?= $img3Url ?>" alt="Photo 3"
-             onerror="this.src='https://placehold.co/400x270/E8F0EC/1F4D3A?text=Farmlelo+Estate'"/>
+             onerror="this.src='https://placehold.co/400x270/E8F0EC/1F4D3A?text=Stayora+Estate'"/>
       </div>
     </div>
     <?php endif; ?>
@@ -626,7 +658,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <div class="frd-spec-bar">
         <div class="frd-spec-item">
           <div class="frd-spec-icon">
-            <span class="material-symbols-outlined" style="font-size:22px;color:#173C2D;">bed</span>
+            <span class="material-symbols-outlined" style="font-size:22px;color:#1E40AF;">bed</span>
           </div>
           <div>
             <div class="frd-spec-val"><?= (int)($farmhouse['bedrooms'] ?? 1) ?> BHK</div>
@@ -635,7 +667,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         </div>
         <div class="frd-spec-item">
           <div class="frd-spec-icon">
-            <span class="material-symbols-outlined" style="font-size:22px;color:#173C2D;">groups</span>
+            <span class="material-symbols-outlined" style="font-size:22px;color:#1E40AF;">groups</span>
           </div>
           <div>
             <div class="frd-spec-val"><?= (int)($farmhouse['night_capacity'] ?? ($totalBedrooms * $bedroomCapacity)) ?> Max</div>
@@ -645,7 +677,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         <?php if (!empty($farmhouse['day_capacity'])): ?>
         <div class="frd-spec-item">
           <div class="frd-spec-icon">
-            <span class="material-symbols-outlined" style="font-size:22px;color:#173C2D;">celebration</span>
+            <span class="material-symbols-outlined" style="font-size:22px;color:#1E40AF;">celebration</span>
           </div>
           <div>
             <div class="frd-spec-val"><?= (int)$farmhouse['day_capacity'] ?> Max</div>
@@ -655,7 +687,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         <?php endif; ?>
         <div class="frd-spec-item">
           <div class="frd-spec-icon">
-            <span class="material-symbols-outlined" style="font-size:22px;color:#173C2D;">verified_user</span>
+            <span class="material-symbols-outlined" style="font-size:22px;color:#1E40AF;">verified_user</span>
           </div>
           <div>
             <div class="frd-spec-val">Assured</div>
@@ -673,7 +705,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
             $descDecoded = htmlspecialchars_decode($descRaw, ENT_QUOTES);
             $hasHtml = (strip_tags($descDecoded) !== $descDecoded);
             if ($hasHtml) {
-                echo strip_tags($descDecoded, '<ol><ul><li><p><br><br/><strong><b><i><em><span><div>');
+                echo \App\Helpers\HtmlSanitizerHelper::clean($descDecoded);
             } else {
                 echo nl2br(htmlspecialchars($descRaw, ENT_QUOTES, 'UTF-8'));
             }
@@ -691,7 +723,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
             <?= count($roomTypes) ?> Room Type<?= count($roomTypes) > 1 ? 's' : '' ?> Available
           </span>
         </div>
-        <p style="font-size:12.5px;color:#57685F;margin:0 0 16px;">
+        <p style="font-size:12.5px;color:#64748B;margin:0 0 16px;">
           You can book individual rooms or the entire estate. Choose your preferred room category below or in the booking widget.
         </p>
 
@@ -701,9 +733,9 @@ $requestedJson = json_encode(array_values($userRequestedDates));
             $rtCover = !empty($rt['image_url']) ? farmhouse_img_url($rt['image_url']) : (!empty($rtImgs) ? farmhouse_img_url($rtImgs[0]['image_url']) : 'https://placehold.co/600x400/E8F0EC/1F4D3A?text=' . urlencode($rt['room_type_name']));
             $rtAmenities = $rt['amenities'] ?? [];
           ?>
-          <div style="background:#ffffff;border:1.5px solid #E2DBD0;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.03);display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 12px rgba(0,0,0,0.03)'">
+          <div style="background:#ffffff;border:1.5px solid #E2E8F0;border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.03);display:flex;flex-direction:column;justify-content:space-between;transition:transform 0.2s,box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)';this.style.boxShadow='0 8px 20px rgba(0,0,0,0.07)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 3px 12px rgba(0,0,0,0.03)'">
             <!-- Room Image & Gallery Trigger -->
-            <div style="position:relative;height:160px;background:#24312A;overflow:hidden;">
+            <div style="position:relative;height:160px;background:#0F172A;overflow:hidden;">
               <img src="<?= $rtCover ?>" alt="<?= htmlspecialchars($rt['room_type_name']) ?>" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://placehold.co/600x400/E8F0EC/1F4D3A?text=Stayora'"/>
               <div style="position:absolute;top:10px;left:10px;display:flex;gap:6px;">
                 <span style="background:rgba(15,23,42,0.85);backdrop-filter:blur(4px);color:#ffffff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;">
@@ -719,8 +751,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                 </span>
               </div>
               <?php if (!empty($rtImgs)): ?>
-                <button type="button" onclick='frdOpenRoomGallery(<?= json_encode($rtImgs) ?>, <?= json_encode($rt['room_type_name']) ?>)' style="position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,0.92);backdrop-filter:blur(6px);color:#24312A;font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
-                  <span class="material-symbols-outlined" style="font-size:14px;color:#173C2D;">photo_camera</span>
+                <button type="button" onclick='frdOpenRoomGallery(<?= json_encode($rtImgs) ?>, <?= json_encode($rt['room_type_name']) ?>)' style="position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,0.92);backdrop-filter:blur(6px);color:#0F172A;font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+                  <span class="material-symbols-outlined" style="font-size:14px;color:#1E40AF;">photo_camera</span>
                   <span>Photos (<?= count($rtImgs) ?>)</span>
                 </button>
               <?php endif; ?>
@@ -729,9 +761,9 @@ $requestedJson = json_encode(array_values($userRequestedDates));
             <!-- Room Content -->
             <div style="padding:14px;display:flex;flex-direction:column;gap:10px;flex:1;">
               <div>
-                <h4 style="font-size:15px;font-weight:800;color:#24312A;margin:0 0 4px;"><?= htmlspecialchars($rt['room_type_name']) ?></h4>
+                <h4 style="font-size:15px;font-weight:800;color:#0F172A;margin:0 0 4px;"><?= htmlspecialchars($rt['room_type_name']) ?></h4>
                 <?php if (!empty($rt['description'])): ?>
-                  <p style="font-size:11.5px;color:#57685F;margin:0;line-height:1.45;"><?= htmlspecialchars($rt['description']) ?></p>
+                  <p style="font-size:11.5px;color:#64748B;margin:0;line-height:1.45;"><?= htmlspecialchars($rt['description']) ?></p>
                 <?php endif; ?>
               </div>
 
@@ -742,7 +774,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                   <div style="display:flex;flex-wrap:wrap;gap:5px;">
                     <?php foreach ($rtAmenities as $ra): ?>
                       <span style="font-size:10.5px;background:#f1f5f9;color:#334155;font-weight:600;padding:2.5px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px;">
-                        <span class="material-symbols-outlined" style="font-size:12px;color:#173C2D;"><?= htmlspecialchars($ra['icon_class'] ?: 'check') ?></span>
+                        <span class="material-symbols-outlined" style="font-size:12px;color:#1E40AF;"><?= htmlspecialchars($ra['icon_class'] ?: 'check') ?></span>
                         <?= htmlspecialchars($ra['name']) ?>
                       </span>
                     <?php endforeach; ?>
@@ -752,12 +784,12 @@ $requestedJson = json_encode(array_values($userRequestedDates));
             </div>
 
             <!-- Pricing Footer (F20) -->
-            <div style="padding:12px 14px;background:#F7F3EA;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;">
+            <div style="padding:12px 14px;background:#F8FAFC;border-top:1px solid #f1f5f9;display:flex;align-items:center;justify-content:space-between;">
               <div>
-                <span style="font-size:10.5px;color:#57685F;font-weight:600;display:block;">Weekday / Weekend</span>
-                <span style="font-size:15px;font-weight:900;color:#059669;">₹<?= number_format((float)$rt['price_per_room']) ?> <span style="font-size:11px;font-weight:600;color:#57685F;">(₹<?= number_format((float)$rt['weekend_price']) ?> Fri-Sun)</span></span>
+                <span style="font-size:10.5px;color:#64748B;font-weight:600;display:block;">Weekday / Weekend</span>
+                <span style="font-size:15px;font-weight:900;color:#059669;">₹<?= number_format((float)$rt['price_per_room']) ?> <span style="font-size:11px;font-weight:600;color:#64748B;">(₹<?= number_format((float)$rt['weekend_price']) ?> Fri-Sun)</span></span>
               </div>
-              <button type="button" onclick="frdSelectRoomTypeForBooking(<?= $rt['id'] ?>)" style="padding:6px 12px;background:#173C2D;color:#fff;border:none;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+              <button type="button" onclick="frdSelectRoomTypeForBooking(<?= $rt['id'] ?>)" style="padding:6px 12px;background:#1E40AF;color:#fff;border:none;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
                 <span>Select</span>
                 <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
               </button>
@@ -769,51 +801,120 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <?php endif; ?>
 
       <!-- Amenities -->
-      <div class="frd-section-card">
-        <h3 class="frd-sec-title">Amenities</h3>
+      <div class="frd-section-card" id="frd-amenities-section">
+        <div class="frd-sec-header-row">
+          <div>
+            <h3 class="frd-sec-title" style="margin-bottom:2px;">Amenities &amp; Features</h3>
+            <span class="frd-sec-subtitle"><?= count($amenities) ?> curated amenities available at this property</span>
+          </div>
+        </div>
 
-        <?php if (empty($amenityGroups)): ?>
-          <p style="color:#94a3b8;font-size:13px;">No specific amenities listed for this farmhouse.</p>
+        <?php if (empty($amenities)): ?>
+          <p style="color:#94a3b8;font-size:13px;margin-top:12px;">No specific amenities listed for this farmhouse.</p>
         <?php else: ?>
-          <?php foreach ($amenityGroups as $groupKey => $groupItems):
-            if (str_starts_with($groupKey, 'bedroom_')) {
-              $num   = substr($groupKey, 8);
-              $title = 'Bedroom ' . $num;
-            } else {
-              $title = ucfirst($groupKey);
+          <?php
+            // Build unique categories for filter tabs
+            $amenityCategories = [];
+            foreach ($amenities as $am) {
+                $cName = !empty($am['category']) ? trim(ucfirst($am['category'])) : 'General';
+                if (!isset($amenityCategories[$cName])) {
+                    $amenityCategories[$cName] = 0;
+                }
+                $amenityCategories[$cName]++;
             }
           ?>
-          <div class="frd-amenity-group">
-            <div class="frd-amenity-group-title"><?= htmlspecialchars($title) ?></div>
-            <div class="frd-amenity-pill-grid">
-              <?php foreach ($groupItems as $item): ?>
-              <div class="frd-amenity-pill">
-                <span class="material-symbols-outlined frd-amenity-icon"><?= htmlspecialchars($item['icon_class'] ?? 'check') ?></span>
-                <span><?= htmlspecialchars($item['name']) ?></span>
-              </div>
-              <?php endforeach; ?>
-            </div>
+
+          <!-- Category Filter Bar (Tabs) -->
+          <?php if (count($amenityCategories) > 1): ?>
+          <div class="frd-amenity-filter-bar">
+            <button type="button" class="frd-am-tab active" data-filter="all" onclick="frdFilterAmenities('all', this)">
+              <span>All</span> <span class="frd-am-tab-count"><?= count($amenities) ?></span>
+            </button>
+            <?php foreach ($amenityCategories as $catName => $catCount): ?>
+              <button type="button" class="frd-am-tab" data-filter="<?= htmlspecialchars(strtolower($catName)) ?>" onclick="frdFilterAmenities('<?= htmlspecialchars(strtolower($catName)) ?>', this)">
+                <span><?= htmlspecialchars($catName) ?></span> <span class="frd-am-tab-count"><?= $catCount ?></span>
+              </button>
+            <?php endforeach; ?>
           </div>
-          <?php endforeach; ?>
+          <?php endif; ?>
+
+          <!-- Unified Responsive Grid of Amenities -->
+          <div class="frd-amenities-grid" id="frd-amenities-grid">
+            <?php 
+            $initialLimit = 9;
+            $hasMoreAmenities = count($amenities) > $initialLimit;
+            foreach ($amenities as $idx => $item): 
+              $amCat = !empty($item['category']) ? trim(strtolower($item['category'])) : 'general';
+              $amIcon = get_stayora_amenity_icon($item['name'] ?? '', $item['category'] ?? '', $item['icon_class'] ?? '');
+              $isOverLimit = $idx >= $initialLimit;
+            ?>
+            <div class="frd-amenity-card <?= $isOverLimit ? 'frd-am-hidden-initial' : '' ?>" 
+                 data-category="<?= htmlspecialchars($amCat) ?>"
+                 data-index="<?= $idx ?>"
+                 title="<?= htmlspecialchars($item['name']) ?>">
+              <div class="frd-am-icon-wrap">
+                <span class="material-symbols-outlined frd-am-icon"><?= htmlspecialchars($amIcon) ?></span>
+              </div>
+              <div class="frd-am-body">
+                <span class="frd-am-name"><?= htmlspecialchars($item['name']) ?></span>
+                <?php if (!empty($item['category'])): ?>
+                  <span class="frd-am-category-tag"><?= htmlspecialchars(ucfirst($item['category'])) ?></span>
+                <?php endif; ?>
+              </div>
+            </div>
+            <?php endforeach; ?>
+          </div>
+
+          <?php if ($hasMoreAmenities): ?>
+          <div style="margin-top:16px;text-align:center;">
+            <button type="button" class="frd-view-all-amenities-btn" id="frd-toggle-amenities-btn" onclick="frdToggleAllAmenities(<?= count($amenities) ?>)">
+              <span class="material-symbols-outlined" id="frd-toggle-amenities-icon" style="font-size:18px;">apps</span>
+              <span id="frd-toggle-amenities-text">Show All <?= count($amenities) ?> Amenities</span>
+            </button>
+          </div>
+          <?php endif; ?>
+
         <?php endif; ?>
       </div>
 
       <!-- House Rules -->
-      <div class="frd-section-card">
-        <h3 class="frd-sec-title">House Rules</h3>
+      <div class="frd-section-card" id="frd-rules-section">
+        <div class="frd-sec-header-row">
+          <div>
+            <h3 class="frd-sec-title" style="margin-bottom:2px;">House Rules</h3>
+            <span class="frd-sec-subtitle">Please review host guidelines &amp; property policies</span>
+          </div>
+        </div>
+
+        <?php if (empty($rules)): ?>
+          <p style="color:#94a3b8;font-size:13px;margin-top:12px;">No specific house rules specified by host.</p>
+        <?php else: ?>
         <div class="frd-rules-grid">
-          <?php foreach ($rules as $rule): ?>
-          <div class="frd-rule-item">
-            <div class="frd-rule-left">
-              <span class="frd-rule-icon material-symbols-outlined"><?= htmlspecialchars($rule['icon_class'] ?? 'gavel') ?></span>
-              <span class="frd-rule-name"><?= htmlspecialchars($rule['rule_name']) ?></span>
+          <?php foreach ($rules as $rule): 
+            $ruleName = $rule['rule_name'] ?? '';
+            $isAllowed = !empty($rule['is_allowed']);
+            $ruleIcon = get_stayora_rule_icon($ruleName, $rule['icon_class'] ?? '');
+          ?>
+          <div class="frd-rule-card <?= $isAllowed ? 'frd-rule-allowed' : 'frd-rule-prohibited' ?>">
+            <div class="frd-rule-main">
+              <div class="frd-rule-icon-box">
+                <span class="material-symbols-outlined frd-rule-icon"><?= htmlspecialchars($ruleIcon) ?></span>
+              </div>
+              <div class="frd-rule-content">
+                <span class="frd-rule-name"><?= htmlspecialchars($ruleName) ?></span>
+                <?php if (!empty($rule['description'])): ?>
+                  <span class="frd-rule-desc"><?= htmlspecialchars($rule['description']) ?></span>
+                <?php endif; ?>
+              </div>
             </div>
-            <span class="frd-rule-badge <?= $rule['is_allowed'] ? 'frd-allowed' : 'frd-not-allowed' ?>">
-              <?= $rule['is_allowed'] ? 'Allowed' : 'Not Allowed' ?>
-            </span>
+            <div class="frd-rule-badge <?= $isAllowed ? 'frd-allowed' : 'frd-not-allowed' ?>">
+              <span class="material-symbols-outlined" style="font-size:13px;"><?= $isAllowed ? 'check_circle' : 'cancel' ?></span>
+              <span><?= $isAllowed ? 'Allowed' : 'Not Allowed' ?></span>
+            </div>
           </div>
           <?php endforeach; ?>
         </div>
+        <?php endif; ?>
       </div>
 
       <!-- Policies -->
@@ -822,7 +923,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         <div class="frd-policy-row-grid">
           <div class="frd-policy-card">
             <div class="frd-policy-icon">
-              <span class="material-symbols-outlined" style="font-size:22px;color:#1F4D3A;">schedule</span>
+              <span class="material-symbols-outlined" style="font-size:22px;color:#1D4ED8;">schedule</span>
             </div>
             <div class="frd-policy-body">
               <strong>Check-in / Check-out</strong>
@@ -831,7 +932,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           </div>
           <div class="frd-policy-card">
             <div class="frd-policy-icon">
-              <span class="material-symbols-outlined" style="font-size:22px;color:#1F4D3A;">published_with_changes</span>
+              <span class="material-symbols-outlined" style="font-size:22px;color:#1D4ED8;">published_with_changes</span>
             </div>
             <div class="frd-policy-body">
               <strong>Cancellation Policy</strong>
@@ -852,14 +953,14 @@ $requestedJson = json_encode(array_values($userRequestedDates));
               <span><?= htmlspecialchars($farmhouse['location'] ?? 'India') ?></span>
               <?php if (!empty($farmhouse['address'])): ?>
                 <span style="color:#94a3b8;">·</span>
-                <span style="color:#57685F;"><?= htmlspecialchars($farmhouse['address']) ?></span>
+                <span style="color:#64748B;"><?= htmlspecialchars($farmhouse['address']) ?></span>
               <?php endif; ?>
             </div>
           </div>
 
           <a href="<?= htmlspecialchars($mapDirectUrl) ?>" target="_blank" rel="noopener noreferrer" 
-             style="display:inline-flex;align-items:center;gap:6px;background:#f0f9ff;border:1px solid #D4E4DC;color:#173C2D;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;text-decoration:none;transition:all 0.2s;box-shadow:0 1px 3px rgba(2,132,199,0.08);"
-             onmouseover="this.style.background='#EAF1EB'" onmouseout="this.style.background='#f0f9ff'">
+             style="display:inline-flex;align-items:center;gap:6px;background:#f0f9ff;border:1px solid #DBEAFE;color:#1E40AF;padding:8px 14px;border-radius:12px;font-size:12px;font-weight:800;text-decoration:none;transition:all 0.2s;box-shadow:0 1px 3px rgba(2,132,199,0.08);"
+             onmouseover="this.style.background='#E0F2FE'" onmouseout="this.style.background='#f0f9ff'">
             <span class="material-symbols-outlined" style="font-size:16px;">map</span>
             <span>Open in Google Maps</span>
             <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>
@@ -867,7 +968,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         </div>
 
         <!-- Embedded Interactive Google Map -->
-        <div style="position:relative;width:100%;height:380px;border-radius:20px;overflow:hidden;border:1.5px solid #E2DBD0;background:#F7F3EA;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
+        <div style="position:relative;width:100%;height:380px;border-radius:20px;overflow:hidden;border:1.5px solid #E2E8F0;background:#F8FAFC;box-shadow:0 4px 20px rgba(0,0,0,0.04);">
           <iframe 
             src="<?= htmlspecialchars($mapEmbedUrl) ?>" 
             width="100%" 
@@ -880,7 +981,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           </iframe>
           
           <!-- Subtle corner floating badge -->
-          <div style="position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(6px);border:1px solid #cbd5e1;padding:6px 12px;border-radius:10px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#24312A;box-shadow:0 2px 8px rgba(0,0,0,0.08);pointer-events:none;">
+          <div style="position:absolute;bottom:12px;left:12px;background:rgba(255,255,255,0.92);backdrop-filter:blur(6px);border:1px solid #cbd5e1;padding:6px 12px;border-radius:10px;display:flex;align-items:center;gap:6px;font-size:11px;font-weight:700;color:#0F172A;box-shadow:0 2px 8px rgba(0,0,0,0.08);pointer-events:none;">
             <span class="material-symbols-outlined" style="font-size:15px;color:#ef4444;">pin_drop</span>
             <span><?= htmlspecialchars($farmhouse['title'] ?? 'Farmhouse') ?></span>
           </div>
@@ -930,29 +1031,29 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
         <!-- Room-Wise Granular Calendar Grid (F29) Toggle & Section -->
         <?php if ($allowRoomBooking && !empty($roomTypes)): ?>
-        <div style="margin-top:16px;border-top:1px dashed #E2DBD0;padding-top:16px;">
+        <div style="margin-top:16px;border-top:1px dashed #E2E8F0;padding-top:16px;">
           <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
             <div>
-              <h4 style="margin:0;font-size:13.5px;font-weight:800;color:#24312A;display:flex;align-items:center;gap:6px;">
-                <span class="material-symbols-outlined" style="font-size:18px;color:#173C2D;">grid_view</span>
+              <h4 style="margin:0;font-size:13.5px;font-weight:800;color:#0F172A;display:flex;align-items:center;gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:18px;color:#1E40AF;">grid_view</span>
                 <span>Room-Wise Granular Availability Grid</span>
               </h4>
-              <p style="margin:2px 0 0;font-size:11.5px;color:#57685F;">
+              <p style="margin:2px 0 0;font-size:11.5px;color:#64748B;">
                 Live inventory tracking across room categories. View units available per date.
               </p>
             </div>
             <button type="button" id="frd-toggle-room-grid-btn" onclick="frdToggleRoomMatrix()"
-                    style="padding:6px 12px;background:#f0f9ff;border:1.5px solid #D4E4DC;border-radius:10px;font-size:11.5px;font-weight:700;color:#173C2D;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
+                    style="padding:6px 12px;background:#f0f9ff;border:1.5px solid #DBEAFE;border-radius:10px;font-size:11.5px;font-weight:700;color:#1E40AF;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
               <span class="material-symbols-outlined" style="font-size:15px;">calendar_view_month</span>
               <span id="frd-toggle-room-grid-label">Show Room Inventory Matrix</span>
             </button>
           </div>
 
           <!-- Collapsible Matrix Container -->
-          <div id="frd-room-matrix-wrap" style="display:none;margin-top:14px;background:#ffffff;border:1.5px solid #E2DBD0;border-radius:14px;padding:14px;overflow-x:auto;box-shadow:0 2px 10px rgba(0,0,0,0.03);">
+          <div id="frd-room-matrix-wrap" style="display:none;margin-top:14px;background:#ffffff;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;overflow-x:auto;box-shadow:0 2px 10px rgba(0,0,0,0.03);">
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;gap:8px;flex-wrap:wrap;">
-              <span id="frd-matrix-month-title" style="font-size:13px;font-weight:800;color:#24312A;"></span>
-              <div style="display:flex;align-items:center;gap:10px;font-size:10.5px;color:#57685F;font-weight:600;">
+              <span id="frd-matrix-month-title" style="font-size:13px;font-weight:800;color:#0F172A;"></span>
+              <div style="display:flex;align-items:center;gap:10px;font-size:10.5px;color:#64748B;font-weight:600;">
                 <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#10b981;display:inline-block;"></span> Available</span>
                 <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#f59e0b;display:inline-block;"></span> Partial</span>
                 <span style="display:inline-flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;border-radius:3px;background:#ef4444;display:inline-block;"></span> Sold Out</span>
@@ -984,35 +1085,35 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         <?php endif; ?>
 
         <!-- ── VERIFIED GUEST REVIEWS & MULTI-CRITERIA RATINGS (F52, F53) ── -->
-        <div class="frd-reviews-section" style="margin-top:28px;padding-top:24px;border-top:1.5px solid #E2DBD0;">
+        <div class="frd-reviews-section" style="margin-top:28px;padding-top:24px;border-top:1.5px solid #E2E8F0;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px;">
             <div>
               <div style="display:flex;align-items:center;gap:8px;">
                 <span class="material-symbols-outlined" style="font-size:24px;color:#f59e0b;font-variation-settings:'FILL' 1;">star</span>
-                <span style="font-size:20px;font-weight:900;color:#24312A;letter-spacing:-0.4px;">
+                <span style="font-size:20px;font-weight:900;color:#0F172A;letter-spacing:-0.4px;">
                   <?= number_format($reviewSummary['avg_overall'] ?? 5.0, 1) ?> · <?= ($reviewSummary['total_reviews'] ?? 0) ?> Verified Reviews
                 </span>
               </div>
-              <p style="font-size:12px;color:#57685F;margin-top:3px;font-weight:500;">
+              <p style="font-size:12px;color:#64748B;margin-top:3px;font-weight:500;">
                 Aggregated ratings from verified guests who completed their stay.
               </p>
             </div>
 
             <button type="button" onclick="document.getElementById('frdReviewModal').style.display='flex'"
-                    style="display:inline-flex;align-items:center;gap:6px;background:#24312A;color:#fff;border:none;padding:8px 16px;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;">
+                    style="display:inline-flex;align-items:center;gap:6px;background:#0F172A;color:#fff;border:none;padding:8px 16px;border-radius:12px;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.2s;">
               <span class="material-symbols-outlined" style="font-size:16px;">rate_review</span>
               <span>Write a Review</span>
             </button>
           </div>
 
           <!-- Multi-Criteria Progress Breakdown (F53) -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;background:#F7F3EA;border:1px solid #E2DBD0;border-radius:16px;padding:16px;margin-bottom:20px;">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:14px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:16px;margin-bottom:20px;">
             <div>
               <div style="display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#334155;margin-bottom:4px;">
                 <span>✨ Cleanliness</span>
                 <span><?= number_format($reviewSummary['avg_cleanliness'] ?? 5.0, 1) ?>/5</span>
               </div>
-              <div style="height:6px;background:#E2DBD0;border-radius:999px;overflow:hidden;">
+              <div style="height:6px;background:#E2E8F0;border-radius:999px;overflow:hidden;">
                 <div style="height:100%;background:#10b981;border-radius:999px;width:<?= (($reviewSummary['avg_cleanliness'] ?? 5.0)/5)*100 ?>%;"></div>
               </div>
             </div>
@@ -1022,8 +1123,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                 <span>📍 Location &amp; Vibe</span>
                 <span><?= number_format($reviewSummary['avg_location'] ?? 5.0, 1) ?>/5</span>
               </div>
-              <div style="height:6px;background:#E2DBD0;border-radius:999px;overflow:hidden;">
-                <div style="height:100%;background:#173C2D;border-radius:999px;width:<?= (($reviewSummary['avg_location'] ?? 5.0)/5)*100 ?>%;"></div>
+              <div style="height:6px;background:#E2E8F0;border-radius:999px;overflow:hidden;">
+                <div style="height:100%;background:#1E40AF;border-radius:999px;width:<?= (($reviewSummary['avg_location'] ?? 5.0)/5)*100 ?>%;"></div>
               </div>
             </div>
 
@@ -1032,7 +1133,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                 <span>💰 Value for Money</span>
                 <span><?= number_format($reviewSummary['avg_value'] ?? 5.0, 1) ?>/5</span>
               </div>
-              <div style="height:6px;background:#E2DBD0;border-radius:999px;overflow:hidden;">
+              <div style="height:6px;background:#E2E8F0;border-radius:999px;overflow:hidden;">
                 <div style="height:100%;background:#f59e0b;border-radius:999px;width:<?= (($reviewSummary['avg_value'] ?? 5.0)/5)*100 ?>%;"></div>
               </div>
             </div>
@@ -1042,7 +1143,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                 <span>🤝 Host &amp; Staff</span>
                 <span><?= number_format($reviewSummary['avg_hospitality'] ?? 5.0, 1) ?>/5</span>
               </div>
-              <div style="height:6px;background:#E2DBD0;border-radius:999px;overflow:hidden;">
+              <div style="height:6px;background:#E2E8F0;border-radius:999px;overflow:hidden;">
                 <div style="height:100%;background:#8b5cf6;border-radius:999px;width:<?= (($reviewSummary['avg_hospitality'] ?? 5.0)/5)*100 ?>%;"></div>
               </div>
             </div>
@@ -1050,7 +1151,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
           <!-- Approved Reviews List -->
           <?php if (empty($approvedReviews)): ?>
-            <div style="text-align:center;padding:24px 16px;background:#fff;border:1px dashed #cbd5e1;border-radius:14px;color:#57685F;font-size:12.5px;">
+            <div style="text-align:center;padding:24px 16px;background:#fff;border:1px dashed #cbd5e1;border-radius:14px;color:#64748B;font-size:12.5px;">
               <span class="material-symbols-outlined" style="font-size:28px;color:#94a3b8;display:block;margin-bottom:6px;">rate_review</span>
               <strong>No guest reviews published yet.</strong>
               <p style="font-size:11.5px;color:#94a3b8;margin-top:2px;">Have you stayed here? Be the first to share your experience!</p>
@@ -1058,15 +1159,15 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           <?php else: ?>
             <div style="display:flex;flex-direction:column;gap:14px;">
               <?php foreach ($approvedReviews as $rev): ?>
-                <div style="background:#fff;border:1px solid #E2DBD0;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.03);">
+                <div style="background:#fff;border:1px solid #E2E8F0;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,0.03);">
                   <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
                     <div style="display:flex;align-items:center;gap:10px;">
-                      <div style="width:34px;height:34px;border-radius:10px;background:#f1f5f9;color:#24312A;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px;">
+                      <div style="width:34px;height:34px;border-radius:10px;background:#f1f5f9;color:#0F172A;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:13px;">
                         <?= strtoupper(substr($rev['guest_name'], 0, 1)) ?>
                       </div>
                       <div>
                         <div style="display:flex;align-items:center;gap:6px;">
-                          <strong style="font-size:13px;color:#24312A;"><?= htmlspecialchars($rev['guest_name']) ?></strong>
+                          <strong style="font-size:13px;color:#0F172A;"><?= htmlspecialchars($rev['guest_name']) ?></strong>
                           <?php if (!empty($rev['is_verified_stay'])): ?>
                             <span style="font-size:10px;font-weight:700;color:#059669;background:#ecfdf5;border:1px solid #a7f3d0;padding:1px 6px;border-radius:999px;">
                               Verified Stay
@@ -1082,9 +1183,28 @@ $requestedJson = json_encode(array_values($userRequestedDates));
                     </div>
                   </div>
                   <?php if (!empty($rev['review_title'])): ?>
-                    <h5 style="font-size:13px;font-weight:800;color:#24312A;margin:0 0 4px;"><?= htmlspecialchars($rev['review_title']) ?></h5>
+                    <h5 style="font-size:13px;font-weight:800;color:#0F172A;margin:0 0 4px;"><?= htmlspecialchars($rev['review_title']) ?></h5>
                   <?php endif; ?>
                   <p style="font-size:12px;color:#475569;line-height:1.6;margin:0;"><?= nl2br(htmlspecialchars($rev['review_text'])) ?></p>
+
+                  <!-- Official Host Responses -->
+                  <?php if (!empty($rev['responses'])): ?>
+                    <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
+                      <?php foreach ($rev['responses'] as $resp): ?>
+                        <div style="padding:12px 14px;background:#f8fafc;border-left:3px solid #0284c7;border-radius:10px;font-size:11.5px;">
+                          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+                            <strong style="color:#0f172a;display:flex;align-items:center;gap:5px;">
+                              <span class="material-symbols-outlined" style="font-size:15px;color:#0284c7;">reply</span>
+                              <?= htmlspecialchars($resp['responder_name']) ?>
+                              <span style="font-size:9px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:1px 5px;border-radius:4px;text-transform:capitalize;"><?= htmlspecialchars($resp['responder_type']) ?></span>
+                            </strong>
+                            <span style="font-size:10.5px;color:#94a3b8;"><?= date('M Y', strtotime($resp['created_at'])) ?></span>
+                          </div>
+                          <p style="color:#334155;line-height:1.5;margin:0;"><?= nl2br(htmlspecialchars($resp['response_text'])) ?></p>
+                        </div>
+                      <?php endforeach; ?>
+                    </div>
+                  <?php endif; ?>
                 </div>
               <?php endforeach; ?>
             </div>
@@ -1100,7 +1220,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <div class="frd-booking-card" id="frd-booking-card-main">
         
         <!-- ── DUAL BOOKING MODE TOGGLE ── -->
-        <?php if ($allowRoomBooking): ?>
+        <?php if ($rentalType === 'both'): ?>
         <div class="frd-mode-switcher">
           <button type="button" class="frd-mode-btn active" id="frd-mode-btn-complete" onclick="frdSetBookingMode('complete')">
             <div class="frd-mode-btn-header">
@@ -1114,17 +1234,33 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           <button type="button" class="frd-mode-btn" id="frd-mode-btn-room" onclick="frdSetBookingMode('per_room')">
             <div class="frd-mode-btn-header">
               <div class="frd-mode-icon-circle">🛏️</div>
-              <span class="frd-mode-badge frd-mode-badge-green">By Guests</span>
+              <span class="frd-mode-badge frd-mode-badge-green">By Rooms</span>
             </div>
             <div class="frd-mode-title">Per Room Booking</div>
             <div class="frd-mode-sub"><?= fmt($ratePerRoom) ?> / room / nt</div>
           </button>
         </div>
+        <?php elseif ($rentalType === 'room_wise'): ?>
+        <div style="background:#f0fdf4;border:1.5px solid #86efac;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:34px;height:34px;border-radius:10px;background:#dcfce7;display:flex;align-items:center;justify-content:center;font-size:18px;">🛏️</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#166534;">Room-Wise Booking Only</div>
+            <div style="font-size:11px;color:#15803d;">Reserve individual rooms or room types for your group</div>
+          </div>
+        </div>
+        <?php else: ?>
+        <div style="background:#eff6ff;border:1.5px solid #bfdbfe;border-radius:14px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px;">
+          <div style="width:34px;height:34px;border-radius:10px;background:#dbeafe;display:flex;align-items:center;justify-content:center;font-size:18px;">🏡</div>
+          <div>
+            <div style="font-size:12.5px;font-weight:800;color:#1e40af;">Complete Estate Booking Only</div>
+            <div style="font-size:11px;color:#1d4ed8;">Reserve the entire private property exclusively</div>
+          </div>
+        </div>
         <?php endif; ?>
 
         <!-- ── MODE BENEFIT INFO BANNER ── -->
         <div class="frd-mode-info-box" id="frd-mode-info-box">
-          <span class="material-symbols-outlined" style="font-size:18px;color:#173C2D;shrink:0;margin-top:1px;" id="frd-mode-info-icon">villa</span>
+          <span class="material-symbols-outlined" style="font-size:18px;color:#1E40AF;shrink:0;margin-top:1px;" id="frd-mode-info-icon">villa</span>
           <span id="frd-mode-info-text">
             <strong>Complete Farmhouse Option:</strong> You are booking the entire <strong><?= $totalBedrooms ?> BHK</strong> estate exclusively for your group (Up to <?= $maxAllowedGuests ?> overnight guests).
           </span>
@@ -1138,8 +1274,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
               <span>Instant Confirmation Enabled</span>
             </div>
           <?php else: ?>
-            <div style="display:inline-flex;align-items:center;gap:6px;background:#F7F3EA;border:1px solid #cbd5e1;color:#57685F;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">
-              <span class="material-symbols-outlined" style="font-size:15px;color:#57685F;">schedule</span>
+            <div style="display:inline-flex;align-items:center;gap:6px;background:#F8FAFC;border:1px solid #cbd5e1;color:#64748B;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;">
+              <span class="material-symbols-outlined" style="font-size:15px;color:#64748B;">schedule</span>
               <span>Request to Book (Host Approval)</span>
             </div>
           <?php endif; ?>
@@ -1147,7 +1283,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
         <div style="margin-bottom:12px;">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2px;">
-            <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#173C2D;letter-spacing:0.5px;" id="frd-bc-rate-type-label">Complete Farmhouse Rate</div>
+            <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#1E40AF;letter-spacing:0.5px;" id="frd-bc-rate-type-label">Complete Farmhouse Rate</div>
             <span class="frd-active-mode-badge complete" id="frd-active-badge-tag">🏡 Complete Estate</span>
           </div>
           <div class="frd-bc-price-top" id="frd-bc-price-header">
@@ -1185,7 +1321,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
               <span>Select Room Type</span>
             </div>
             <select id="frd-room-type-select" onchange="frdOnRoomTypeChange(this.value)" 
-                    style="width:100%;padding:9px 12px;border:1.5px solid #22c55e;border-radius:10px;font-size:12.5px;font-weight:700;color:#24312A;background:#fff;outline:none;cursor:pointer;">
+                    style="width:100%;padding:9px 12px;border:1.5px solid #22c55e;border-radius:10px;font-size:12.5px;font-weight:700;color:#0F172A;background:#fff;outline:none;cursor:pointer;">
               <?php foreach ($roomTypes as $idx => $rt): ?>
                 <option value="<?= $rt['id'] ?>" <?= $idx === 0 ? 'selected' : '' ?>>
                   <?= htmlspecialchars($rt['room_type_name']) ?> — ₹<?= number_format((float)$rt['price_per_room']) ?>/nt (<?= (int)$rt['total_rooms'] ?> available)
@@ -1202,8 +1338,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           <div id="frd-room-selector-wrapper" class="frd-room-selector-card" style="display:none;">
             <div style="display:flex;align-items:center;justify-content:space-between;">
               <div>
-                <div style="font-size:12px;font-weight:800;color:#24312A;">Rooms to Book</div>
-                <div style="font-size:11px;color:#57685F;font-weight:600;" id="frd-room-calc-hint">Auto: 1 room for 2 guests</div>
+                <div style="font-size:12px;font-weight:800;color:#0F172A;">Rooms to Book</div>
+                <div style="font-size:11px;color:#64748B;font-weight:600;" id="frd-room-calc-hint">Auto: 1 room for 2 guests</div>
               </div>
               <div class="frd-bc-guest-ctrl">
                 <button type="button" class="frd-bc-btn frd-minus" onclick="frdRoomChg(-1)" aria-label="Decrease Rooms">−</button>
@@ -1215,7 +1351,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
           <!-- Real-Time Room Allocation Pill -->
           <div id="frd-room-allocation-pill" class="frd-room-pill" style="margin-top:8px;">
-            <span class="material-symbols-outlined" style="font-size:14px;color:#173C2D;vertical-align:middle;">villa</span>
+            <span class="material-symbols-outlined" style="font-size:14px;color:#1E40AF;vertical-align:middle;">villa</span>
             <span>Entire <?= $totalBedrooms ?> BHK Farmhouse (<?= $maxAllowedGuests ?> Guests Max)</span>
           </div>
         </div>
@@ -1236,20 +1372,20 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
         <!-- Addon Services Selector (F24) -->
         <?php if (!empty($addons)): ?>
-        <div style="background:#F7F3EA;border:1px solid #E2DBD0;border-radius:14px;padding:12px;margin-bottom:12px;">
-          <div style="font-size:11.5px;font-weight:800;text-transform:uppercase;color:#24312A;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:12px;margin-bottom:12px;">
+          <div style="font-size:11.5px;font-weight:800;text-transform:uppercase;color:#0F172A;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
             <span style="display:flex;align-items:center;gap:4px;">
-              <span class="material-symbols-outlined" style="font-size:15px;color:#173C2D;">add_circle</span>
+              <span class="material-symbols-outlined" style="font-size:15px;color:#1E40AF;">add_circle</span>
               <span>Enhance Your Stay (Addons)</span>
             </span>
-            <span style="font-size:10.5px;color:#57685F;font-weight:600;">Optional</span>
+            <span style="font-size:10.5px;color:#64748B;font-weight:600;">Optional</span>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;">
             <?php foreach ($addons as $ad): ?>
-            <label style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:#24312A;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#173C2D'" onmouseout="this.style.borderColor='#cbd5e1'">
+            <label style="display:flex;align-items:center;justify-content:space-between;background:#fff;border:1px solid #cbd5e1;border-radius:8px;padding:6px 10px;cursor:pointer;font-size:12px;color:#0F172A;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#1E40AF'" onmouseout="this.style.borderColor='#cbd5e1'">
               <span style="display:flex;align-items:center;gap:6px;">
                 <input type="checkbox" name="selected_addons[]" value="<?= $ad['id'] ?>" onchange="frdToggleAddon(<?= $ad['id'] ?>)" class="frd-addon-checkbox" style="cursor:pointer;">
-                <span class="material-symbols-outlined" style="font-size:15px;color:#57685F;"><?= htmlspecialchars($ad['icon_class'] ?: 'star') ?></span>
+                <span class="material-symbols-outlined" style="font-size:15px;color:#64748B;"><?= htmlspecialchars($ad['icon_class'] ?: 'star') ?></span>
                 <span style="font-weight:600;"><?= htmlspecialchars($ad['name']) ?></span>
               </span>
               <strong style="color:#059669;font-size:11.5px;">+₹<?= number_format((float)$ad['price']) ?> <span style="font-size:10px;color:#94a3b8;font-weight:500;"><?= $ad['price_type'] === 'per_night' ? '/nt' : '' ?></span></strong>
@@ -1260,23 +1396,23 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         <?php endif; ?>
 
         <!-- Promotional Coupon Voucher Input (F74) -->
-        <div style="background:#F7F3EA;border:1px solid #E2DBD0;border-radius:14px;padding:12px;margin-bottom:12px;">
-          <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#57685F;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px;">
-            <span class="material-symbols-outlined" style="font-size:15px;color:#173C2D;">confirmation_number</span>
+        <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:12px;margin-bottom:12px;">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#64748B;letter-spacing:0.5px;margin-bottom:6px;display:flex;align-items:center;gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:15px;color:#1E40AF;">confirmation_number</span>
             <span>Promo Coupon Code</span>
           </div>
           <div style="display:flex;gap:6px;">
             <input type="text" id="frd-coupon-input" placeholder="e.g. WELCOME10, STAYORA500" style="flex:1;padding:7px 10px;border:1.5px solid #cbd5e1;border-radius:8px;font-size:12px;font-family:monospace;font-weight:700;text-transform:uppercase;outline:none;" onkeyup="if(event.key==='Enter') frdApplyCoupon();">
-            <button type="button" onclick="frdApplyCoupon()" id="frd-coupon-apply-btn" style="padding:7px 12px;background:#24312A;color:#fff;border:none;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;">Apply</button>
+            <button type="button" onclick="frdApplyCoupon()" id="frd-coupon-apply-btn" style="padding:7px 12px;background:#0F172A;color:#fff;border:none;border-radius:8px;font-size:11.5px;font-weight:700;cursor:pointer;">Apply</button>
           </div>
           <div id="frd-coupon-msg" style="display:none;font-size:11px;margin-top:6px;font-weight:600;"></div>
         </div>
 
         <!-- Detailed Transparent Price Breakdown (F19, F20, F21, F22, F23, F24, F25, F74) -->
-        <div style="background:#F7F3EA;border:1.5px solid #E2DBD0;border-radius:14px;padding:14px;margin-bottom:14px;">
+        <div style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:14px;">
           <div class="frd-breakdown-row">
             <span>Booking Option:</span>
-            <strong id="frd-bc-mode-name" style="color:#173C2D;">Complete Farmhouse</strong>
+            <strong id="frd-bc-mode-name" style="color:#1E40AF;">Complete Farmhouse</strong>
           </div>
           <div class="frd-breakdown-row">
             <span>Stay Allocation:</span>
@@ -1333,14 +1469,14 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           <!-- Refundable Security Deposit row (F23) -->
           <?php $secDep = (float)($farmhouse['security_deposit'] ?? 2500.0); ?>
           <div class="frd-bc-row" style="padding-top:4px;border-top:1px dotted #cbd5e1;margin-top:4px;">
-            <span class="frd-bc-label" style="color:#57685F;">
+            <span class="frd-bc-label" style="color:#64748B;">
               Refundable Security Deposit
               <span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle;color:#94a3b8;" title="100% refunded within 24 hours of check-out after property inspection">help</span>:
             </span>
             <span class="frd-bc-val" style="color:#475569;" id="frd-security-deposit-display">+ ₹<?= number_format($secDep) ?></span>
           </div>
 
-          <div class="frd-bc-row frd-total" style="margin-top:8px;padding-top:8px;border-top:1.5px solid #24312A;">
+          <div class="frd-bc-row frd-total" style="margin-top:8px;padding-top:8px;border-top:1.5px solid #0F172A;">
             <span class="frd-bc-label" style="font-size:14px;font-weight:900;">Total Amount:</span>
             <span class="frd-bc-val" id="frd-bc-total" style="font-size:18px;font-weight:900;color:#059669;"><?= fmt($initTotal) ?></span>
           </div>
@@ -1383,21 +1519,21 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
         <!-- Admin Contact buttons -->
         <div class="frd-contact-btns">
-          <a href="<?= $adminCallLink ?>" class="frd-contact-btn frd-call" onclick="frdLogInquiry('call')">
-            <span class="material-symbols-outlined" style="font-size:16px;color:#173C2D;">call</span>
-            <span>Call: <?= $adminPhone ?></span>
+          <a href="<?= $adminCallLink ?>" class="frd-contact-btn frd-call" onclick="frdLogInquiry('call')" title="Call <?= htmlspecialchars($adminPhone) ?>">
+            <span class="material-symbols-outlined">call</span>
+            <span>Call Host</span>
           </a>
-          <a href="<?= htmlspecialchars($adminWaLink) ?>" target="_blank" rel="noopener" class="frd-contact-btn frd-wa" onclick="frdLogInquiry('whatsapp')">
-            <span class="material-symbols-outlined" style="font-size:16px;color:#16a34a;">chat</span>
+          <a href="<?= htmlspecialchars($adminWaLink) ?>" target="_blank" rel="noopener" class="frd-contact-btn frd-wa" onclick="frdLogInquiry('whatsapp')" title="Chat on WhatsApp">
+            <span class="material-symbols-outlined">chat</span>
             <span>WhatsApp</span>
           </a>
         </div>
 
         <!-- Admin Help -->
         <div class="frd-help-section">
-          <div class="frd-help-title">FarmLelo &amp; Booking Support</div>
+          <div class="frd-help-title">Stayora &amp; Booking Support</div>
           <a href="<?= $adminCallLink ?>" class="frd-help-item" onclick="frdLogInquiry('call')">
-            <span class="material-symbols-outlined" style="font-size:16px;color:#173C2D;">call</span>
+            <span class="material-symbols-outlined" style="font-size:16px;color:#1E40AF;">call</span>
             <span>Phone: <strong><?= $adminPhone ?></strong></span>
           </a>
           <a href="<?= htmlspecialchars($adminWaLink) ?>" target="_blank" rel="noopener" class="frd-help-item" onclick="frdLogInquiry('whatsapp')">
@@ -1416,16 +1552,16 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
   <!-- ══ SIMILAR PROPERTIES RECOMMENDATION SECTION (F77) ══ -->
   <?php if (!empty($similarFarmhouses)): ?>
-  <div class="frd-similar-section" style="margin-top:50px;padding-top:36px;border-top:1.5px solid #E2DBD0;">
+  <div class="frd-similar-section" style="margin-top:50px;padding-top:36px;border-top:1.5px solid #E2E8F0;">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
       <div>
-        <div style="display:inline-flex;align-items:center;gap:6px;background:#EAF1EB;color:#173C2D;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:4px 10px;border-radius:999px;margin-bottom:6px;">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:#E0F2FE;color:#1E40AF;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;padding:4px 10px;border-radius:999px;margin-bottom:6px;">
           <span class="material-symbols-outlined" style="font-size:14px;">travel_explore</span>
           <span>More in <?= htmlspecialchars($farmhouse['location'] ?? 'this Area') ?></span>
         </div>
-        <h3 style="font-size:22px;font-weight:900;color:#24312A;margin:0;">Similar Vacation Properties You May Like</h3>
+        <h3 style="font-size:22px;font-weight:900;color:#0F172A;margin:0;">Similar Vacation Properties You May Like</h3>
       </div>
-      <a href="<?= url('farmhouses?location=' . urlencode($farmhouse['location'] ?? '')) ?>" style="color:#173C2D;font-weight:700;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
+      <a href="<?= url('farmhouses?location=' . urlencode($farmhouse['location'] ?? '')) ?>" style="color:#1E40AF;font-weight:700;font-size:13px;text-decoration:none;display:inline-flex;align-items:center;gap:4px;">
         <span>Explore all in <?= htmlspecialchars($farmhouse['location'] ?? '') ?></span>
         <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
       </a>
@@ -1436,8 +1572,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         $simEncId = class_exists(\App\Helpers\CryptoHelper::class) ? \App\Helpers\CryptoHelper::encrypt((string)$sim['id']) : (string)$sim['id'];
         $simImg = !empty($sim['primary_image']) ? farmhouse_img_url($sim['primary_image']) : 'https://placehold.co/600x400/E8F0EC/1F4D3A?text=Luxury+Stay';
       ?>
-        <div style="background:#ffffff;border:1px solid #E2DBD0;border-radius:20px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.04);transition:transform 0.2s,box-shadow 0.2s;display:flex;flex-direction:column;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 25px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 15px rgba(0,0,0,0.04)'">
-          <div style="position:relative;height:180px;background:#24312A;overflow:hidden;">
+        <div style="background:#ffffff;border:1px solid #E2E8F0;border-radius:20px;overflow:hidden;box-shadow:0 4px 15px rgba(0,0,0,0.04);transition:transform 0.2s,box-shadow 0.2s;display:flex;flex-direction:column;" onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 25px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='none';this.style.boxShadow='0 4px 15px rgba(0,0,0,0.04)'">
+          <div style="position:relative;height:180px;background:#0F172A;overflow:hidden;">
             <img src="<?= $simImg ?>" alt="<?= htmlspecialchars($sim['title']) ?>" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://placehold.co/600x400/E8F0EC/1F4D3A?text=Stayora'"/>
             <div style="position:absolute;top:12px;left:12px;display:flex;gap:6px;">
               <span style="background:rgba(15,23,42,0.85);backdrop-filter:blur(4px);color:#ffffff;font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:6px;display:inline-flex;align-items:center;gap:4px;">
@@ -1453,25 +1589,25 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           </div>
           <div style="padding:16px;display:flex;flex-direction:column;flex:1;justify-content:space-between;">
             <div>
-              <div style="display:flex;align-items:center;gap:4px;color:#57685F;font-size:11.5px;font-weight:600;margin-bottom:4px;">
-                <span class="material-symbols-outlined" style="font-size:13px;color:#173C2D;">location_on</span>
+              <div style="display:flex;align-items:center;gap:4px;color:#64748B;font-size:11.5px;font-weight:600;margin-bottom:4px;">
+                <span class="material-symbols-outlined" style="font-size:13px;color:#1E40AF;">location_on</span>
                 <span><?= htmlspecialchars($sim['location']) ?></span>
               </div>
-              <h4 style="font-size:15px;font-weight:800;color:#24312A;margin:0 0 8px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+              <h4 style="font-size:15px;font-weight:800;color:#0F172A;margin:0 0 8px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                 <?= htmlspecialchars($sim['title']) ?>
               </h4>
-              <div style="display:flex;gap:12px;color:#57685F;font-size:11.5px;font-weight:600;margin-bottom:12px;">
+              <div style="display:flex;gap:12px;color:#64748B;font-size:11.5px;font-weight:600;margin-bottom:12px;">
                 <span>🛏️ <?= (int)$sim['bedrooms'] ?> BHK</span>
                 <span>👥 Up to <?= (int)($sim['night_capacity'] ?: 10) ?> Guests</span>
               </div>
             </div>
             <div style="display:flex;align-items:center;justify-content:space-between;padding-top:12px;border-top:1px solid #f1f5f9;">
               <div>
-                <span style="font-size:11px;color:#57685F;font-weight:600;display:block;">From</span>
-                <span style="font-size:16px;font-weight:900;color:#24312A;">₹<?= number_format((float)$sim['price']) ?></span>
+                <span style="font-size:11px;color:#64748B;font-weight:600;display:block;">From</span>
+                <span style="font-size:16px;font-weight:900;color:#0F172A;">₹<?= number_format((float)$sim['price']) ?></span>
                 <span style="font-size:11px;color:#94a3b8;">/night</span>
               </div>
-              <a href="<?= url('farmhouse_details?id=' . urlencode($simEncId)) ?>" style="padding:8px 14px;background:#173C2D;color:#ffffff;text-decoration:none;border-radius:10px;font-size:12px;font-weight:700;transition:background 0.2s;" onmouseover="this.style.background='#133225'" onmouseout="this.style.background='#173C2D'">
+              <a href="<?= url('farmhouse_details?id=' . urlencode($simEncId)) ?>" style="padding:8px 14px;background:#1E40AF;color:#ffffff;text-decoration:none;border-radius:10px;font-size:12px;font-weight:700;transition:background 0.2s;" onmouseover="this.style.background='#1E3A8A'" onmouseout="this.style.background='#1E40AF'">
                 View Stay
               </a>
             </div>
@@ -1510,34 +1646,34 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   <div class="frd-modal-box">
     <button class="frd-modal-close" onclick="frdCloseBookingModal()">✕</button>
     
-    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #E2DBD0;">
-      <div style="width:42px;height:42px;border-radius:12px;background:#E8F0EC;color:#173C2D;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-        <span class="material-symbols-outlined" style="font-size:24px;color:#173C2D;" id="frd-modal-header-icon">villa</span>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid #E2E8F0;">
+      <div style="width:42px;height:42px;border-radius:12px;background:#EFF6FF;color:#1E40AF;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <span class="material-symbols-outlined" style="font-size:24px;color:#1E40AF;" id="frd-modal-header-icon">villa</span>
       </div>
       <div>
-        <h3 class="frd-modal-title" style="margin:0;font-size:18px;font-weight:800;color:#24312A;">Complete Booking Request</h3>
-        <p style="margin:0;font-size:12.5px;color:#57685F;font-weight:600;"><?= htmlspecialchars($farmhouse['title']) ?> · <?= htmlspecialchars($farmhouse['location'] ?? '') ?></p>
+        <h3 class="frd-modal-title" style="margin:0;font-size:18px;font-weight:800;color:#0F172A;">Complete Booking Request</h3>
+        <p style="margin:0;font-size:12.5px;color:#64748B;font-weight:600;"><?= htmlspecialchars($farmhouse['title']) ?> · <?= htmlspecialchars($farmhouse['location'] ?? '') ?></p>
       </div>
     </div>
 
     <!-- Booking Summary Card -->
-    <div style="background:#F7F3EA;border:1px solid #E2DBD0;border-radius:14px;padding:14px;margin-bottom:16px;">
+    <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:14px;padding:14px;margin-bottom:16px;">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12.5px;">
         <div>
-          <span style="color:#57685F;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Booking Mode</span>
-          <div style="font-weight:800;color:#173C2D;margin-top:2px;" id="frd-modal-booking-mode">Complete Farmhouse</div>
+          <span style="color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Booking Mode</span>
+          <div style="font-weight:800;color:#1E40AF;margin-top:2px;" id="frd-modal-booking-mode">Complete Farmhouse</div>
         </div>
         <div>
-          <span style="color:#57685F;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Dates &amp; Stay</span>
-          <div style="font-weight:800;color:#24312A;margin-top:2px;" id="frd-modal-stay-dates">Select dates</div>
+          <span style="color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Dates &amp; Stay</span>
+          <div style="font-weight:800;color:#0F172A;margin-top:2px;" id="frd-modal-stay-dates">Select dates</div>
         </div>
         <div style="grid-column: span 2; padding-top:4px;">
-          <span style="color:#57685F;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Guests &amp; Allocation</span>
-          <div style="font-weight:800;color:#24312A;margin-top:2px;" id="frd-modal-guests-rooms">2 Guests · Entire Estate</div>
+          <span style="color:#64748B;font-size:11px;font-weight:800;text-transform:uppercase;display:block;">Guests &amp; Allocation</span>
+          <div style="font-weight:800;color:#0F172A;margin-top:2px;" id="frd-modal-guests-rooms">2 Guests · Entire Estate</div>
         </div>
         <div style="grid-column: span 2; padding-top:8px; margin-top:4px; border-top:1px dashed #cbd5e1; display:flex; justify-content:space-between; align-items:center;">
           <span style="font-weight:700;color:#334155;font-size:13px;">Total Amount (incl. platform fees):</span>
-          <span style="font-size:20px;font-weight:900;color:#1F4D3A;" id="frd-modal-total-price">₹0</span>
+          <span style="font-size:20px;font-weight:900;color:#1D4ED8;" id="frd-modal-total-price">₹0</span>
         </div>
       </div>
     </div>
@@ -1548,24 +1684,24 @@ $requestedJson = json_encode(array_values($userRequestedDates));
         Select Payment Method (F38)
       </label>
       <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:8px;" id="frd-payment-methods-grid">
-        <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border:2px solid #173C2D;background:#f0f9ff;border-radius:12px;cursor:pointer;text-align:center;transition:all 0.15s;" id="frd-pm-label-upi">
+        <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border:2px solid #1E40AF;background:#f0f9ff;border-radius:12px;cursor:pointer;text-align:center;transition:all 0.15s;" id="frd-pm-label-upi">
           <input type="radio" name="payment_method" value="upi" checked onchange="frdSelectPaymentMethod('upi')" style="display:none;">
-          <span class="material-symbols-outlined" style="font-size:22px;color:#173C2D;">qr_code_scanner</span>
-          <span style="font-size:11.5px;font-weight:800;color:#24312A;">UPI Scan</span>
-          <span style="font-size:9.5px;font-weight:700;color:#173C2D;">Instant QR</span>
+          <span class="material-symbols-outlined" style="font-size:22px;color:#1E40AF;">qr_code_scanner</span>
+          <span style="font-size:11.5px;font-weight:800;color:#0F172A;">UPI Scan</span>
+          <span style="font-size:9.5px;font-weight:700;color:#1E40AF;">Instant QR</span>
         </label>
 
         <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border:1.5px solid #cbd5e1;background:#ffffff;border-radius:12px;cursor:pointer;text-align:center;transition:all 0.15s;" id="frd-pm-label-bank">
           <input type="radio" name="payment_method" value="bank_transfer" onchange="frdSelectPaymentMethod('bank_transfer')" style="display:none;">
-          <span class="material-symbols-outlined" style="font-size:22px;color:#57685F;">account_balance</span>
-          <span style="font-size:11.5px;font-weight:800;color:#24312A;">Bank Wire</span>
-          <span style="font-size:9.5px;font-weight:600;color:#57685F;">NEFT / IMPS</span>
+          <span class="material-symbols-outlined" style="font-size:22px;color:#64748B;">account_balance</span>
+          <span style="font-size:11.5px;font-weight:800;color:#0F172A;">Bank Wire</span>
+          <span style="font-size:9.5px;font-weight:600;color:#64748B;">NEFT / IMPS</span>
         </label>
 
         <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border:1.5px solid #cbd5e1;background:#ffffff;border-radius:12px;cursor:pointer;text-align:center;transition:all 0.15s;" id="frd-pm-label-property">
           <input type="radio" name="payment_method" value="pay_at_property" onchange="frdSelectPaymentMethod('pay_at_property')" style="display:none;">
-          <span class="material-symbols-outlined" style="font-size:22px;color:#57685F;">payments</span>
-          <span style="font-size:11.5px;font-weight:800;color:#24312A;">At Property</span>
+          <span class="material-symbols-outlined" style="font-size:22px;color:#64748B;">payments</span>
+          <span style="font-size:11.5px;font-weight:800;color:#0F172A;">At Property</span>
           <span style="font-size:9.5px;font-weight:600;color:#059669;">Pay on Arrival</span>
         </label>
       </div>
@@ -1589,8 +1725,8 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
       <?php if (!empty($upiId)): ?>
         <div style="display:inline-flex;align-items:center;gap:8px;background:#ffffff;padding:5px 12px;border-radius:10px;border:1px solid #86efac;margin-bottom:6px;">
-          <span style="font-size:11px;color:#57685F;font-weight:700;">UPI ID:</span>
-          <span style="font-family:monospace;font-weight:800;color:#24312A;font-size:12.5px;" id="frd-upi-id-text"><?= $upiId ?></span>
+          <span style="font-size:11px;color:#64748B;font-weight:700;">UPI ID:</span>
+          <span style="font-family:monospace;font-weight:800;color:#0F172A;font-size:12.5px;" id="frd-upi-id-text"><?= $upiId ?></span>
           <button type="button" class="frd-copy-badge" onclick="frdCopyUpi('<?= $upiId ?>')" style="padding:3px 7px;border-radius:6px;background:#f1f5f9;border:1px solid #cbd5e1;font-size:10.5px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:3px;">
             <span class="material-symbols-outlined" style="font-size:12px;">content_copy</span>
             <span>Copy</span>
@@ -1604,30 +1740,30 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     </div>
 
     <!-- Panel 2: Direct Bank Transfer Details (F37) -->
-    <div id="frd-pay-panel-bank" style="display:none;background:#F7F3EA;border:1.5px solid #cbd5e1;border-radius:16px;padding:16px;margin-bottom:16px;">
-      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:#24312A;">
-        <span class="material-symbols-outlined" style="font-size:20px;color:#173C2D;">account_balance</span>
+    <div id="frd-pay-panel-bank" style="display:none;background:#F8FAFC;border:1.5px solid #cbd5e1;border-radius:16px;padding:16px;margin-bottom:16px;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;color:#0F172A;">
+        <span class="material-symbols-outlined" style="font-size:20px;color:#1E40AF;">account_balance</span>
         <strong style="font-size:13.5px;font-weight:800;">Official Bank Account Details</strong>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;">
-        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2DBD0;">
-          <span style="font-size:10px;color:#57685F;display:block;font-weight:700;text-transform:uppercase;">Bank Name</span>
-          <strong style="color:#24312A;"><?= $bankName ?></strong>
+        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;">
+          <span style="font-size:10px;color:#64748B;display:block;font-weight:700;text-transform:uppercase;">Bank Name</span>
+          <strong style="color:#0F172A;"><?= $bankName ?></strong>
         </div>
-        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2DBD0;">
-          <span style="font-size:10px;color:#57685F;display:block;font-weight:700;text-transform:uppercase;">Account Name</span>
-          <strong style="color:#24312A;"><?= $accountName ?></strong>
+        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;">
+          <span style="font-size:10px;color:#64748B;display:block;font-weight:700;text-transform:uppercase;">Account Name</span>
+          <strong style="color:#0F172A;"><?= $accountName ?></strong>
         </div>
-        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2DBD0;">
-          <span style="font-size:10px;color:#57685F;display:block;font-weight:700;text-transform:uppercase;">Account Number</span>
-          <strong style="color:#24312A;font-family:monospace;"><?= $accountNumber ?></strong>
+        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;">
+          <span style="font-size:10px;color:#64748B;display:block;font-weight:700;text-transform:uppercase;">Account Number</span>
+          <strong style="color:#0F172A;font-family:monospace;"><?= $accountNumber ?></strong>
         </div>
-        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2DBD0;">
-          <span style="font-size:10px;color:#57685F;display:block;font-weight:700;text-transform:uppercase;">IFSC Code</span>
-          <strong style="color:#24312A;font-family:monospace;"><?= $ifscCode ?></strong>
+        <div style="background:#fff;padding:8px 10px;border-radius:8px;border:1px solid #E2E8F0;">
+          <span style="font-size:10px;color:#64748B;display:block;font-weight:700;text-transform:uppercase;">IFSC Code</span>
+          <strong style="color:#0F172A;font-family:monospace;"><?= $ifscCode ?></strong>
         </div>
       </div>
-      <p style="margin:8px 0 0;font-size:11px;color:#57685F;line-height:1.4;">
+      <p style="margin:8px 0 0;font-size:11px;color:#64748B;line-height:1.4;">
         Transfer using IMPS or NEFT. Enter your Bank Reference Number / UTR below for swift reconciliation.
       </p>
     </div>
@@ -1666,19 +1802,19 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <input type="hidden" name="payment_method"  id="frd-form-payment-method" value="upi"/>
 
       <!-- In-App Payment Proof Inputs (F39) -->
-      <div id="frd-pay-proof-section" style="background:#F7F3EA;border:1.5px solid #E2DBD0;border-radius:14px;padding:12px;margin-bottom:12px;">
-        <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#24312A;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px;">
-          <span class="material-symbols-outlined" style="font-size:16px;color:#173C2D;">receipt_long</span>
+      <div id="frd-pay-proof-section" style="background:#F8FAFC;border:1.5px solid #E2E8F0;border-radius:14px;padding:12px;margin-bottom:12px;">
+        <div style="font-size:11px;font-weight:800;text-transform:uppercase;color:#0F172A;letter-spacing:0.5px;margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+          <span class="material-symbols-outlined" style="font-size:16px;color:#1E40AF;">receipt_long</span>
           <span>Payment Proof &amp; Verification (Optional upfront, speeds up confirmation)</span>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
           <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:#57685F;margin-bottom:3px;">UTR / Transaction Ref No.</label>
+            <label style="display:block;font-size:10.5px;font-weight:700;color:#64748B;margin-bottom:3px;">UTR / Transaction Ref No.</label>
             <input type="text" name="utr_number" id="frd-utr-input" placeholder="e.g. 12-digit UTR 324567891234" 
                    style="width:100%;padding:8px 10px;border:1.5px solid #cbd5e1;border-radius:8px;font-size:12px;font-family:monospace;outline:none;box-sizing:border-box;">
           </div>
           <div>
-            <label style="display:block;font-size:10.5px;font-weight:700;color:#57685F;margin-bottom:3px;">Upload Screenshot / Receipt</label>
+            <label style="display:block;font-size:10.5px;font-weight:700;color:#64748B;margin-bottom:3px;">Upload Screenshot / Receipt</label>
             <input type="file" name="payment_proof" id="frd-proof-file-input" accept="image/*,.pdf" 
                    style="width:100%;padding:5px 8px;border:1.5px solid #cbd5e1;border-radius:8px;font-size:11px;background:#fff;outline:none;box-sizing:border-box;">
           </div>
@@ -1688,25 +1824,25 @@ $requestedJson = json_encode(array_values($userRequestedDates));
       <!-- Guest Details -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
         <div style="text-align:left;">
-          <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#57685F;margin-bottom:4px;">Your Name</label>
-          <input type="text" value="<?= $userName ?>" readonly style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#F7F3EA;color:#24312A;cursor:not-allowed;box-sizing:border-box;">
+          <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#64748B;margin-bottom:4px;">Your Name</label>
+          <input type="text" value="<?= $userName ?>" readonly style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#F8FAFC;color:#0F172A;cursor:not-allowed;box-sizing:border-box;">
         </div>
         <div style="text-align:left;">
-          <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#57685F;margin-bottom:4px;">Contact Phone</label>
-          <input type="text" value="<?= $userPhone ?: $supportPhone ?>" readonly style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#F7F3EA;color:#24312A;cursor:not-allowed;box-sizing:border-box;">
+          <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#64748B;margin-bottom:4px;">Contact Phone</label>
+          <input type="text" value="<?= $userPhone ?: $supportPhone ?>" readonly style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;background:#F8FAFC;color:#0F172A;cursor:not-allowed;box-sizing:border-box;">
         </div>
       </div>
 
       <div style="text-align:left;margin-bottom:14px;">
-        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#57685F;margin-bottom:4px;">Special Requests / Note (Optional)</label>
-        <textarea name="message" rows="2" placeholder="e.g. Arriving around 1 PM, celebrating birthday, early check-in requested..." style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;color:#24312A;box-sizing:border-box;font-family:inherit;resize:none;"></textarea>
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;color:#64748B;margin-bottom:4px;">Special Requests / Note (Optional)</label>
+        <textarea name="message" rows="2" placeholder="e.g. Arriving around 1 PM, celebrating birthday, early check-in requested..." style="width:100%;padding:9px 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:13px;color:#0F172A;box-sizing:border-box;font-family:inherit;resize:none;"></textarea>
       </div>
 
       <div style="display:flex;align-items:center;gap:10px;">
         <button type="button" onclick="frdCloseBookingModal()" style="flex:1;padding:12px;background:#f1f5f9;border:none;border-radius:12px;font-size:13px;font-weight:700;color:#475569;cursor:pointer;">
           Cancel
         </button>
-        <button type="submit" id="frd-submit-request-btn" style="flex:2;padding:12px;background:<?= $isInstantMode ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#1F4D3A' ?>;border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;box-shadow:0 4px 12px <?= $isInstantMode ? 'rgba(16,185,129,0.35)' : 'rgba(22,165,222,0.3)' ?>;">
+        <button type="submit" id="frd-submit-request-btn" style="flex:2;padding:12px;background:<?= $isInstantMode ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#1D4ED8' ?>;border:none;border-radius:12px;font-size:14px;font-weight:800;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:background 0.2s;box-shadow:0 4px 12px <?= $isInstantMode ? 'rgba(16,185,129,0.35)' : 'rgba(22,165,222,0.3)' ?>;">
           <span><?= $isInstantMode ? '⚡ Confirm Instant Booking' : 'Submit Booking Request' ?></span>
           <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
         </button>
@@ -1723,20 +1859,26 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     <h3 class="frd-modal-title">Important House Rules</h3>
     <?php if (!empty($rules)): ?>
       <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px;">
-        <?php foreach ($rules as $rule): ?>
-        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:#F7F3EA;border:1px solid #E2DBD0;border-radius:12px;">
-          <div style="display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#24312A;">
-            <span class="material-symbols-outlined" style="font-size:18px;color:#57685F;"><?= htmlspecialchars($rule['icon_class'] ?? 'gavel') ?></span>
-            <?= htmlspecialchars($rule['rule_name']) ?>
+        <?php foreach ($rules as $rule): 
+          $isAllowed = !empty($rule['is_allowed']);
+          $rIcon = get_stayora_rule_icon($rule['rule_name'] ?? '', $rule['icon_class'] ?? '');
+        ?>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;background:#F8FAFC;border:1px solid <?= $isAllowed ? '#E2E8F0' : '#FECACA' ?>;border-radius:12px;">
+          <div style="display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;color:#0F172A;min-width:0;flex:1;">
+            <div style="width:32px;height:32px;border-radius:8px;background:<?= $isAllowed ? '#F0FDF4' : '#FEF2F2' ?>;color:<?= $isAllowed ? '#16A34A' : '#DC2626' ?>;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span class="material-symbols-outlined" style="font-size:18px;"><?= htmlspecialchars($rIcon) ?></span>
+            </div>
+            <span style="line-height:1.35;"><?= htmlspecialchars($rule['rule_name']) ?></span>
           </div>
-          <span class="frd-rule-badge <?= $rule['is_allowed'] ? 'frd-allowed' : 'frd-not-allowed' ?>">
-            <?= $rule['is_allowed'] ? 'Allowed' : 'Not Allowed' ?>
+          <span class="frd-rule-badge <?= $isAllowed ? 'frd-allowed' : 'frd-not-allowed' ?>">
+            <span class="material-symbols-outlined" style="font-size:13px;"><?= $isAllowed ? 'check_circle' : 'cancel' ?></span>
+            <?= $isAllowed ? 'Allowed' : 'Not Allowed' ?>
           </span>
         </div>
         <?php endforeach; ?>
       </div>
     <?php else: ?>
-      <p style="color:#57685F;font-size:13px;">Please contact FarmLelo admin for specific house rules.</p>
+      <p style="color:#64748B;font-size:13px;">Please contact Stayora admin for specific house rules.</p>
     <?php endif; ?>
     <p class="frd-modal-note">Violation of house rules may result in forfeiture of the security deposit.</p>
   </div>
@@ -1749,7 +1891,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
     <h3 class="frd-modal-title">Cancellation Policy</h3>
     <ul style="list-style:none;display:flex;flex-direction:column;gap:10px;padding:0;margin:14px 0 0;">
       <li style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#334155;">
-        <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:18px;flex-shrink:0;">check_circle</span>
+        <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:18px;flex-shrink:0;">check_circle</span>
         <span><strong>7+ days before check-in:</strong> 100% refund of booking amount.</span>
       </li>
       <li style="display:flex;gap:10px;align-items:flex-start;font-size:13px;color:#f59e0b;font-size:18px;flex-shrink:0;">
@@ -1767,7 +1909,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
 
 <!-- 4. Room Independent Photo Gallery Modal (F13) -->
 <div id="frd-room-gallery-modal" class="frd-modal-backdrop" style="display:none;align-items:center;justify-content:center;z-index:9999;">
-  <div class="frd-modal-box" style="max-width:760px;width:95%;padding:20px;border-radius:24px;background:#24312A;color:#ffffff;box-shadow:0 25px 60px rgba(0,0,0,0.6);">
+  <div class="frd-modal-box" style="max-width:760px;width:95%;padding:20px;border-radius:24px;background:#0F172A;color:#ffffff;box-shadow:0 25px 60px rgba(0,0,0,0.6);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;border-bottom:1px solid #334155;padding-bottom:12px;">
       <div>
         <span style="font-size:11px;font-weight:700;color:#C9A227;text-transform:uppercase;letter-spacing:0.5px;">Room Independent Gallery</span>
@@ -1794,19 +1936,20 @@ $requestedJson = json_encode(array_values($userRequestedDates));
   <div class="frd-modal-box" style="max-width:540px;width:95%;padding:24px;border-radius:24px;background:#ffffff;box-shadow:0 25px 60px rgba(0,0,0,0.25);">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;border-bottom:1px solid #f1f5f9;padding-bottom:12px;">
       <div>
-        <span style="font-size:11px;font-weight:800;color:#173C2D;text-transform:uppercase;letter-spacing:0.5px;">Verified Experience</span>
-        <h3 style="font-size:18px;font-weight:900;color:#24312A;margin:2px 0 0;">Rate &amp; Review Your Stay</h3>
+        <span style="font-size:11px;font-weight:800;color:#1E40AF;text-transform:uppercase;letter-spacing:0.5px;">Verified Experience</span>
+        <h3 style="font-size:18px;font-weight:900;color:#0F172A;margin:2px 0 0;">Rate &amp; Review Your Stay</h3>
       </div>
       <button type="button" onclick="document.getElementById('frdReviewModal').style.display='none'"
               style="background:none;border:none;color:#94a3b8;font-size:22px;cursor:pointer;line-height:1;">✕</button>
     </div>
 
     <form action="<?= url('farmhouse/submit-review') ?>" method="POST" style="display:flex;flex-direction:column;gap:14px;">
+      <input type="hidden" name="csrf_token" value="<?= \App\Helpers\CsrfHelper::generate() ?>">
       <input type="hidden" name="farmhouse_id" value="<?= htmlspecialchars($encId) ?>">
 
       <!-- 4 Criteria Rating Inputs -->
-      <div style="background:#F7F3EA;border:1px solid #E2DBD0;border-radius:16px;padding:14px;">
-        <span style="display:block;font-size:11.5px;font-weight:800;color:#24312A;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">
+      <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:16px;padding:14px;">
+        <span style="display:block;font-size:11.5px;font-weight:800;color:#0F172A;text-transform:uppercase;letter-spacing:0.4px;margin-bottom:10px;">
           Rate Core Stay Criteria (1 to 5 Stars)
         </span>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
@@ -1887,7 +2030,7 @@ $requestedJson = json_encode(array_values($userRequestedDates));
           Cancel
         </button>
         <button type="submit"
-                style="padding:8px 18px;border:none;border-radius:10px;background:#173C2D;color:#fff;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(2,132,199,0.3);">
+                style="padding:8px 18px;border:none;border-radius:10px;background:#1E40AF;color:#fff;font-size:12px;font-weight:800;cursor:pointer;box-shadow:0 4px 12px rgba(2,132,199,0.3);">
           Submit Review
         </button>
       </div>
@@ -1903,6 +2046,10 @@ const FRD_REQUESTED_DATES  = <?= $requestedJson ?>;
 const FRD_FULL_FARM_PRICE  = <?= $fullFarmPrice ?>;
 const FRD_WEEKEND_PRICE    = <?= (float)($farmhouse['weekend_price'] ?? $fullFarmPrice * 1.2) ?>;
 const FRD_RATE_PER_ROOM    = <?= $ratePerRoom ?>;
+const FRD_RENTAL_TYPE      = '<?= $rentalType ?>';
+const FRD_SUPPORTS_COMPLETE = <?= $supportsComplete ? 'true' : 'false' ?>;
+const FRD_SUPPORTS_ROOM    = <?= $supportsRoomWise ? 'true' : 'false' ?>;
+const FRD_DEFAULT_MODE     = '<?= $defaultBookingMode ?>';
 const FRD_ALLOW_ROOM_BOOK  = <?= $allowRoomBooking && $roomPriceConfig > 0 ? 'true' : 'false' ?>;
 const FRD_BED_CAPACITY     = <?= $bedroomCapacity ?>;
 const FRD_TOTAL_BEDROOMS   = <?= $totalBedrooms ?>;
@@ -1918,7 +2065,7 @@ const FRD_ALL_IMAGES       = <?= json_encode($allResolvedImages) ?>;
 const FRD_ROOM_TYPES       = <?= json_encode(!empty($roomTypes) ? $roomTypes : []) ?>;
 
 // ── STATE VARIABLES ──
-let frdBookingMode = 'complete'; // 'complete' | 'per_room'
+let frdBookingMode = '<?= $defaultBookingMode ?>'; // 'complete' | 'per_room'
 let frdBcG = <?= $initGuests ?>;
 let frdCustomRooms = <?= max(1, (int)ceil($initGuests / $bedroomCapacity)) ?>;
 let frdSelectedRoomTypeId = (FRD_ROOM_TYPES && FRD_ROOM_TYPES.length > 0) ? parseInt(FRD_ROOM_TYPES[0].id) : null;
@@ -2144,15 +2291,15 @@ let frdGalIdx = 0;
 
 function frdFilterCategory(cat, btn) {
   document.querySelectorAll('.frd-cat-pill').forEach(b => {
-    b.style.background = '#F7F3EA';
+    b.style.background = '#F8FAFC';
     b.style.color = '#475569';
-    b.style.borderColor = '#E2DBD0';
+    b.style.borderColor = '#E2E8F0';
     b.classList.remove('active');
   });
   if (btn) {
-    btn.style.background = '#24312A';
+    btn.style.background = '#0F172A';
     btn.style.color = '#ffffff';
-    btn.style.borderColor = '#24312A';
+    btn.style.borderColor = '#0F172A';
     btn.classList.add('active');
   }
 
@@ -2212,7 +2359,11 @@ function frdLogInquiry(type) {
 
 // ── DUAL BOOKING MODE SELECTOR ──
 function frdSetBookingMode(mode) {
-  if (!FRD_ALLOW_ROOM_BOOK && mode === 'per_room') {
+  if (FRD_RENTAL_TYPE === 'room_wise') {
+    mode = 'per_room';
+  } else if (FRD_RENTAL_TYPE === 'complete') {
+    mode = 'complete';
+  } else if (!FRD_ALLOW_ROOM_BOOK && mode === 'per_room') {
     mode = 'complete';
   }
   frdBookingMode = (mode === 'per_room') ? 'per_room' : 'complete';
@@ -2252,7 +2403,7 @@ function frdSetBookingMode(mode) {
     if (guestSubLbl) guestSubLbl.textContent = `Full Estate Capacity (Up to ${FRD_MAX_GUESTS} Guests)`;
     if (bcModeName) {
       bcModeName.textContent = 'Complete Farmhouse';
-      bcModeName.style.color = '#173C2D';
+      bcModeName.style.color = '#1E40AF';
     }
 
     if (roomWrapper) roomWrapper.style.display = 'none';
@@ -2355,7 +2506,7 @@ function frdRecalcPrice() {
 
     const pill = document.getElementById('frd-room-allocation-pill');
     if (pill) {
-      pill.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#173C2D;vertical-align:middle;">villa</span> <span>Entire ${FRD_TOTAL_BEDROOMS} BHK Farmhouse (${frdBcG} Guests Selected · Up to ${FRD_MAX_GUESTS} Max)</span>`;
+      pill.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px;color:#1E40AF;vertical-align:middle;">villa</span> <span>Entire ${FRD_TOTAL_BEDROOMS} BHK Farmhouse (${frdBcG} Guests Selected · Up to ${FRD_MAX_GUESTS} Max)</span>`;
     }
     const roomsCountLabel = document.getElementById('frd-bc-rooms-count');
     if (roomsCountLabel) {
@@ -2441,7 +2592,7 @@ function frdRecalcPrice() {
       rateDetailLabel.style.color = '#d97706';
     } else {
       rateDetailLabel.textContent = 'Standard Tariff';
-      rateDetailLabel.style.color = '#57685F';
+      rateDetailLabel.style.color = '#64748B';
     }
   }
 
@@ -2855,19 +3006,19 @@ function frdLoadRoomMatrix(year, month) {
       html += '<th style="padding:8px 6px;">Day</th>';
       html += '<th style="padding:8px 6px;">Estate Status</th>';
       roomTypes.forEach(rt => {
-        html += `<th style="padding:8px 6px;">${rt.room_type_name} <span style="font-weight:400;color:#57685F;">(${rt.total_rooms})</span></th>`;
+        html += `<th style="padding:8px 6px;">${rt.room_type_name} <span style="font-weight:400;color:#64748B;">(${rt.total_rooms})</span></th>`;
       });
       html += '</tr></thead><tbody>';
 
       res.days.forEach(d => {
         const isPast = d.is_past;
         const isBlocked = d.is_blocked || d.entire_booked;
-        const rowBg = isPast ? '#F7F3EA' : (isBlocked ? '#fff5f5' : '#ffffff');
-        const textColor = isPast ? '#94a3b8' : '#24312A';
+        const rowBg = isPast ? '#F8FAFC' : (isBlocked ? '#fff5f5' : '#ffffff');
+        const textColor = isPast ? '#94a3b8' : '#0F172A';
 
         html += `<tr style="background:${rowBg};color:${textColor};border-bottom:1px solid #f1f5f9;">`;
         html += `<td style="padding:7px 10px;text-align:left;font-weight:700;">${d.date}</td>`;
-        html += `<td style="padding:7px 6px;color:#57685F;">${d.day_name}</td>`;
+        html += `<td style="padding:7px 6px;color:#64748B;">${d.day_name}</td>`;
 
         if (d.is_blocked) {
           html += `<td style="padding:7px 6px;"><span style="color:#ef4444;font-weight:700;font-size:10.5px;">🔒 Blocked (${d.blocked_reason || 'Unavailable'})</span></td>`;
@@ -3022,10 +3173,10 @@ function frdSelectPaymentMethod(method) {
   if (panelProp) panelProp.style.display = (method === 'pay_at_property') ? 'block' : 'none';
 
   if (method === 'upi') {
-    if (lblUpi) { lblUpi.style.border = '2px solid #173C2D'; lblUpi.style.background = '#f0f9ff'; }
+    if (lblUpi) { lblUpi.style.border = '2px solid #1E40AF'; lblUpi.style.background = '#f0f9ff'; }
     if (proofSec) proofSec.style.display = 'block';
   } else if (method === 'bank_transfer') {
-    if (lblBank) { lblBank.style.border = '2px solid #173C2D'; lblBank.style.background = '#f0f9ff'; }
+    if (lblBank) { lblBank.style.border = '2px solid #1E40AF'; lblBank.style.background = '#f0f9ff'; }
     if (proofSec) proofSec.style.display = 'block';
   } else if (method === 'pay_at_property') {
     if (lblProp) { lblProp.style.border = '2px solid #10b981'; lblProp.style.background = '#ecfdf5'; }
@@ -3057,10 +3208,79 @@ function frdSubmitBookingModal(form) {
   return true;
 }
 
+// ── AMENITIES INTERACTIVE FILTERING & TOGGLE ──
+let frdAmenitiesExpanded = false;
+let frdActiveAmenityCategory = 'all';
+
+function frdFilterAmenities(cat, btn) {
+  frdActiveAmenityCategory = cat;
+  
+  // Update active tab styling
+  const tabs = document.querySelectorAll('.frd-am-tab');
+  tabs.forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+
+  const cards = document.querySelectorAll('#frd-amenities-grid .frd-amenity-card');
+  const toggleBtn = document.getElementById('frd-toggle-amenities-btn');
+
+  if (cat === 'all') {
+    cards.forEach((card, idx) => {
+      if (frdAmenitiesExpanded || idx < 9) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    if (toggleBtn) toggleBtn.style.display = (cards.length > 9) ? 'inline-flex' : 'none';
+  } else {
+    cards.forEach(card => {
+      const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+      if (cardCat === cat.toLowerCase()) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+    if (toggleBtn) toggleBtn.style.display = 'none';
+  }
+}
+
+function frdToggleAllAmenities(totalCount) {
+  frdAmenitiesExpanded = !frdAmenitiesExpanded;
+  const cards = document.querySelectorAll('#frd-amenities-grid .frd-amenity-card');
+  const toggleText = document.getElementById('frd-toggle-amenities-text');
+  const toggleIcon = document.getElementById('frd-toggle-amenities-icon');
+
+  cards.forEach((card, idx) => {
+    if (frdActiveAmenityCategory !== 'all') {
+      const cardCat = (card.getAttribute('data-category') || '').toLowerCase();
+      card.style.display = (cardCat === frdActiveAmenityCategory.toLowerCase()) ? 'flex' : 'none';
+    } else {
+      if (frdAmenitiesExpanded || idx < 9) {
+        card.style.display = 'flex';
+      } else {
+        card.style.display = 'none';
+      }
+    }
+  });
+
+  if (toggleText && toggleIcon) {
+    if (frdAmenitiesExpanded) {
+      toggleText.textContent = 'Show Less';
+      toggleIcon.textContent = 'expand_less';
+    } else {
+      toggleText.textContent = 'Show All ' + totalCount + ' Amenities';
+      toggleIcon.textContent = 'apps';
+      const sec = document.getElementById('frd-amenities-section');
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+}
+
 // ── INITIALIZE ON LOAD ──
 document.addEventListener('DOMContentLoaded', () => {
   frdBuildCal();
-  frdSetBookingMode('complete'); // initialize in complete farmhouse mode
+  frdSetBookingMode(FRD_DEFAULT_MODE); // initialize in property's configured default mode
 });
 </script>
 

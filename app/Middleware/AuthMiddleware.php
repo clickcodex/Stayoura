@@ -118,10 +118,7 @@ class AuthMiddleware {
 
     public static function adminOnly(): void
     {
-        self::check();
-        if (($_SESSION['role'] ?? '') !== 'admin') {
-            die("Unauthorized Admin Access");
-        }
+        \App\Helpers\AdminAuth::requireAuth();
     }
 
     public static function ownerOnly(): void

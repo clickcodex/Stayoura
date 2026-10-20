@@ -10,19 +10,19 @@ $wishlistCount = count($myWishlist);
 .wl-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
-/* Sub-Nav Bar */
+/* Sub-Nav Bar
 .wl-subnav-bar {
   background: #ffffff;
-  border-bottom: 1px solid #E2DBD0;
+  border-bottom: 1px solid #E2E8F0;
   position: sticky;
   top: 72px;
   z-index: 40;
-}
+} */
 
 .wl-subnav-container {
   max-width: 1200px;
@@ -43,21 +43,21 @@ $wishlistCount = count($myWishlist);
   padding: 14px 16px;
   font-size: 13px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.wl-subnav-link:hover { color: #24312A; }
-.wl-subnav-link.active { color: #1F4D3A; border-bottom-color: #1F4D3A; }
+.wl-subnav-link:hover { color: #0F172A; }
+.wl-subnav-link.active { color: #1D4ED8; border-bottom-color: #1D4ED8; }
 .wl-subnav-link .material-symbols-outlined { font-size: 18px; }
 
 /* Page Hero */
 .wl-hero-banner {
   background: #ffffff;
-  border-bottom: 1px solid #E2DBD0;
+  border-bottom: 1px solid #E2E8F0;
   padding: 36px 0;
 }
 
@@ -91,14 +91,14 @@ $wishlistCount = count($myWishlist);
   font-family: 'Epilogue', sans-serif;
   font-size: 32px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 4px;
   letter-spacing: -0.02em;
 }
 
 .wl-subtitle {
   font-size: 14px;
-  color: #57685F;
+  color: #64748B;
   margin: 0;
 }
 
@@ -118,7 +118,7 @@ $wishlistCount = count($myWishlist);
 
 .wl-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -138,7 +138,7 @@ $wishlistCount = count($myWishlist);
   position: relative;
   height: 200px;
   overflow: hidden;
-  background: #24312A;
+  background: #0F172A;
 }
 
 .wl-card-img {
@@ -204,7 +204,7 @@ $wishlistCount = count($myWishlist);
   font-family: 'Epilogue', sans-serif;
   font-size: 18px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
   line-height: 1.3;
 }
@@ -215,7 +215,7 @@ $wishlistCount = count($myWishlist);
   gap: 4px;
   font-size: 12.5px;
   font-weight: 600;
-  color: #57685F;
+  color: #64748B;
   margin: 0;
 }
 
@@ -229,7 +229,7 @@ $wishlistCount = count($myWishlist);
 .wl-price-val {
   font-size: 22px;
   font-weight: 900;
-  color: #1F4D3A;
+  color: #1D4ED8;
 }
 
 .wl-price-unit {
@@ -250,7 +250,7 @@ $wishlistCount = count($myWishlist);
 .wl-btn-view {
   flex: 1;
   height: 42px;
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   font-size: 13px;
   font-weight: 800;
@@ -265,7 +265,7 @@ $wishlistCount = count($myWishlist);
 }
 
 .wl-btn-view:hover {
-  background: #173C2D;
+  background: #1E40AF;
 }
 
 .wl-btn-wa {
@@ -291,7 +291,7 @@ $wishlistCount = count($myWishlist);
   text-align: center;
   padding: 80px 20px;
   background: #ffffff;
-  border: 2px dashed #E2DBD0;
+  border: 2px dashed #E2E8F0;
   border-radius: 24px;
 }
 
@@ -301,7 +301,7 @@ $wishlistCount = count($myWishlist);
   bottom: 24px;
   left: 50%;
   transform: translateX(-50%) translateY(80px);
-  background: #24312A;
+  background: #0F172A;
   color: #ffffff;
   font-size: 13px;
   font-weight: 700;
@@ -338,7 +338,7 @@ $wishlistCount = count($myWishlist);
 <div class="wl-page-wrap">
 
   <!-- ── 1. Sticky User Sub-Nav Hub ── -->
-  <div class="wl-subnav-bar">
+  <!-- <div class="wl-subnav-bar">
     <div class="wl-subnav-container">
       <a href="<?= url('dashboard') ?>" class="wl-subnav-link">
         <span class="material-symbols-outlined">grid_view</span>
@@ -361,7 +361,7 @@ $wishlistCount = count($myWishlist);
         <span>Concierge Support</span>
       </a>
     </div>
-  </div>
+  </div> -->
 
   <!-- ── 2. Page Hero ── -->
   <div class="wl-hero-banner">
@@ -375,7 +375,7 @@ $wishlistCount = count($myWishlist);
         <p class="wl-subtitle">Your personal wishlist of handpicked luxury farmhouses and weekend retreats.</p>
       </div>
 
-      <a href="<?= url('farmhouses') ?>" style="display:inline-flex;align-items:center;gap:8px;background:#1F4D3A;color:#ffffff;font-size:13px;font-weight:800;padding:10px 20px;border-radius:14px;text-decoration:none;box-shadow:0 4px 14px rgba(22,165,222,0.3);">
+      <a href="<?= url('farmhouses') ?>" style="display:inline-flex;align-items:center;gap:8px;background:#1D4ED8;color:#ffffff;font-size:13px;font-weight:800;padding:10px 20px;border-radius:14px;text-decoration:none;box-shadow:0 4px 14px rgba(22,165,222,0.3);">
         <span class="material-symbols-outlined" style="font-size:18px;">travel_explore</span>
         <span>Browse More Farms</span>
       </a>
@@ -388,8 +388,8 @@ $wishlistCount = count($myWishlist);
       <?php if (empty($myWishlist)): ?>
         <div class="wl-empty-state" id="wl-empty">
           <span class="material-symbols-outlined" style="font-size:54px;color:#94a3b8;margin-bottom:14px;display:block;">favorite_border</span>
-          <h3 style="font-size:20px;font-weight:900;color:#24312A;margin:0 0 6px;">Your wishlist is empty</h3>
-          <p style="font-size:13.5px;color:#57685F;max-width:360px;margin:0 auto 20px;">
+          <h3 style="font-size:20px;font-weight:900;color:#0F172A;margin:0 0 6px;">Your wishlist is empty</h3>
+          <p style="font-size:13.5px;color:#64748B;max-width:360px;margin:0 auto 20px;">
             Save farmhouses while exploring to compare prices, check availability, and plan your weekend gateway.
           </p>
           <a href="<?= url('farmhouses') ?>" class="wl-btn-view" style="display:inline-flex;max-width:240px;margin:0 auto;">
@@ -418,12 +418,12 @@ $wishlistCount = count($myWishlist);
 
             <div class="wl-card-content">
               <div>
-                <span style="background:#EAF1EB;color:#133225;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;text-transform:uppercase;margin-bottom:4px;display:inline-block;">
+                <span style="background:#E0F2FE;color:#1E3A8A;font-size:10px;font-weight:800;padding:2px 8px;border-radius:12px;text-transform:uppercase;margin-bottom:4px;display:inline-block;">
                   <?= htmlspecialchars($item['category'] ?? $item['farmhouse_category'] ?? 'Farmhouse') ?>
                 </span>
                 <h3 class="wl-farm-title"><?= htmlspecialchars($item['name'] ?? $item['farmhouse_name'] ?? 'Farmhouse Title') ?></h3>
                 <p class="wl-farm-loc">
-                  <span class="material-symbols-outlined" style="font-size:15px;color:#1F4D3A;">location_on</span>
+                  <span class="material-symbols-outlined" style="font-size:15px;color:#1D4ED8;">location_on</span>
                   <span><?= $city ?></span>
                 </p>
               </div>

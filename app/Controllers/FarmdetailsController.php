@@ -31,10 +31,15 @@ class FarmdetailsController {
             redirect('home');
         }
 
-        $id = CryptoHelper::decrypt($_GET['id']);
-        if (!$id || (int)$id <= 0) {
-            http_response_code(404);
-            die("Invalid farmhouse ID.");
+        $rawId = trim((string)($_GET['id'] ?? ''));
+        $id = CryptoHelper::decrypt($rawId);
+        if (!$id || !is_numeric($id) || (int)$id <= 0) {
+            if (is_numeric($rawId) && (int)$rawId > 0) {
+                $id = (int)$rawId;
+            } else {
+                http_response_code(404);
+                die("Invalid farmhouse ID.");
+            }
         }
         $id = (int)$id;
 
@@ -191,8 +196,15 @@ class FarmdetailsController {
         $room_type_name = null;
         $price_per_room = null;
 
+        $rentalType = $farmhouse['rental_type'] ?? (!empty($farmhouse['allow_room_booking']) ? 'both' : 'complete');
+
+        if ($booking_type === 'complete' && $rentalType === 'room_wise') {
+            $msg = urlencode("This property is only available for Room-Wise booking. Please select a specific room type.");
+            redirect("{$redirectBase}&booking_error={$msg}");
+        }
+
         if ($booking_type === 'per_room') {
-            if (empty($farmhouse['allow_room_booking'])) {
+            if ($rentalType === 'complete' || empty($farmhouse['allow_room_booking'])) {
                 $msg = urlencode("Room-wise booking is not enabled for this property. Please book the complete farmhouse.");
                 redirect("{$redirectBase}&booking_error={$msg}");
             }
@@ -549,6 +561,15 @@ class FarmdetailsController {
             redirect('home');
         }
 
+        // Optional CSRF check if token present
+        if (!empty($_POST['csrf_token'])) {
+            require_once __DIR__ . '/../Helpers/CsrfHelper.php';
+            if (!\App\Helpers\CsrfHelper::verify($_POST['csrf_token'])) {
+                $_SESSION['error'] = 'Invalid session token. Please try submitting again.';
+                redirect("farmhouse_details?id=" . urlencode(CryptoHelper::encrypt($farmhouseId)));
+            }
+        }
+
         $guestName    = trim($_POST['guest_name'] ?? '');
         $guestEmail   = trim($_POST['guest_email'] ?? '');
         $cleanliness  = max(1, min(5, (int)($_POST['cleanliness'] ?? 5)));
@@ -558,10 +579,52 @@ class FarmdetailsController {
         $reviewTitle  = trim($_POST['review_title'] ?? '');
         $reviewText   = trim($_POST['review_text'] ?? '');
         $userId       = !empty($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+        $bookingId    = !empty($_POST['booking_id']) ? (int)$_POST['booking_id'] : null;
 
         if (empty($guestName) || empty($reviewText)) {
             $_SESSION['error'] = 'Please provide your name and review details.';
             redirect("farmhouse_details?id=" . urlencode(CryptoHelper::encrypt($farmhouseId)));
+        }
+
+        // Server-side Stay Verification & Duplicate Prevention
+        $isVerifiedStay = 0;
+        $matchedBookingId = null;
+
+        if ($userId) {
+            // Check if user has a completed or confirmed booking for this farmhouse
+            $bSql = "SELECT id FROM booking_requests 
+                     WHERE user_id = ? AND farmhouse_id = ? AND status IN ('checked_out', 'completed', 'confirmed') ";
+            if ($bookingId) {
+                $bSql .= " AND id = " . (int)$bookingId;
+            }
+            $bSql .= " ORDER BY id DESC LIMIT 1";
+
+            $bStmt = $this->db->prepare($bSql);
+            if ($bStmt) {
+                $bStmt->bind_param("ii", $userId, $farmhouseId);
+                $bStmt->execute();
+                $bRow = $bStmt->get_result()->fetch_assoc();
+                $bStmt->close();
+
+                if ($bRow) {
+                    $matchedBookingId = (int)$bRow['id'];
+                    $isVerifiedStay = 1;
+
+                    // Duplicate check for this booking
+                    $dupStmt = $this->db->prepare("SELECT id FROM reviews WHERE booking_id = ? AND status != 'rejected' LIMIT 1");
+                    if ($dupStmt) {
+                        $dupStmt->bind_param("i", $matchedBookingId);
+                        $dupStmt->execute();
+                        $hasDup = ($dupStmt->get_result()->num_rows > 0);
+                        $dupStmt->close();
+
+                        if ($hasDup) {
+                            $_SESSION['error'] = 'You have already submitted a review for this stay.';
+                            redirect("farmhouse_details?id=" . urlencode(CryptoHelper::encrypt($farmhouseId)));
+                        }
+                    }
+                }
+            }
         }
 
         require_once __DIR__ . '/../Models/ReviewModel.php';
@@ -569,7 +632,7 @@ class FarmdetailsController {
         $success = $reviewModel->submitReview([
             'farmhouse_id' => $farmhouseId,
             'user_id'      => $userId,
-            'booking_id'   => null,
+            'booking_id'   => $matchedBookingId,
             'guest_name'   => $guestName,
             'guest_email'  => $guestEmail,
             'cleanliness'  => $cleanliness,
@@ -578,11 +641,11 @@ class FarmdetailsController {
             'hospitality'  => $hospitality,
             'review_title' => $reviewTitle,
             'review_text'  => $reviewText,
-            'is_verified'  => $userId ? 1 : 0,
+            'is_verified'  => $isVerifiedStay,
         ]);
 
         if ($success) {
-            $_SESSION['success'] = 'Thank you! Your verified review has been submitted for moderation and will appear shortly.';
+            $_SESSION['success'] = 'Thank you! Your ' . ($isVerifiedStay ? 'verified ' : '') . 'review has been submitted for moderation and will appear shortly upon approval.';
         } else {
             $_SESSION['error'] = 'Failed to submit review. Please try again.';
         }

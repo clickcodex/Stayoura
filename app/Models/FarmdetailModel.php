@@ -21,7 +21,7 @@ class FarmdetailModel {
                 f.property_type_id, f.is_verified, f.verification_notes,
                 COALESCE(pt.name, f.category) AS property_type_name,
                 COALESCE(pt.icon_class, 'villa') AS property_type_icon,
-                f.price, f.room_price, f.allow_room_booking, f.bedrooms, 
+                f.price, f.room_price, f.rental_type, f.allow_room_booking, f.bedrooms, 
                 f.bedroom_capacity, f.day_capacity, f.night_capacity,
                 f.is_negotiable, f.created_at, f.status,
                 f.contact_phone  AS owner_phone,
@@ -42,7 +42,7 @@ class FarmdetailModel {
             $fallbackSql = "
                 SELECT
                     f.id, f.title, f.description, f.location, f.address, f.google_map_link, f.category,
-                    f.price, f.room_price, f.allow_room_booking, f.bedrooms, 
+                    f.price, f.room_price, f.rental_type, f.allow_room_booking, f.bedrooms, 
                     f.bedroom_capacity, f.day_capacity, f.night_capacity,
                     f.is_negotiable, f.created_at, f.status,
                     1 AS is_verified, 'Verified Host' AS verification_notes,
@@ -179,13 +179,14 @@ class FarmdetailModel {
 public function getFarmhouseRules(int $farmhouseId): array {
     $stmt = $this->db->prepare(
         "SELECT fr.rule_name,
-                rp.icon_class,
+                COALESCE(fr.icon_class, rp.icon_class, 'fas fa-shield-alt') AS icon_class,
+                fr.description,
                 fr.is_allowed
          FROM farmhouse_rules fr
          LEFT JOIN rule_presets rp
             ON fr.rule_name = rp.rule_name
          WHERE fr.farmhouse_id = ?
-         ORDER BY fr.is_allowed DESC, fr.rule_name ASC"
+         ORDER BY fr.sort_order ASC, fr.is_allowed DESC, fr.rule_name ASC"
     );
 
     if (!$stmt) return [];
@@ -856,7 +857,7 @@ public function getFarmhouseRules(int $farmhouseId): array {
     /**
      * Insert a new booking request and return insert ID.
      */
-    public function createBookingRequest(array $data): int|bool {
+    public function createBookingRequest(array $data): array|int|bool {
         $bookingType = in_array(strtolower($data['booking_type'] ?? ''), ['complete', 'per_room'], true)
             ? strtolower($data['booking_type'])
             : 'complete';
@@ -884,7 +885,7 @@ public function getFarmhouseRules(int $farmhouseId): array {
 
         try {
             // Row-level lock FOR UPDATE on property to prevent race conditions during concurrent bookings
-            $lockStmt = $this->db->prepare("SELECT id, booking_mode, night_capacity, bedrooms FROM farmhouses WHERE id = ? FOR UPDATE");
+            $lockStmt = $this->db->prepare("SELECT id, rental_type, allow_room_booking, booking_mode, night_capacity, bedrooms FROM farmhouses WHERE id = ? FOR UPDATE");
             if (!$lockStmt) {
                 $this->db->rollback();
                 return ['success' => false, 'error' => 'Database lock failed: ' . $this->db->error];
@@ -897,6 +898,17 @@ public function getFarmhouseRules(int $farmhouseId): array {
             if (!$farmRow) {
                 $this->db->rollback();
                 return ['success' => false, 'error' => 'Property not found.'];
+            }
+
+            // Verify requested booking mode matches property rental_type
+            $propRentalType = $farmRow['rental_type'] ?? (!empty($farmRow['allow_room_booking']) ? 'both' : 'complete');
+            if ($bookingType === 'complete' && $propRentalType === 'room_wise') {
+                $this->db->rollback();
+                return ['success' => false, 'error' => 'This property only supports room-wise bookings. Please select a specific room type.'];
+            }
+            if ($bookingType === 'per_room' && $propRentalType === 'complete') {
+                $this->db->rollback();
+                return ['success' => false, 'error' => 'This property only supports complete property bookings.'];
             }
 
             // Conflict Check inside the atomic transaction
@@ -918,8 +930,12 @@ public function getFarmhouseRules(int $farmhouseId): array {
             $isInstant = (!empty($farmRow['booking_mode']) && $farmRow['booking_mode'] === 'instant');
             $initialStatus = $isInstant ? 'approved' : 'pending';
 
-            // 15-Minute Temporary Inventory Hold Timer (F34)
-            $holdExpiresAt = $isInstant ? null : date('Y-m-d H:i:s', strtotime('+15 minutes'));
+            // 15-Minute Temporary Inventory Hold Timer (F34 - synced with MySQL database clock)
+            $holdExpiresAt = null;
+            if (!$isInstant) {
+                $holdQ = $this->db->query("SELECT DATE_ADD(NOW(), INTERVAL 15 MINUTE) AS hold");
+                $holdExpiresAt = $holdQ ? $holdQ->fetch_assoc()['hold'] : null;
+            }
 
             $paymentMethod = !empty($data['payment_method']) ? strtolower(trim($data['payment_method'])) : 'upi';
             $paymentStatus = !empty($data['payment_status']) ? strtolower(trim($data['payment_status'])) : 'unpaid';

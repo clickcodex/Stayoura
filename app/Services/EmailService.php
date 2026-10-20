@@ -72,8 +72,8 @@ class EmailService {
                 : PHPMailer::ENCRYPTION_SMTPS;
             $mail->Port       = (int)($this->config['port'] ?? 465);
 
-            $fromAddr = $this->config['from']['address'] ?? 'noreply@farmlelo.com';
-            $fromName = $this->config['from']['name'] ?? 'FarmLelo Support';
+            $fromAddr = $this->config['from']['address'] ?? 'noreply@stayora.com';
+            $fromName = $this->config['from']['name'] ?? 'Stayora Support';
             $mail->setFrom($fromAddr, $fromName);
 
             if (!empty($this->config['reply_to']['address'])) {
@@ -121,7 +121,7 @@ class EmailService {
         if (file_exists($file)) {
             include $file;
         } else {
-            echo "<p>Your FarmLelo Verification Code is: <strong>" . htmlspecialchars($data['otp'] ?? '') . "</strong></p>";
+            echo "<p>Your Stayora Verification Code is: <strong>" . htmlspecialchars($data['otp'] ?? '') . "</strong></p>";
         }
         return ob_get_clean();
     }
@@ -130,7 +130,7 @@ class EmailService {
      * Send OTP Verification Email
      */
     public function sendOtpEmail(string $toEmail, string $userName, string $otp, string $purpose = 'verification'): array {
-        $subject = "FarmLelo Verification Code: {$otp}";
+        $subject = "Stayora Verification Code: {$otp}";
         $html = $this->renderTemplate('otp_verification', [
             'userName' => $userName,
             'otp'      => $otp,
@@ -145,7 +145,7 @@ class EmailService {
      * Send Forgot Password Dual Recovery Email
      */
     public function sendPasswordResetOtpEmail(string $toEmail, string $userName, string $otp): array {
-        $subject = "Password Reset Verification Code – FarmLelo";
+        $subject = "Password Reset Verification Code – Stayora";
         $html = $this->renderTemplate('forgot_password', [
             'userName' => $userName,
             'otp'      => $otp,

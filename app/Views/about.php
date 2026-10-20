@@ -1,7 +1,7 @@
 <?php
-$pageTitle       = "About Us | FarmLelo - India's Trusted Farmhouse & Villa Booking Platform";
-$pageDescription = "Learn about FarmLelo's mission to connect travelers and event planners with extraordinary private farmhouses, pool villas, and agrarian getaways across India.";
-$pageKeywords    = "about farmlelo, farmhouse rental company, villa booking platform india, vacation rental company";
+$pageTitle       = "About Us | Stayora - India's Trusted Farmhouse & Villa Booking Platform";
+$pageDescription = "Learn about Stayora's mission to connect travelers and event planners with extraordinary private farmhouses, pool villas, and agrarian getaways across India.";
+$pageKeywords    = "about stayora, farmhouse rental company, villa booking platform india, vacation rental company";
 $canonicalUrl    = absolute_url('about');
 include __DIR__ . "/Includes/header.php"; 
 ?>
@@ -13,7 +13,7 @@ include __DIR__ . "/Includes/header.php";
 
 .abt-page-wrap {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
   overflow-x: hidden;
 }
 
@@ -24,7 +24,7 @@ include __DIR__ . "/Includes/header.php";
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #24312A;
+  background: #0F172A;
   overflow: hidden;
   padding: 100px 20px 80px;
 }
@@ -86,7 +86,7 @@ include __DIR__ . "/Includes/header.php";
 
 .abt-hero p {
   font-size: 18px;
-  color: #E2DBD0;
+  color: #E2E8F0;
   line-height: 1.6;
   max-width: 680px;
   margin: 0 auto 30px;
@@ -102,7 +102,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-btn-primary {
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   font-weight: 800;
   font-size: 14px;
@@ -117,7 +117,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-btn-primary:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(2, 132, 199, 0.5);
   color: #ffffff;
@@ -157,7 +157,7 @@ include __DIR__ . "/Includes/header.php";
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
   overflow: hidden;
@@ -175,13 +175,13 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-stat-item:hover {
-  background: #F7F3EA;
+  background: #F8FAFC;
 }
 
 .abt-stat-num {
   font-size: 34px;
   font-weight: 900;
-  color: #1F4D3A;
+  color: #1D4ED8;
   letter-spacing: -0.02em;
   margin-bottom: 4px;
 }
@@ -189,7 +189,7 @@ include __DIR__ . "/Includes/header.php";
 .abt-stat-lbl {
   font-size: 12px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -209,7 +209,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-tag {
-  color: #173C2D;
+  color: #1E40AF;
   font-size: 12px;
   font-weight: 800;
   text-transform: uppercase;
@@ -223,7 +223,7 @@ include __DIR__ . "/Includes/header.php";
 .abt-heading {
   font-size: 34px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   line-height: 1.25;
   margin: 0 0 20px;
   letter-spacing: -0.02em;
@@ -270,7 +270,7 @@ include __DIR__ . "/Includes/header.php";
 
 .abt-mv-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 36px 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -286,21 +286,21 @@ include __DIR__ . "/Includes/header.php";
   left: 0;
   right: 0;
   height: 4px;
-  background: linear-gradient(90deg, #1F4D3A, #173C2D);
+  background: linear-gradient(90deg, #1D4ED8, #1E40AF);
 }
 
 .abt-mv-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 15px 35px rgba(22, 165, 222, 0.12);
-  border-color: #D4E4DC;
+  border-color: #DBEAFE;
 }
 
 .abt-mv-icon {
   width: 54px;
   height: 54px;
   border-radius: 16px;
-  background: #EAF1EB;
-  color: #173C2D;
+  background: #E0F2FE;
+  color: #1E40AF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,7 +310,7 @@ include __DIR__ . "/Includes/header.php";
 .abt-mv-title {
   font-size: 22px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 12px;
 }
 
@@ -323,8 +323,8 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-val-card {
-  background: #F7F3EA;
-  border: 1px solid #E2DBD0;
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
   border-radius: 20px;
   padding: 26px 20px;
   text-align: center;
@@ -333,7 +333,7 @@ include __DIR__ . "/Includes/header.php";
 
 .abt-val-card:hover {
   background: #ffffff;
-  border-color: #1F4D3A;
+  border-color: #1D4ED8;
   transform: translateY(-3px);
   box-shadow: 0 10px 25px rgba(22, 165, 222, 0.1);
 }
@@ -343,8 +343,8 @@ include __DIR__ . "/Includes/header.php";
   height: 50px;
   border-radius: 14px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
-  color: #1F4D3A;
+  border: 1px solid #E2E8F0;
+  color: #1D4ED8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -355,13 +355,13 @@ include __DIR__ . "/Includes/header.php";
 .abt-val-title {
   font-size: 16px;
   font-weight: 800;
-  color: #24312A;
+  color: #0F172A;
   margin: 0 0 8px;
 }
 
 .abt-val-desc {
   font-size: 13px;
-  color: #57685F;
+  color: #64748B;
   line-height: 1.5;
   margin: 0;
 }
@@ -374,7 +374,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-cta-box {
-  background: linear-gradient(135deg, #24312A 0%, #24312A 100%);
+  background: linear-gradient(135deg, #0F172A 0%, #0F172A 100%);
   border-radius: 30px;
   padding: 50px 40px;
   color: #ffffff;
@@ -420,7 +420,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-cta-btn {
-  background: #1F4D3A;
+  background: #1D4ED8;
   color: #ffffff;
   font-weight: 800;
   font-size: 15px;
@@ -438,7 +438,7 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .abt-cta-btn:hover {
-  background: #173C2D;
+  background: #1E40AF;
   transform: translateY(-2px);
   box-shadow: 0 12px 30px rgba(2, 132, 199, 0.5);
   color: #ffffff;
@@ -512,7 +512,7 @@ include __DIR__ . "/Includes/header.php";
 
   <!-- ── HERO SECTION ── -->
   <section class="abt-hero">
-    <img src="<?= asset('assets/images/uploads/about.jpg') ?>" alt="Farmlelo Sanctuary Farmhouses" class="abt-hero-bg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fee79a70?auto=format&fit=crop&w=1400&q=80'">
+    <img src="<?= asset('assets/images/uploads/about.jpg') ?>" alt="Stayora Sanctuary Farmhouses" class="abt-hero-bg" onerror="this.src='https://images.unsplash.com/photo-1500382017468-9049fee79a70?auto=format&fit=crop&w=1400&q=80'">
     <div class="abt-hero-gradient"></div>
 
     <div class="abt-hero-content">
@@ -527,9 +527,9 @@ include __DIR__ . "/Includes/header.php";
           <span class="material-symbols-outlined" style="font-size:18px;">explore</span>
           <span>Explore Farmhouses</span>
         </a>
-        <a href="<?= url('list_your_farm') ?>" class="abt-btn-secondary">
-          <span class="material-symbols-outlined" style="font-size:18px;">add_business</span>
-          <span>List Your Farmhouse</span>
+        <a href="<?= url('contact') ?>" class="abt-btn-secondary">
+          <span class="material-symbols-outlined" style="font-size:18px;">support_agent</span>
+          <span>Contact Concierge</span>
         </a>
       </div>
     </div>
@@ -566,7 +566,7 @@ include __DIR__ . "/Includes/header.php";
           <span>Who We Are</span>
         </div>
         <h2 class="abt-heading">Cultivating Direct Connections Between Hosts &amp; Guests.</h2>
-        <p class="abt-p">At Farmlelo, we believe the best weekend getaways happen when you're surrounded by open skies, fresh air, and lush orchards. We created a curated platform for travelers seeking the rustic luxury of authentic Indian farmhouses.</p>
+        <p class="abt-p">At Stayora, we believe the best weekend getaways happen when you're surrounded by open skies, fresh air, and lush orchards. We created a curated platform for travelers seeking the rustic luxury of authentic Indian farmhouses.</p>
         <p class="abt-p">By eliminating unnecessary brokerages, we ensure transparent rates for travelers while directly empowering farmhouse owners and supporting local rural economies.</p>
         
         <div style="display:flex;align-items:center;gap:14px;margin-top:24px;">
@@ -585,7 +585,7 @@ include __DIR__ . "/Includes/header.php";
   </section>
 
   <!-- ── MISSION & VISION ── -->
-  <section style="background:#F7F3EA;border-top:1px solid #E2DBD0;border-bottom:1px solid #E2DBD0;padding:70px 20px;">
+  <section style="background:#F8FAFC;border-top:1px solid #E2E8F0;border-bottom:1px solid #E2E8F0;padding:70px 20px;">
     <div style="max-width:1140px;margin:0 auto;">
       <div style="text-align:center;max-width:650px;margin:0 auto 40px;">
         <div class="abt-tag" style="justify-content:center;">
@@ -621,7 +621,7 @@ include __DIR__ . "/Includes/header.php";
     <div style="text-align:center;max-width:650px;margin:0 auto 30px;">
       <div class="abt-tag" style="justify-content:center;">
         <span class="material-symbols-outlined" style="font-size:16px;">verified_user</span>
-        <span>The Farmlelo Advantage</span>
+        <span>The Stayora Advantage</span>
       </div>
       <h2 class="abt-heading" style="margin-bottom:10px;">Why Travelers Choose Us</h2>
       <p class="abt-p" style="margin:0;">Every detail is engineered for simplicity, trust, and peace of mind.</p>
@@ -662,16 +662,16 @@ include __DIR__ . "/Includes/header.php";
     </div>
   </section>
 
-  <!-- ── HOST CTA BANNER ── -->
+  <!-- ── GETAWAY CTA BANNER ── -->
   <div class="abt-cta-wrap">
     <div class="abt-cta-box">
       <div class="abt-cta-left">
-        <h2 class="abt-cta-title">Own a Farmhouse or Estate? Start Hosting Today.</h2>
-        <p class="abt-cta-sub">List your property on Farmlelo for free. Reach thousands of verified families and event planners looking for high-quality farm stays.</p>
+        <h2 class="abt-cta-title">Ready for Your Next Luxury Getaway?</h2>
+        <p class="abt-cta-sub">Discover verified farmhouses, private pool villas, and nature retreats across India with 100% direct pricing and instant confirmation.</p>
       </div>
-      <a href="<?= url('list_your_farm') ?>" class="abt-cta-btn">
-        <span class="material-symbols-outlined" style="font-size:20px;">add_business</span>
-        <span>List Your Property</span>
+      <a href="<?= url('farmhouses') ?>" class="abt-cta-btn">
+        <span class="material-symbols-outlined" style="font-size:20px;">travel_explore</span>
+        <span>Explore Farmhouses</span>
       </a>
     </div>
   </div>

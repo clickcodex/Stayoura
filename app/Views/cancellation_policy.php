@@ -1,6 +1,6 @@
 <?php
-$pageTitle       = "Cancellation & Refund Policy | FarmLelo";
-$pageDescription = "Understand FarmLelo's transparent booking cancellation, date rescheduling, and refund terms.";
+$pageTitle       = "Cancellation & Refund Policy | Stayora";
+$pageDescription = "Understand Stayora's transparent booking cancellation, date rescheduling, and refund terms.";
 $canonicalUrl    = absolute_url('cancellation_policy');
 include __DIR__ . "/Includes/header.php";
 ?>
@@ -13,9 +13,9 @@ include __DIR__ . "/Includes/header.php";
 .legal-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 /* ── Hero Section ── */
@@ -63,7 +63,8 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .legal-hero-title span {
-  background: linear-gradient(135deg, #C9A227 0%, #1F4D3A 100%);
+  background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
+  filter: drop-shadow(0 2px 14px rgba(2, 132, 199, 0.45));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -91,7 +92,7 @@ include __DIR__ . "/Includes/header.php";
   position: sticky;
   top: 96px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -103,7 +104,7 @@ include __DIR__ . "/Includes/header.php";
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #24312A;
+  color: #0F172A;
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f1f5f9;
@@ -122,7 +123,7 @@ include __DIR__ . "/Includes/header.php";
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 10px;
@@ -131,7 +132,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-toc-link:hover {
   background: #f0f9ff;
-  color: #1F4D3A;
+  color: #1D4ED8;
   transform: translateX(3px);
 }
 
@@ -144,7 +145,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 28px;
   padding: 36px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -164,7 +165,7 @@ include __DIR__ . "/Includes/header.php";
   height: 44px;
   border-radius: 14px;
   background: rgba(22, 165, 222, 0.12);
-  color: #1F4D3A;
+  color: #1D4ED8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +176,7 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 20px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -211,13 +212,13 @@ include __DIR__ . "/Includes/header.php";
   border-spacing: 0;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   margin: 20px 0;
 }
 
 .refund-table th {
-  background: #F7F3EA;
-  color: #24312A;
+  background: #F8FAFC;
+  color: #0F172A;
   font-family: 'Epilogue', sans-serif;
   font-weight: 800;
   font-size: 12.5px;
@@ -225,7 +226,7 @@ include __DIR__ . "/Includes/header.php";
   letter-spacing: 0.5px;
   padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid #E2DBD0;
+  border-bottom: 1px solid #E2E8F0;
 }
 
 .refund-table td {
@@ -342,10 +343,10 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            At <strong>Farmlelo</strong>, we understand that travel plans and family occasions can change unexpectedly. Because private farmhouses and estate villas are booked exclusively for your single group (preventing other guests from reserving that weekend), our cancellation terms balance guest flexibility with host commitments.
+            At <strong>Stayora</strong>, we understand that travel plans and family occasions can change unexpectedly. Because private farmhouses and estate villas are booked exclusively for your single group (preventing other guests from reserving that weekend), our cancellation terms balance guest flexibility with host commitments.
           </p>
           <p>
-            This policy applies uniformly across all verified farmhouse reservations confirmed via the Farmlelo platform or authorized WhatsApp Concierge.
+            This policy applies uniformly across all verified farmhouse reservations confirmed via the Stayora platform or authorized WhatsApp Concierge.
           </p>
         </div>
       </section>
@@ -452,7 +453,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            In the rare event of severe weather disasters (floods, cyclones), government curfew orders, or acute property malfunction (e.g., sudden electrical grid breakdown), Farmlelo will offer a <strong>100% booking credit voucher</strong> valid for 12 months or facilitate a full refund.
+            In the rare event of severe weather disasters (floods, cyclones), government curfew orders, or acute property malfunction (e.g., sudden electrical grid breakdown), Stayora will offer a <strong>100% booking credit voucher</strong> valid for 12 months or facilitate a full refund.
           </p>
         </div>
       </section>
@@ -482,11 +483,11 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            To cancel or modify your reservation, contact your designated Farmlelo Concierge with your Booking ID:
+            To cancel or modify your reservation, contact your designated Stayora Concierge with your Booking ID:
           </p>
-          <div style="background:#F7F3EA;padding:20px;border-radius:16px;border:1px solid #E2DBD0;margin-top:16px;">
+          <div style="background:#F8FAFC;padding:20px;border-radius:16px;border:1px solid #E2E8F0;margin-top:16px;">
             <p style="margin:0 0 6px;"><strong>WhatsApp Concierge:</strong> +91 98765 43210 (Fastest Response)</p>
-            <p style="margin:0 0 6px;"><strong>Email:</strong> bookings@farmlelo.com</p>
+            <p style="margin:0 0 6px;"><strong>Email:</strong> bookings@stayora.com</p>
             <p style="margin:0;"><strong>Hours:</strong> Monday to Sunday, 9:00 AM - 10:00 PM</p>
           </div>
         </div>

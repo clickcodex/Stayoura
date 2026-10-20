@@ -29,11 +29,22 @@ class MailNotificationService {
      * Send email via PHP mail() or configured transport, with automatic logging
      */
     public function send(string $toEmail, string $subject, string $htmlBody, string $eventType): bool {
+        $settings = \App\Helpers\SiteHelper::getSettings();
+        // Check if master email notifications are enabled (unless it's an admin test)
+        if ($eventType !== 'admin_settings_test_email' && isset($settings['email_notifications_enabled']) && (int)$settings['email_notifications_enabled'] === 0) {
+            $this->log('email', $toEmail, $eventType, $subject, $htmlBody, 'queued', 'Email notifications disabled in platform settings');
+            return true;
+        }
+
+        $fromName = !empty($settings['email_sender_name']) ? $settings['email_sender_name'] : 'Stayora Bookings';
+        $fromAddr = !empty($settings['email_sender_address']) ? $settings['email_sender_address'] : 'noreply@stayora.com';
+        $replyTo = !empty($settings['email_reply_to']) ? $settings['email_reply_to'] : 'support@stayora.com';
+
         $headers = [
             'MIME-Version: 1.0',
             'Content-type: text/html; charset=utf-8',
-            'From: Stayora Bookings <noreply@stayora.com>',
-            'Reply-To: support@stayora.com',
+            "From: {$fromName} <{$fromAddr}>",
+            "Reply-To: {$replyTo}",
             'X-Mailer: Stayora/1.0'
         ];
 

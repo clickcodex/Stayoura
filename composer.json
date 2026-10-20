@@ -1,6 +1,6 @@
 {
-    "name": "farmlelo/farmlelo",
-    "description": "Farmlelo - Modern Agrarian Living Platform",
+    "name": "stayora/stayora",
+    "description": "Stayora - Luxury Villa & Farmhouse Stays",
     "type": "project",
     "require": {
         "vlucas/phpdotenv": "^5.5",

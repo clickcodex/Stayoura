@@ -1,5 +1,5 @@
 # ==================================================
-# FarmLelo Robots.txt - Search Engine Crawl Directives
+# Stayora Robots.txt - Search Engine Crawl Directives
 # ==================================================
 
 User-agent: *
@@ -30,4 +30,4 @@ Disallow: /*?booking_error=*
 Disallow: /*?ref=*
 
 # XML Sitemap Location for Google, Bing, Yahoo, Yandex
-Sitemap: https://farmlelo.com/sitemap.xml
+Sitemap: https://stayora.com/sitemap.xml

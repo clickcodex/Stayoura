@@ -82,19 +82,19 @@ ksort($amenityByCategory);
 // Page title computation
 if ($activeSearch && $activeLocation) {
     $pageHeading = '"' . $activeSearch . '" in ' . $activeLocation;
-    $pageTitle = "{$activeSearch} in {$activeLocation} - Farmhouses & Villas | FarmLelo";
-    $pageDescription = "Find {$activeSearch} farmhouses and private villas in {$activeLocation}. Verified amenities, swimming pools, and best rates on FarmLelo.";
+    $pageTitle = "{$activeSearch} in {$activeLocation} - Farmhouses & Villas | Stayora";
+    $pageDescription = "Find {$activeSearch} farmhouses and private villas in {$activeLocation}. Verified amenities, swimming pools, and best rates on Stayora.";
 } elseif ($activeSearch) {
     $pageHeading = 'Search: "' . $activeSearch . '"';
-    $pageTitle = "\"{$activeSearch}\" Farmhouses & Private Villas | FarmLelo";
-    $pageDescription = "Search results for {$activeSearch} farmhouses and vacation villas across India on FarmLelo.";
+    $pageTitle = "\"{$activeSearch}\" Farmhouses & Private Villas | Stayora";
+    $pageDescription = "Search results for {$activeSearch} farmhouses and vacation villas across India on Stayora.";
 } elseif ($activeLocation) {
     $pageHeading = 'Luxury Farmhouses in ' . $activeLocation;
-    $pageTitle = "Top Farmhouses & Private Pool Villas in {$activeLocation} | FarmLelo";
-    $pageDescription = "Explore handpicked luxury farmhouses and private pool villas in {$activeLocation} for weekend parties, family stays, and events. Book online on FarmLelo.";
+    $pageTitle = "Top Farmhouses & Private Pool Villas in {$activeLocation} | Stayora";
+    $pageDescription = "Explore handpicked luxury farmhouses and private pool villas in {$activeLocation} for weekend parties, family stays, and events. Book online on Stayora.";
 } else {
     $pageHeading = 'Explore All Luxury Farmhouses';
-    $pageTitle = 'Explore Verified Luxury Farmhouses & Pool Villas | FarmLelo';
+    $pageTitle = 'Explore Verified Luxury Farmhouses & Pool Villas | Stayora';
     $pageDescription = "Browse India's top collection of private farmhouses, holiday villas, and event spaces for weekend parties, family getaways, and corporate stays.";
 }
 
@@ -182,7 +182,7 @@ include __DIR__ . "/Includes/header.php";
         </button>
 
         <div class="fh-mobile-action-btn fh-mobile-sort-btn">
-            <span class="material-symbols-outlined" style="font-size:18px;color:#57685F;">sort</span>
+            <span class="material-symbols-outlined" style="font-size:18px;color:#64748B;">sort</span>
             <select onchange="applyQuickSort(this.value)" class="fh-mobile-sort-select">
                 <option value="" <?= empty($activeSort) ? 'selected' : '' ?>>Sort: Recommended</option>
                 <option value="low-high" <?= ($activeSort === 'low-high') ? 'selected' : '' ?>>Price: Low to High</option>
@@ -197,7 +197,7 @@ include __DIR__ . "/Includes/header.php";
 
         <div class="fh-sb-head">
             <div class="fh-sb-head-title">
-                <span class="material-symbols-outlined" style="color:#1F4D3A;font-size:20px;">tune</span>
+                <span class="material-symbols-outlined" style="color:#1D4ED8;font-size:20px;">tune</span>
                 <span>Filters</span>
             </div>
             <?php if ($isFiltered): ?>
@@ -328,7 +328,7 @@ include __DIR__ . "/Includes/header.php";
                     <input type="checkbox" name="allow_room_booking" value="1" <?= $activeRoomBooking ? 'checked' : '' ?>/>
                     <span class="fh-chk-custom"></span>
                     <span class="fh-chk-text">
-                        <span class="material-symbols-outlined" style="font-size:15px;color:#1F4D3A;">bedroom_parent</span>
+                        <span class="material-symbols-outlined" style="font-size:15px;color:#1D4ED8;">bedroom_parent</span>
                         Room Booking Allowed
                     </span>
                 </label>
@@ -356,7 +356,7 @@ include __DIR__ . "/Includes/header.php";
                     <span class="material-symbols-outlined">checklist</span>
                     Amenities
                 </label>
-                <span style="font-size:11px;color:#57685F;font-weight:700;">Filter with all</span>
+                <span style="font-size:11px;color:#64748B;font-weight:700;">Filter with all</span>
             </div>
 
             <!-- Amenity Search Filter -->
@@ -424,7 +424,7 @@ include __DIR__ . "/Includes/header.php";
             <div class="fh-tb-right">
                 <!-- Quick Sort Dropdown -->
                 <div class="fh-quick-sort">
-                    <span class="material-symbols-outlined" style="font-size:16px;color:#57685F;">sort</span>
+                    <span class="material-symbols-outlined" style="font-size:16px;color:#64748B;">sort</span>
                     <select onchange="applyQuickSort(this.value)" class="fh-tb-sort-select">
                         <option value="" <?= empty($activeSort) ? 'selected' : '' ?>>Sort: Recommended</option>
                         <option value="low-high" <?= ($activeSort === 'low-high') ? 'selected' : '' ?>>Price: Low to High</option>
@@ -447,7 +447,7 @@ include __DIR__ . "/Includes/header.php";
         <!-- Active Filter Pills Bar -->
         <?php if ($isFiltered): ?>
         <div class="fh-active-filter-chips">
-            <span style="font-size:12px;font-weight:700;color:#57685F;align-self:center;">Active Filters:</span>
+            <span style="font-size:12px;font-weight:700;color:#64748B;align-self:center;">Active Filters:</span>
             <?php if ($activeSearch): ?>
                 <span class="fh-active-chip">
                     <span class="material-symbols-outlined">search</span>
@@ -576,7 +576,7 @@ include __DIR__ . "/Includes/header.php";
                                 src="<?= $coverImg ?>"
                                 alt="<?= $title ?>"
                                 loading="lazy"
-                                onerror="this.src='https://placehold.co/600x420/E8F0EC/1F4D3A?text=Farmlelo+Estate'"
+                                onerror="this.src='https://placehold.co/600x420/E8F0EC/1F4D3A?text=Stayora+Estate'"
                             />
                             
                             <div class="fh-card-badges">
@@ -684,8 +684,8 @@ include __DIR__ . "/Includes/header.php";
 <div class="fh-mob-overlay" id="mob-overlay" onclick="closeMobileFilter()"></div>
 <div class="fh-mob-drawer" id="mob-drawer">
     <div class="fh-mob-drawer-header">
-        <div style="display:flex;align-items:center;gap:6px;font-size:16px;font-weight:800;color:#24312A;">
-            <span class="material-symbols-outlined" style="color:#1F4D3A;">tune</span>
+        <div style="display:flex;align-items:center;gap:6px;font-size:16px;font-weight:800;color:#0F172A;">
+            <span class="material-symbols-outlined" style="color:#1D4ED8;">tune</span>
             <span>Filters &amp; Options</span>
         </div>
         <button type="button" class="fh-mob-close-btn" onclick="closeMobileFilter()">✕</button>

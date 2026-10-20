@@ -1,9 +1,9 @@
 
 <!-- ═══════════════════════════ FOOTER ═══════════════════════════ -->
-<footer class="bg-inverse-surface text-inverse-on-surface" style="background:#153427;">
+<footer class="bg-inverse-surface text-inverse-on-surface" style="background:#0F172A;">
   
   <!-- Top accent bar -->
-  <div class="h-1 w-full" style="background: linear-gradient(90deg, #1F4D3A 0%, #C9A227 50%, #6F8F72 100%);"></div>
+  <div class="h-1 w-full" style="background: linear-gradient(90deg, #1D4ED8 0%, #0284C7 50%, #38BDF8 100%);"></div>
 
   <div class="max-w-7xl mx-auto px-4 md:px-8">
 
@@ -15,34 +15,34 @@
 
         <!-- Logo -->
         <a href="<?= url('home') ?>" class="flex items-center gap-2.5 mb-5 group w-fit">
-          <img src="<?= asset('assets/images/uploads/PNG.png') ?>" alt="Farm Lelo Logo" class="w-10 h-10 object-contain">
+          <img src="<?= SiteHelper::getDarkLogoUrl() ?>" alt="<?= htmlspecialchars($globalSite['site_name'] ?? 'Stayora') ?> Logo" class="h-10 w-auto object-contain">
           <span style="font-family:'Epilogue',sans-serif;font-weight:800;font-size:1.3rem;color:#fff;letter-spacing:-.5px;">
-            Farm<span style="color:#C9A227;">Lelo</span>
+            <?= htmlspecialchars($globalSite['site_name'] ?? 'Stayora') ?>
           </span>
         </a>
 
         <p style="color:rgba(255,255,255,.6);font-size:.875rem;line-height:1.7;max-width:300px;" class="mb-6">
-          Discover handpicked farmhouses for peaceful escapes, private pool villas, and authentic agrarian living across India.
+          Discover handpicked luxury farmhouses, private pool villas, and tranquil retreat stays across India with Stayora.
         </p>
 
         <!-- Contact Details -->
         <ul class="space-y-3 mb-8">
           <li class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-base" style="color:#C9A227;">call</span>
+            <span class="material-symbols-outlined text-base" style="color:#38BDF8;">call</span>
             <a href="tel:<?= htmlspecialchars($globalSite['mobile_number'] ?? '') ?>"
                style="color:rgba(255,255,255,.75);font-size:.85rem;" class="hover:text-white transition-colors">
               <?= htmlspecialchars($globalSite['mobile_number'] ?? 'N/A') ?>
             </a>
           </li>
           <li class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-base" style="color:#C9A227;">mail</span>
+            <span class="material-symbols-outlined text-base" style="color:#38BDF8;">mail</span>
             <a href="mailto:<?= htmlspecialchars($globalSite['email'] ?? '') ?>"
                style="color:rgba(255,255,255,.75);font-size:.85rem;" class="hover:text-white transition-colors">
               <?= htmlspecialchars($globalSite['email'] ?? 'N/A') ?>
             </a>
           </li>
           <li class="flex items-start gap-3">
-            <span class="material-symbols-outlined text-base mt-0.5" style="color:#C9A227;">location_on</span>
+            <span class="material-symbols-outlined text-base mt-0.5" style="color:#38BDF8;">location_on</span>
             <span style="color:rgba(255,255,255,.75);font-size:.85rem;line-height:1.6;">
               <?= htmlspecialchars($globalSite['address'] ?? 'N/A') ?>
             </span>
@@ -55,7 +55,7 @@
           <a href="<?= htmlspecialchars($globalSite['facebook_link'] ?? '#') ?>" target="_blank" rel="noopener"
              title="Facebook"
              style="width:38px;height:38px;border-radius:9999px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;"
-             onmouseover="this.style.background='#1F4D3A';this.style.transform='translateY(-2px)'"
+             onmouseover="this.style.background='#1D4ED8';this.style.transform='translateY(-2px)'"
              onmouseout="this.style.background='rgba(255,255,255,.07)';this.style.transform='translateY(0)'">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="color:#fff;">
               <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
@@ -90,7 +90,7 @@
           <a href="mailto:<?= htmlspecialchars($globalSite['email'] ?? '') ?>"
              title="Email"
              style="width:38px;height:38px;border-radius:9999px;background:rgba(255,255,255,.07);display:flex;align-items:center;justify-content:center;transition:background .2s,transform .2s;"
-             onmouseover="this.style.background='#1F4D3A';this.style.transform='translateY(-2px)'"
+             onmouseover="this.style.background='#1D4ED8';this.style.transform='translateY(-2px)'"
              onmouseout="this.style.background='rgba(255,255,255,.07)';this.style.transform='translateY(0)'">
             <span class="material-symbols-outlined text-base" style="color:#fff;font-size:17px;">mail</span>
           </a>
@@ -111,7 +111,7 @@
           <li>
             <a href="<?= url($u) ?>"
                style="color:rgba(255,255,255,.6);font-size:.85rem;transition:color .15s,padding-left .15s;display:inline-block;"
-               onmouseover="this.style.color='#C9A227';this.style.paddingLeft='4px'"
+               onmouseover="this.style.color='#38BDF8';this.style.paddingLeft='4px'"
                onmouseout="this.style.color='rgba(255,255,255,.6)';this.style.paddingLeft='0'">
               <?= $label ?>
             </a>
@@ -127,14 +127,14 @@
         </h4>
         <ul class="space-y-3">
           <?php foreach ([
-            ['About Us',          '/about',          false],
-            ['Contact Support',   '/contact',         false],
-            ['List Your Property','/list_your_farm',  true],
+            ['About Us',          'about',           false],
+            ['Why Choose Us',     'why-choose-us',   false],
+            ['Contact Support',   'contact',          false],
           ] as [$label, $u, $highlight]): ?>
           <li>
             <a href="<?= url($u) ?>"
                style="color:<?= $highlight ? '#C9A227' : 'rgba(255,255,255,.6)' ?>;font-size:.85rem;font-weight:<?= $highlight ? '700' : '400' ?>;transition:color .15s,padding-left .15s;display:inline-block;"
-               onmouseover="this.style.color='#C9A227';this.style.paddingLeft='4px'"
+               onmouseover="this.style.color='#38BDF8';this.style.paddingLeft='4px'"
                onmouseout="this.style.color='<?= $highlight ? '#C9A227' : 'rgba(255,255,255,.6)' ?>'; this.style.paddingLeft='0'">
               <?= $label ?>
             </a>
@@ -158,7 +158,7 @@
           <li>
             <a href="<?= url($u) ?>"
                style="color:rgba(255,255,255,.6);font-size:.85rem;transition:color .15s,padding-left .15s;display:inline-block;"
-               onmouseover="this.style.color='#C9A227';this.style.paddingLeft='4px'"
+               onmouseover="this.style.color='#38BDF8';this.style.paddingLeft='4px'"
                onmouseout="this.style.color='rgba(255,255,255,.6)';this.style.paddingLeft='0'">
               <?= $label ?>
             </a>
@@ -183,7 +183,7 @@
     <!-- ── Bottom Bar ── -->
     <div class="py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
       <p style="color:rgba(255,255,255,.4);font-size:.8rem;">
-        © <?= date('Y') ?> Farm Lelo. All rights reserved.
+        <?= !empty($globalSite['footer_text']) ? htmlspecialchars($globalSite['footer_text']) : '© ' . date('Y') . ' Stayora. All rights reserved.' ?>
       </p>
       <div class="flex items-center gap-2">
       </div>

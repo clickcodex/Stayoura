@@ -78,10 +78,10 @@ class Msg91Service {
         }
 
         $purposeLabel = match ($purpose) {
-            'registration'        => 'FarmLelo Account Registration',
-            'phone_change'        => 'FarmLelo Mobile Number Update',
-            'forgot_password_sms' => 'FarmLelo Password Recovery',
-            default               => 'FarmLelo Verification',
+            'registration'        => 'Stayora Account Registration',
+            'phone_change'        => 'Stayora Mobile Number Update',
+            'forgot_password_sms' => 'Stayora Password Recovery',
+            default               => 'Stayora Verification',
         };
 
         // Build MSG91 v5 OTP endpoint query
@@ -102,7 +102,7 @@ class Msg91Service {
         $payload = [
             'otp'          => $otp,
             'purpose'      => $purposeLabel,
-            'company_name' => 'FarmLelo',
+            'company_name' => 'Stayora',
         ];
 
         try {

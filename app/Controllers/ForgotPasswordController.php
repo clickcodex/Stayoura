@@ -28,11 +28,6 @@ class ForgotPasswordController {
         require_once __DIR__ . '/../Views/forgot-password.php';
     }
 
-    // ── Owner Forgot Password Page ──
-    public function showOwnerForgotForm() {
-        $roles = 'owners';
-        require_once __DIR__ . '/../Views/forgot-password.php';
-    }
 
     // ── Handle Submission: Send OTP to Registered Email ──
     public function sendResetLink() {
@@ -227,8 +222,7 @@ class ForgotPasswordController {
 
         if ($stmt->get_result()->num_rows === 0) {
             $_SESSION['error'] = "This reset link is invalid or has expired.";
-            $back = ($roles === 'owners') ? 'owner/forgot-password' : 'forgot-password';
-            redirect($back);
+            redirect('forgot-password');
         }
 
         require_once __DIR__ . '/../Views/reset-password.php';
@@ -280,7 +274,6 @@ class ForgotPasswordController {
         $stmt2->execute();
 
         $_SESSION['success'] = "Password reset successfully! You can now log in.";
-        $redirect = ($roles === 'owners') ? 'owner/login' : 'login';
-        redirect($redirect);
+        redirect('login');
     }
 }

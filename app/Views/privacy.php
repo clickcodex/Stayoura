@@ -1,6 +1,6 @@
 <?php
-$pageTitle       = "Privacy Policy | FarmLelo";
-$pageDescription = "Learn how FarmLelo securely handles customer data, contact details, payment privacy, and platform account information.";
+$pageTitle       = "Privacy Policy | Stayora";
+$pageDescription = "Learn how Stayora securely handles customer data, contact details, payment privacy, and platform account information.";
 $canonicalUrl    = absolute_url('privacy');
 include __DIR__ . "/Includes/header.php";
 ?>
@@ -13,9 +13,9 @@ include __DIR__ . "/Includes/header.php";
 .legal-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 /* ── Hero Section ── */
@@ -63,7 +63,8 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .legal-hero-title span {
-  background: linear-gradient(135deg, #C9A227 0%, #1F4D3A 100%);
+  background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
+  filter: drop-shadow(0 2px 14px rgba(2, 132, 199, 0.45));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -91,7 +92,7 @@ include __DIR__ . "/Includes/header.php";
   position: sticky;
   top: 96px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -103,7 +104,7 @@ include __DIR__ . "/Includes/header.php";
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #24312A;
+  color: #0F172A;
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f1f5f9;
@@ -122,7 +123,7 @@ include __DIR__ . "/Includes/header.php";
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 10px;
@@ -131,7 +132,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-toc-link:hover {
   background: #f0f9ff;
-  color: #1F4D3A;
+  color: #1D4ED8;
   transform: translateX(3px);
 }
 
@@ -144,7 +145,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 28px;
   padding: 36px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -164,7 +165,7 @@ include __DIR__ . "/Includes/header.php";
   height: 44px;
   border-radius: 14px;
   background: rgba(22, 165, 222, 0.12);
-  color: #1F4D3A;
+  color: #1D4ED8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +176,7 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 20px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -221,8 +222,8 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-highlight-box.blue {
   background: #f0f9ff;
-  border-color: #D4E4DC;
-  color: #133225;
+  border-color: #DBEAFE;
+  color: #1E3A8A;
 }
 
 @media (max-width: 992px) {
@@ -255,7 +256,7 @@ include __DIR__ . "/Includes/header.php";
       </div>
 
       <h1 class="legal-hero-title">
-        Farmlelo <span>Privacy Policy</span>
+        Stayora <span>Privacy Policy</span>
       </h1>
 
       <p class="legal-hero-meta">
@@ -297,10 +298,10 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            At <strong>Farmlelo</strong> (operated as an authorized property management and farmhouse retreat discovery portal in India), we value the trust you place in us when sharing your personal information.
+            At <strong>Stayora</strong> (operated as an authorized property management and farmhouse retreat discovery portal in India), we value the trust you place in us when sharing your personal information.
           </p>
           <p>
-            This Privacy Policy sets out how Farmlelo collects, protects, uses, and shares your personal data when you visit our website (<strong>farmlelo.com</strong>), book a private estate, or list a property as a verified farmhouse host partner.
+            This Privacy Policy sets out how Stayora collects, protects, uses, and shares your personal data when you visit our website (<strong>stayora.com</strong>), book a private estate, or list a property as a verified farmhouse host partner.
           </p>
           <div class="legal-highlight-box blue">
             <span class="material-symbols-outlined" style="font-size:20px;">info</span>
@@ -394,7 +395,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            Farmlelo utilizes essential session cookies and local storage tokens to keep you logged into your dashboard, save your favorite wishlist farmhouses, and remember your search preferences. Read our dedicated <a href="<?= url('cookie-policy') ?>" style="color:#1F4D3A;font-weight:700;text-decoration:none;">Cookie Policy</a> for full details.
+            Stayora utilizes essential session cookies and local storage tokens to keep you logged into your dashboard, save your favorite wishlist farmhouses, and remember your search preferences. Read our dedicated <a href="<?= url('cookie-policy') ?>" style="color:#1D4ED8;font-weight:700;text-decoration:none;">Cookie Policy</a> for full details.
           </p>
         </div>
       </section>
@@ -429,10 +430,10 @@ include __DIR__ . "/Includes/header.php";
           <p>
             If you have questions regarding this Privacy Policy or wish to exercise your data rights, reach out to our privacy compliance team:
           </p>
-          <div style="background:#F7F3EA;padding:20px;border-radius:16px;border:1px solid #E2DBD0;margin-top:16px;">
-            <p style="margin:0 0 6px;"><strong>Email:</strong> privacy@farmlelo.com / support@farmlelo.com</p>
+          <div style="background:#F8FAFC;padding:20px;border-radius:16px;border:1px solid #E2E8F0;margin-top:16px;">
+            <p style="margin:0 0 6px;"><strong>Email:</strong> privacy@stayora.com / support@stayora.com</p>
             <p style="margin:0 0 6px;"><strong>Support Helpline:</strong> +91 98765 43210</p>
-            <p style="margin:0;"><strong>Office:</strong> Farmlelo Technologies, Startup India Hub, Madhya Pradesh, India</p>
+            <p style="margin:0;"><strong>Office:</strong> Stayora Technologies, Startup India Hub, Madhya Pradesh, India</p>
           </div>
         </div>
       </section>

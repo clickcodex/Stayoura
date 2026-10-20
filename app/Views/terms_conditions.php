@@ -1,6 +1,6 @@
 <?php
-$pageTitle       = "Terms & Conditions | FarmLelo";
-$pageDescription = "Review the official terms and conditions for booking, staying, and listing vacation farmhouses on FarmLelo.";
+$pageTitle       = "Terms & Conditions | Stayora";
+$pageDescription = "Review the official terms and conditions for booking, staying, and listing vacation farmhouses on Stayora.";
 $canonicalUrl    = absolute_url('terms_conditions');
 include __DIR__ . "/Includes/header.php";
 ?>
@@ -13,9 +13,9 @@ include __DIR__ . "/Includes/header.php";
 .legal-page-wrap {
   min-height: calc(100vh - 72px);
   padding-top: 72px;
-  background: #F7F3EA;
+  background: #F8FAFC;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #24312A;
+  color: #0F172A;
 }
 
 /* ── Hero Section ── */
@@ -63,7 +63,8 @@ include __DIR__ . "/Includes/header.php";
 }
 
 .legal-hero-title span {
-  background: linear-gradient(135deg, #C9A227 0%, #1F4D3A 100%);
+  background: linear-gradient(135deg, #38BDF8 0%, #60A5FA 50%, #93C5FD 100%);
+  filter: drop-shadow(0 2px 14px rgba(2, 132, 199, 0.45));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -91,7 +92,7 @@ include __DIR__ . "/Includes/header.php";
   position: sticky;
   top: 96px;
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -103,7 +104,7 @@ include __DIR__ . "/Includes/header.php";
   font-weight: 900;
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  color: #24312A;
+  color: #0F172A;
   margin-bottom: 16px;
   padding-bottom: 12px;
   border-bottom: 1px solid #f1f5f9;
@@ -122,7 +123,7 @@ include __DIR__ . "/Includes/header.php";
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: #57685F;
+  color: #64748B;
   text-decoration: none;
   padding: 8px 12px;
   border-radius: 10px;
@@ -131,7 +132,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-toc-link:hover {
   background: #f0f9ff;
-  color: #1F4D3A;
+  color: #1D4ED8;
   transform: translateX(3px);
 }
 
@@ -144,7 +145,7 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-card {
   background: #ffffff;
-  border: 1px solid #E2DBD0;
+  border: 1px solid #E2E8F0;
   border-radius: 28px;
   padding: 36px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
@@ -164,7 +165,7 @@ include __DIR__ . "/Includes/header.php";
   height: 44px;
   border-radius: 14px;
   background: rgba(22, 165, 222, 0.12);
-  color: #1F4D3A;
+  color: #1D4ED8;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -175,7 +176,7 @@ include __DIR__ . "/Includes/header.php";
   font-family: 'Epilogue', sans-serif;
   font-size: 20px;
   font-weight: 900;
-  color: #24312A;
+  color: #0F172A;
   margin: 0;
 }
 
@@ -221,8 +222,8 @@ include __DIR__ . "/Includes/header.php";
 
 .legal-highlight-box.blue {
   background: #f0f9ff;
-  border-color: #D4E4DC;
-  color: #133225;
+  border-color: #DBEAFE;
+  color: #1E3A8A;
 }
 
 @media (max-width: 992px) {
@@ -297,7 +298,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            Welcome to <strong>Farmlelo</strong>. By accessing our website (<strong>farmlelo.com</strong>), registering as a guest user, submitting a booking inquiry, or applying as a host partner, you agree to be bound by these Terms of Service.
+            Welcome to <strong>Stayora</strong>. By accessing our website (<strong>stayora.com</strong>), registering as a guest user, submitting a booking inquiry, or applying as a host partner, you agree to be bound by these Terms of Service.
           </p>
           <p>
             If you do not agree to these terms, please refrain from using the platform. We reserve the right to modify these terms periodically, and your continued usage signifies your assent to the revised provisions.
@@ -314,11 +315,11 @@ include __DIR__ . "/Includes/header.php";
           <h2 class="legal-card-title">2. Guest Booking &amp; Reservation Terms</h2>
         </div>
         <div class="legal-card-body">
-          <p>Guests booking private farmhouses through Farmlelo acknowledge that:</p>
+          <p>Guests booking private farmhouses through Stayora acknowledge that:</p>
           <ul>
             <li><strong>Age Requirement:</strong> The primary booking organizer must be at least 18 years of age and present a valid government-issued photo ID (Aadhaar / Driving License / Passport) upon check-in.</li>
             <li><strong>Guest Count Accuracy:</strong> The total number of day or night occupants must not exceed the approved capacity listed during the reservation confirmation.</li>
-            <li><strong>Direct Verification:</strong> Farmlelo acts as a verified marketplace and concierge liaison connecting guests directly with private estate hosts.</li>
+            <li><strong>Direct Verification:</strong> Stayora acts as a verified marketplace and concierge liaison connecting guests directly with private estate hosts.</li>
           </ul>
         </div>
       </section>
@@ -373,7 +374,7 @@ include __DIR__ . "/Includes/header.php";
         <div class="legal-card-body">
           <p>To ensure a pleasant stay for everyone and respect the surrounding neighborhood:</p>
           <ul>
-            <li><strong>Prohibited Substances:</strong> Illegal narcotics, commercial gambling, and hazardous fireworks are strictly banned across all Farmlelo listed premises.</li>
+            <li><strong>Prohibited Substances:</strong> Illegal narcotics, commercial gambling, and hazardous fireworks are strictly banned across all Stayora listed premises.</li>
             <li><strong>Swimming Pool Safety:</strong> Children must be supervised by adults at all times around pool areas. Diving in shallow areas is strictly prohibited.</li>
             <li><strong>Loud Music Deadlines:</strong> In adherence to local municipal regulations, outdoor acoustic decibel limits and quiet hours (typically 10:00 PM onwards) must be respected.</li>
           </ul>
@@ -390,10 +391,10 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            Cancellations and rescheduling requests are subject to Farmlelo's standardized policy guidelines.
+            Cancellations and rescheduling requests are subject to Stayora's standardized policy guidelines.
           </p>
           <p>
-            For a comprehensive breakdown of cancellation timelines, full refund eligibility, and emergency weather provisions, please review our dedicated <a href="<?= url('cancellation-policy') ?>" style="color:#1F4D3A;font-weight:700;text-decoration:none;">Cancellation &amp; Refund Policy</a>.
+            For a comprehensive breakdown of cancellation timelines, full refund eligibility, and emergency weather provisions, please review our dedicated <a href="<?= url('cancellation-policy') ?>" style="color:#1D4ED8;font-weight:700;text-decoration:none;">Cancellation &amp; Refund Policy</a>.
           </p>
         </div>
       </section>
@@ -408,7 +409,7 @@ include __DIR__ . "/Includes/header.php";
         </div>
         <div class="legal-card-body">
           <p>
-            Farmlelo provides a platform connecting guests with independent hosts. While Farmlelo conducts verification audits, Farmlelo shall not be held liable for personal injury, unforeseen electrical utility outages, or loss of personal belongings caused by third-party conduct or force majeure events.
+            Stayora provides a platform connecting guests with independent hosts. While Stayora conducts verification audits, Stayora shall not be held liable for personal injury, unforeseen electrical utility outages, or loss of personal belongings caused by third-party conduct or force majeure events.
           </p>
         </div>
       </section>
@@ -425,8 +426,8 @@ include __DIR__ . "/Includes/header.php";
           <p>
             These Terms of Service are governed by and construed in accordance with the laws of the Republic of India. Any disputes arising out of these terms shall be subject to the exclusive jurisdiction of the competent courts in Indore, Madhya Pradesh, India.
           </p>
-          <div style="background:#F7F3EA;padding:20px;border-radius:16px;border:1px solid #E2DBD0;margin-top:16px;">
-            <p style="margin:0 0 4px;"><strong>Legal Inquiries:</strong> legal@farmlelo.com</p>
+          <div style="background:#F8FAFC;padding:20px;border-radius:16px;border:1px solid #E2E8F0;margin-top:16px;">
+            <p style="margin:0 0 4px;"><strong>Legal Inquiries:</strong> legal@stayora.com</p>
             <p style="margin:0;"><strong>Concierge Support:</strong> +91 98765 43210 (Mon-Sun, 9 AM - 9 PM)</p>
           </div>
         </div>

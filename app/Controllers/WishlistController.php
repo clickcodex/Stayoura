@@ -21,21 +21,28 @@ class WishlistController
             exit;
         }
 
-        // 2. Data Check
+        // 2. Data Check - Support both JSON body and POST form data
         $input = json_decode(file_get_contents('php://input'), true);
-        $farmhouseId = CryptoHelper::decrypt($input['farmhouse_id'] ?? '');
+        $rawId = $input['farmhouse_id'] ?? ($_POST['farmhouse_id'] ?? '');
+        $farmhouseId = CryptoHelper::decrypt($rawId);
 
-        if (!$farmhouseId) {
-            echo json_encode(['success' => false, 'message' => 'Security Error']);
-            exit;
+        if (!$farmhouseId || !is_numeric($farmhouseId) || (int)$farmhouseId <= 0) {
+            if (is_numeric($rawId) && (int)$rawId > 0) {
+                $farmhouseId = (int)$rawId;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Security Error']);
+                exit;
+            }
         }
+        $farmhouseId = (int)$farmhouseId;
 
         // 3. Database Toggle
         try {
             $result = WishlistModel::toggleWishlist($_SESSION['user_id'], $farmhouseId);
             echo json_encode([
                 'success' => true, 
-                'action'  => $result['status'] // 'added' or 'removed'
+                'action'  => $result['status'], // 'added' or 'removed'
+                'status'  => $result['status']
             ]);
         } catch (\Exception $e) {
             echo json_encode(['success' => false, 'message' => 'DB Error']);

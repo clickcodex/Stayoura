@@ -2,77 +2,77 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
-    <loc>https://farmlelo.com/</loc>
+    <loc>https://stayora.com/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses</loc>
+    <loc>https://stayora.com/farmhouses</loc>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/why-choose-us</loc>
+    <loc>https://stayora.com/why-choose-us</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/about</loc>
+    <loc>https://stayora.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/contact</loc>
+    <loc>https://stayora.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/list_your_farm</loc>
+    <loc>https://stayora.com/list_your_farm</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses?location=Indore</loc>
+    <loc>https://stayora.com/farmhouses?location=Indore</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses?location=Surat</loc>
+    <loc>https://stayora.com/farmhouses?location=Surat</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses?location=Delhi</loc>
+    <loc>https://stayora.com/farmhouses?location=Delhi</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses?location=Hyderabad</loc>
+    <loc>https://stayora.com/farmhouses?location=Hyderabad</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/farmhouses?location=Mumbai</loc>
+    <loc>https://stayora.com/farmhouses?location=Mumbai</loc>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/terms_conditions</loc>
+    <loc>https://stayora.com/terms_conditions</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/privacy</loc>
+    <loc>https://stayora.com/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/cancellation_policy</loc>
+    <loc>https://stayora.com/cancellation_policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://farmlelo.com/cookie_policy</loc>
+    <loc>https://stayora.com/cookie_policy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.5</priority>
   </url>
